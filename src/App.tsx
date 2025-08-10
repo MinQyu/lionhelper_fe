@@ -1,11 +1,7 @@
-import './App.css';
+import UIGuide from './pages/UIGuide';
 
 function App() {
-  return (
-    <>
-      <div>초기화</div>
-    </>
-  );
+  return <UIGuide />;
 }
 
 export default App;
