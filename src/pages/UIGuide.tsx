@@ -1,9 +1,41 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
+
+// 코드 예시들을 별도 상수로 분리 (IDE 하이라이팅 개선)
+const CODE_EXAMPLES = {
+  button: `import { Button } from '@/components/ui/button';
+
+<Button variant="default" size="lg">
+  클릭하세요
+</Button>`,
+
+  input: `import { Input } from '@/components/ui/input';
+
+<Input 
+  type="email" 
+  placeholder="이메일을 입력하세요"
+  onChange={(e) => setValue(e.target.value)}
+/>`,
+
+  checkbox: `import { Checkbox } from '@/components/ui/checkbox';
+
+<div className="flex items-center space-x-2">
+  <Checkbox id="terms" />
+  <label htmlFor="terms">
+    약관에 동의합니다
+  </label>
+</div>`,
+};
 
 function UIGuide() {
   const [inputValue, setInputValue] = useState('');
+  const [checkboxStates, setCheckboxStates] = useState({
+    basic: false,
+    disabled: false,
+    indeterminate: false,
+  });
 
   return (
     <div className="bg-background text-foreground min-h-screen">
@@ -20,9 +52,6 @@ function UIGuide() {
               멋쟁이사자처럼 UI 가이드
             </h1>
           </div>
-          <p className="text-muted-foreground text-lg">
-            프로젝트에서 사용할 수 있는 모든 UI 컴포넌트들을 확인해보세요
-          </p>
         </div>
       </header>
 
@@ -70,7 +99,7 @@ function UIGuide() {
                 text: 'text-card-foreground',
               },
               { name: 'Border', class: 'bg-border', text: 'text-foreground' },
-            ].map((color) => (
+            ].map(color => (
               <div
                 key={color.name}
                 className={`${color.class} ${color.text} rounded-lg p-4 text-center font-medium`}
@@ -134,7 +163,7 @@ function UIGuide() {
               <Input
                 placeholder="기본 입력 필드"
                 value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
+                onChange={e => setInputValue(e.target.value)}
               />
             </div>
 
@@ -158,6 +187,103 @@ function UIGuide() {
                   placeholder="Error state"
                   className="border-destructive"
                 />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Checkbox Components */}
+        <section>
+          <h2 className="mb-6 flex items-center gap-2 text-2xl font-semibold">
+            ☑️ Checkbox 컴포넌트
+          </h2>
+
+          <div className="max-w-md space-y-6">
+            <div>
+              <h3 className="mb-3 text-lg font-medium">Basic Checkbox</h3>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="basic-checkbox"
+                  checked={checkboxStates.basic}
+                  onCheckedChange={checked =>
+                    setCheckboxStates(prev => ({
+                      ...prev,
+                      basic: checked === true,
+                    }))
+                  }
+                />
+                <label
+                  htmlFor="basic-checkbox"
+                  className="text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  기본 체크박스
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="mb-3 text-lg font-medium">Checkbox States</h3>
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="normal" />
+                  <label htmlFor="normal" className="text-sm font-medium">
+                    Normal
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="checked" defaultChecked />
+                  <label htmlFor="checked" className="text-sm font-medium">
+                    Checked
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="disabled" disabled />
+                  <label
+                    htmlFor="disabled"
+                    className="text-muted-foreground text-sm font-medium"
+                  >
+                    Disabled
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="disabled-checked" disabled defaultChecked />
+                  <label
+                    htmlFor="disabled-checked"
+                    className="text-muted-foreground text-sm font-medium"
+                  >
+                    Disabled & Checked
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="mb-3 text-lg font-medium">Checkbox Group</h3>
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="option1" />
+                  <label htmlFor="option1" className="text-sm font-medium">
+                    React
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="option2" />
+                  <label htmlFor="option2" className="text-sm font-medium">
+                    Vue
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="option3" />
+                  <label htmlFor="option3" className="text-sm font-medium">
+                    Angular
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="option4" />
+                  <label htmlFor="option4" className="text-sm font-medium">
+                    Svelte
+                  </label>
+                </div>
               </div>
             </div>
           </div>
@@ -257,24 +383,21 @@ function UIGuide() {
             <div className="bg-muted rounded-lg p-4">
               <h3 className="mb-2 text-sm font-semibold">Button 사용법</h3>
               <pre className="text-muted-foreground overflow-x-auto text-xs">
-                {`import { Button } from '@/components/ui/button';
-
-<Button variant="default" size="lg">
-  클릭하세요
-</Button>`}
+                {CODE_EXAMPLES.button}
               </pre>
             </div>
 
             <div className="bg-muted rounded-lg p-4">
               <h3 className="mb-2 text-sm font-semibold">Input 사용법</h3>
               <pre className="text-muted-foreground overflow-x-auto text-xs">
-                {`import { Input } from '@/components/ui/input';
+                {CODE_EXAMPLES.input}
+              </pre>
+            </div>
 
-<Input 
-  type="email" 
-  placeholder="이메일을 입력하세요"
-  onChange={(e) => setValue(e.target.value)}
-/>`}
+            <div className="bg-muted rounded-lg p-4">
+              <h3 className="mb-2 text-sm font-semibold">Checkbox 사용법</h3>
+              <pre className="text-muted-foreground overflow-x-auto text-xs">
+                {CODE_EXAMPLES.checkbox}
               </pre>
             </div>
           </div>
