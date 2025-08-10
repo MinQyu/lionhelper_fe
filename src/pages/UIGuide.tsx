@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Card } from '@/components/ui/card';
 import {
   Select,
   SelectContent,
@@ -70,6 +71,15 @@ const CODE_EXAMPLES = {
     <SelectItem value="option3">옵션 3</SelectItem>
   </SelectContent>
 </Select>`,
+
+  card: `import { Card } from '@/components/ui/card';
+
+<Card variant="default">
+  <h3 className="text-lg font-semibold mb-2">카드 제목</h3>
+  <p className="text-muted-foreground">
+    카드 내용이 들어갑니다.
+  </p>
+</Card>`,
 };
 
 function UIGuide() {
@@ -643,6 +653,208 @@ function UIGuide() {
           </div>
         </section>
 
+        {/* Card Components */}
+        <section>
+          <h2 className="mb-6 flex items-center gap-2 text-2xl font-semibold">
+            🃏 Card 컴포넌트
+          </h2>
+
+          <div className="space-y-6">
+            <div>
+              <h3 className="mb-3 text-lg font-medium">Card Variants</h3>
+              <div className="grid gap-4 md:grid-cols-2">
+                <Card variant="default">
+                  <h4 className="text-lg font-semibold mb-2">Default Card</h4>
+                  <p className="text-muted-foreground text-sm">
+                    기본 카드 스타일입니다. 가장 일반적으로 사용되는 카드
+                    형태입니다.
+                  </p>
+                </Card>
+
+                <Card variant="bordered">
+                  <h4 className="text-lg font-semibold mb-2">Bordered Card</h4>
+                  <p className="text-muted-foreground text-sm">
+                    더 굵은 테두리를 가진 카드입니다. 강조가 필요한 콘텐츠에
+                    적합합니다.
+                  </p>
+                </Card>
+
+                <Card variant="elevated">
+                  <h4 className="text-lg font-semibold mb-2">Elevated Card</h4>
+                  <p className="text-muted-foreground text-sm">
+                    그림자 효과가 강화된 카드입니다. 떠있는 느낌을 주고 싶을 때
+                    사용합니다.
+                  </p>
+                </Card>
+
+                <Card variant="outlined">
+                  <h4 className="text-lg font-semibold mb-2">Outlined Card</h4>
+                  <p className="text-muted-foreground text-sm">
+                    투명한 배경에 테두리만 있는 카드입니다. 미니멀한 디자인에
+                    적합합니다.
+                  </p>
+                </Card>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="mb-3 text-lg font-medium">Content Cards</h3>
+              <div className="grid gap-4 md:grid-cols-3">
+                <Card>
+                  <div className="space-y-3">
+                    <div className="bg-primary rounded-lg h-24 flex items-center justify-center">
+                      <span className="text-primary-foreground text-2xl">
+                        🚀
+                      </span>
+                    </div>
+                    <h4 className="font-semibold">프로젝트 관리</h4>
+                    <p className="text-muted-foreground text-sm">
+                      효율적인 프로젝트 관리를 위한 도구들을 제공합니다.
+                    </p>
+                    <Button size="sm" className="w-full">
+                      시작하기
+                    </Button>
+                  </div>
+                </Card>
+
+                <Card>
+                  <div className="space-y-3">
+                    <div className="bg-secondary rounded-lg h-24 flex items-center justify-center">
+                      <span className="text-secondary-foreground text-2xl">
+                        📊
+                      </span>
+                    </div>
+                    <h4 className="font-semibold">데이터 분석</h4>
+                    <p className="text-muted-foreground text-sm">
+                      데이터를 시각화하고 인사이트를 얻을 수 있습니다.
+                    </p>
+                    <Button size="sm" variant="outline" className="w-full">
+                      자세히 보기
+                    </Button>
+                  </div>
+                </Card>
+
+                <Card>
+                  <div className="space-y-3">
+                    <div className="bg-accent rounded-lg h-24 flex items-center justify-center">
+                      <span className="text-accent-foreground text-2xl">
+                        ⚙️
+                      </span>
+                    </div>
+                    <h4 className="font-semibold">설정 관리</h4>
+                    <p className="text-muted-foreground text-sm">
+                      시스템 설정을 쉽게 관리하고 커스터마이징할 수 있습니다.
+                    </p>
+                    <Button size="sm" variant="ghost" className="w-full">
+                      설정하기
+                    </Button>
+                  </div>
+                </Card>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="mb-3 text-lg font-medium">Profile Cards</h3>
+              <div className="grid gap-4 md:grid-cols-2">
+                <Card>
+                  <div className="flex items-start space-x-4">
+                    <div className="bg-primary flex h-12 w-12 items-center justify-center rounded-full">
+                      <span className="text-primary-foreground font-semibold">
+                        김
+                      </span>
+                    </div>
+                    <div className="flex-1 space-y-1">
+                      <h4 className="font-semibold">김멋사</h4>
+                      <p className="text-muted-foreground text-sm">
+                        프론트엔드 개발자
+                      </p>
+                      <p className="text-muted-foreground text-xs">
+                        멋쟁이사자처럼 12기
+                      </p>
+                      <div className="flex gap-2 pt-2">
+                        <Button size="sm" variant="outline">
+                          팔로우
+                        </Button>
+                        <Button size="sm" variant="ghost">
+                          메시지
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+
+                <Card>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-semibold">팀 통계</h4>
+                      <span className="text-muted-foreground text-sm">
+                        이번 주
+                      </span>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-sm">완료된 작업</span>
+                        <span className="font-semibold">24개</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm">진행 중</span>
+                        <span className="font-semibold">8개</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm">대기 중</span>
+                        <span className="font-semibold">12개</span>
+                      </div>
+                    </div>
+                    <div className="bg-secondary h-2 rounded-full">
+                      <div className="bg-primary h-2 w-3/4 rounded-full"></div>
+                    </div>
+                  </div>
+                </Card>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="mb-3 text-lg font-medium">Interactive Cards</h3>
+              <div className="grid gap-4 md:grid-cols-2">
+                <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-semibold">공지사항</h4>
+                      <span className="bg-destructive text-destructive-foreground text-xs px-2 py-1 rounded">
+                        새글
+                      </span>
+                    </div>
+                    <p className="text-sm">
+                      멋쟁이사자처럼 12기 최종 발표회가 다음 주에 진행됩니다.
+                    </p>
+                    <p className="text-muted-foreground text-xs">
+                      2024.12.20 | 운영진
+                    </p>
+                  </div>
+                </Card>
+
+                <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-semibold">이번 주 과제</h4>
+                      <span className="bg-secondary text-secondary-foreground text-xs px-2 py-1 rounded">
+                        진행중
+                      </span>
+                    </div>
+                    <p className="text-sm">
+                      React로 To-Do 애플리케이션을 만들어 제출해주세요.
+                    </p>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground">마감: 12/25</span>
+                      <span className="text-destructive">3일 남음</span>
+                    </div>
+                  </div>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Typography */}
         <section>
           <h2 className="mb-6 flex items-center gap-2 text-2xl font-semibold">
@@ -676,9 +888,9 @@ function UIGuide() {
             💡 사용 예시
           </h2>
 
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {/* Login Form Example */}
-            <div className="bg-card rounded-lg border p-6">
+            <Card variant="elevated">
               <h3 className="mb-4 text-lg font-semibold">로그인 폼</h3>
               <div className="space-y-4">
                 <div>
@@ -698,32 +910,80 @@ function UIGuide() {
                   <Button variant="outline">회원가입</Button>
                 </div>
               </div>
-            </div>
+            </Card>
 
             {/* Action Cards Example */}
-            <div className="bg-card rounded-lg border p-6">
-              <h3 className="mb-4 text-lg font-semibold">액션 카드</h3>
+            <Card>
+              <h3 className="mb-4 text-lg font-semibold">대시보드</h3>
               <div className="space-y-3">
-                <div className="flex items-center justify-between rounded-md border p-3">
-                  <span>사용자 관리</span>
-                  <Button size="sm" variant="outline">
-                    보기
-                  </Button>
-                </div>
-                <div className="flex items-center justify-between rounded-md border p-3">
-                  <span>데이터 분석</span>
-                  <Button size="sm" variant="outline">
-                    보기
-                  </Button>
-                </div>
-                <div className="flex items-center justify-between rounded-md border p-3">
-                  <span>설정</span>
-                  <Button size="sm" variant="outline">
-                    보기
-                  </Button>
-                </div>
+                <Card variant="outlined" className="p-3">
+                  <div className="flex items-center justify-between">
+                    <span>사용자 관리</span>
+                    <Button size="sm" variant="outline">
+                      보기
+                    </Button>
+                  </div>
+                </Card>
+                <Card variant="outlined" className="p-3">
+                  <div className="flex items-center justify-between">
+                    <span>데이터 분석</span>
+                    <Button size="sm" variant="outline">
+                      보기
+                    </Button>
+                  </div>
+                </Card>
+                <Card variant="outlined" className="p-3">
+                  <div className="flex items-center justify-between">
+                    <span>설정</span>
+                    <Button size="sm" variant="outline">
+                      보기
+                    </Button>
+                  </div>
+                </Card>
               </div>
-            </div>
+            </Card>
+
+            {/* Settings Form Example */}
+            <Card variant="bordered">
+              <h3 className="mb-4 text-lg font-semibold">설정</h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="text-foreground mb-2 block text-sm font-medium">
+                    알림 설정
+                  </label>
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="email-notifications" />
+                      <label htmlFor="email-notifications" className="text-sm">
+                        이메일 알림
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="push-notifications" />
+                      <label htmlFor="push-notifications" className="text-sm">
+                        푸시 알림
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label className="text-foreground mb-2 block text-sm font-medium">
+                    언어 설정
+                  </label>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="언어 선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="ko">한국어</SelectItem>
+                      <SelectItem value="en">English</SelectItem>
+                      <SelectItem value="ja">日本語</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Button className="w-full">설정 저장</Button>
+              </div>
+            </Card>
           </div>
         </section>
 
@@ -766,6 +1026,13 @@ function UIGuide() {
               <h3 className="mb-2 text-sm font-semibold">Select 사용법</h3>
               <pre className="text-muted-foreground overflow-x-auto text-xs">
                 {CODE_EXAMPLES.select}
+              </pre>
+            </div>
+
+            <div className="bg-muted rounded-lg p-4">
+              <h3 className="mb-2 text-sm font-semibold">Card 사용법</h3>
+              <pre className="text-muted-foreground overflow-x-auto text-xs">
+                {CODE_EXAMPLES.card}
               </pre>
             </div>
           </div>
