@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 // 코드 예시들을 별도 상수로 분리 (IDE 하이라이팅 개선)
 const CODE_EXAMPLES = {
@@ -27,6 +28,19 @@ const CODE_EXAMPLES = {
     약관에 동의합니다
   </label>
 </div>`,
+
+  radioGroup: `import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+
+<RadioGroup defaultValue="option1">
+  <div className="flex items-center space-x-2">
+    <RadioGroupItem value="option1" id="option1" />
+    <label htmlFor="option1">옵션 1</label>
+  </div>
+  <div className="flex items-center space-x-2">
+    <RadioGroupItem value="option2" id="option2" />
+    <label htmlFor="option2">옵션 2</label>
+  </div>
+</RadioGroup>`,
 };
 
 function UIGuide() {
@@ -36,6 +50,7 @@ function UIGuide() {
     disabled: false,
     indeterminate: false,
   });
+  const [radioValue, setRadioValue] = useState('react');
 
   return (
     <div className="bg-background text-foreground min-h-screen">
@@ -289,6 +304,131 @@ function UIGuide() {
           </div>
         </section>
 
+        {/* RadioGroup Components */}
+        <section>
+          <h2 className="mb-6 flex items-center gap-2 text-2xl font-semibold">
+            🔘 RadioGroup 컴포넌트
+          </h2>
+
+          <div className="max-w-md space-y-6">
+            <div>
+              <h3 className="mb-3 text-lg font-medium">Basic RadioGroup</h3>
+              <RadioGroup value={radioValue} onValueChange={setRadioValue}>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="react" id="radio-react" />
+                  <label
+                    htmlFor="radio-react"
+                    className="text-sm leading-none font-medium"
+                  >
+                    React
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="vue" id="radio-vue" />
+                  <label
+                    htmlFor="radio-vue"
+                    className="text-sm leading-none font-medium"
+                  >
+                    Vue
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="angular" id="radio-angular" />
+                  <label
+                    htmlFor="radio-angular"
+                    className="text-sm leading-none font-medium"
+                  >
+                    Angular
+                  </label>
+                </div>
+              </RadioGroup>
+              <p className="text-muted-foreground mt-2 text-sm">
+                선택된 값: {radioValue}
+              </p>
+            </div>
+
+            <div>
+              <h3 className="mb-3 text-lg font-medium">RadioGroup States</h3>
+              <div className="space-y-4">
+                <div>
+                  <h4 className="mb-2 text-sm font-medium">Normal</h4>
+                  <RadioGroup defaultValue="option1">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="option1" id="normal1" />
+                      <label htmlFor="normal1" className="text-sm font-medium">
+                        옵션 1
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="option2" id="normal2" />
+                      <label htmlFor="normal2" className="text-sm font-medium">
+                        옵션 2
+                      </label>
+                    </div>
+                  </RadioGroup>
+                </div>
+
+                <div>
+                  <h4 className="mb-2 text-sm font-medium">Disabled</h4>
+                  <RadioGroup defaultValue="disabled1" disabled>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="disabled1" id="disabled1" />
+                      <label
+                        htmlFor="disabled1"
+                        className="text-muted-foreground text-sm font-medium"
+                      >
+                        비활성화된 옵션 1
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="disabled2" id="disabled2" />
+                      <label
+                        htmlFor="disabled2"
+                        className="text-muted-foreground text-sm font-medium"
+                      >
+                        비활성화된 옵션 2
+                      </label>
+                    </div>
+                  </RadioGroup>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="mb-3 text-lg font-medium">서비스 선택</h3>
+              <RadioGroup defaultValue="basic">
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="basic" id="service-basic" />
+                  <label
+                    htmlFor="service-basic"
+                    className="text-sm font-medium"
+                  >
+                    기본 서비스 (무료)
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="premium" id="service-premium" />
+                  <label
+                    htmlFor="service-premium"
+                    className="text-sm font-medium"
+                  >
+                    프리미엄 서비스 (월 9,900원)
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="enterprise" id="service-enterprise" />
+                  <label
+                    htmlFor="service-enterprise"
+                    className="text-sm font-medium"
+                  >
+                    기업용 서비스 (문의)
+                  </label>
+                </div>
+              </RadioGroup>
+            </div>
+          </div>
+        </section>
+
         {/* Typography */}
         <section>
           <h2 className="mb-6 flex items-center gap-2 text-2xl font-semibold">
@@ -398,6 +538,13 @@ function UIGuide() {
               <h3 className="mb-2 text-sm font-semibold">Checkbox 사용법</h3>
               <pre className="text-muted-foreground overflow-x-auto text-xs">
                 {CODE_EXAMPLES.checkbox}
+              </pre>
+            </div>
+
+            <div className="bg-muted rounded-lg p-4">
+              <h3 className="mb-2 text-sm font-semibold">RadioGroup 사용법</h3>
+              <pre className="text-muted-foreground overflow-x-auto text-xs">
+                {CODE_EXAMPLES.radioGroup}
               </pre>
             </div>
           </div>
