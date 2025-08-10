@@ -3,6 +3,16 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  SelectGroup,
+  SelectLabel,
+  SelectSeparator,
+} from '@/components/ui/select';
 
 // 코드 예시들을 별도 상수로 분리 (IDE 하이라이팅 개선)
 const CODE_EXAMPLES = {
@@ -41,6 +51,25 @@ const CODE_EXAMPLES = {
     <label htmlFor="option2">옵션 2</label>
   </div>
 </RadioGroup>`,
+
+  select: `import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+
+<Select>
+  <SelectTrigger className="w-[180px]">
+    <SelectValue placeholder="옵션을 선택하세요" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="option1">옵션 1</SelectItem>
+    <SelectItem value="option2">옵션 2</SelectItem>
+    <SelectItem value="option3">옵션 3</SelectItem>
+  </SelectContent>
+</Select>`,
 };
 
 function UIGuide() {
@@ -51,6 +80,7 @@ function UIGuide() {
     indeterminate: false,
   });
   const [radioValue, setRadioValue] = useState('react');
+  const [selectValue, setSelectValue] = useState('');
 
   return (
     <div className="bg-background text-foreground min-h-screen">
@@ -429,6 +459,190 @@ function UIGuide() {
           </div>
         </section>
 
+        {/* Select Components */}
+        <section>
+          <h2 className="mb-6 flex items-center gap-2 text-2xl font-semibold">
+            📋 Select 컴포넌트
+          </h2>
+
+          <div className="max-w-md space-y-6">
+            <div>
+              <h3 className="mb-3 text-lg font-medium">Basic Select</h3>
+              <Select value={selectValue} onValueChange={setSelectValue}>
+                <SelectTrigger className="w-[240px]">
+                  <SelectValue placeholder="프레임워크를 선택하세요" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="react">React</SelectItem>
+                  <SelectItem value="vue">Vue.js</SelectItem>
+                  <SelectItem value="angular">Angular</SelectItem>
+                  <SelectItem value="svelte">Svelte</SelectItem>
+                  <SelectItem value="solid">SolidJS</SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-muted-foreground mt-2 text-sm">
+                선택된 값: {selectValue || '없음'}
+              </p>
+            </div>
+
+            <div>
+              <h3 className="mb-3 text-lg font-medium">Grouped Select</h3>
+              <Select>
+                <SelectTrigger className="w-[240px]">
+                  <SelectValue placeholder="언어를 선택하세요" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>프론트엔드</SelectLabel>
+                    <SelectItem value="javascript">JavaScript</SelectItem>
+                    <SelectItem value="typescript">TypeScript</SelectItem>
+                    <SelectItem value="react">React</SelectItem>
+                    <SelectItem value="vue">Vue.js</SelectItem>
+                  </SelectGroup>
+                  <SelectSeparator />
+                  <SelectGroup>
+                    <SelectLabel>백엔드</SelectLabel>
+                    <SelectItem value="nodejs">Node.js</SelectItem>
+                    <SelectItem value="python">Python</SelectItem>
+                    <SelectItem value="java">Java</SelectItem>
+                    <SelectItem value="go">Go</SelectItem>
+                  </SelectGroup>
+                  <SelectSeparator />
+                  <SelectGroup>
+                    <SelectLabel>데이터베이스</SelectLabel>
+                    <SelectItem value="mysql">MySQL</SelectItem>
+                    <SelectItem value="postgresql">PostgreSQL</SelectItem>
+                    <SelectItem value="mongodb">MongoDB</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <h3 className="mb-3 text-lg font-medium">Select Sizes</h3>
+              <div className="space-y-3">
+                <div>
+                  <label className="mb-2 block text-sm font-medium">
+                    Small Size
+                  </label>
+                  <Select>
+                    <SelectTrigger size="sm" className="w-[200px]">
+                      <SelectValue placeholder="작은 크기" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="option1">옵션 1</SelectItem>
+                      <SelectItem value="option2">옵션 2</SelectItem>
+                      <SelectItem value="option3">옵션 3</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="mb-2 block text-sm font-medium">
+                    Default Size
+                  </label>
+                  <Select>
+                    <SelectTrigger className="w-[200px]">
+                      <SelectValue placeholder="기본 크기" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="option1">옵션 1</SelectItem>
+                      <SelectItem value="option2">옵션 2</SelectItem>
+                      <SelectItem value="option3">옵션 3</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="mb-3 text-lg font-medium">Select States</h3>
+              <div className="space-y-3">
+                <div>
+                  <label className="mb-2 block text-sm font-medium">
+                    Normal
+                  </label>
+                  <Select>
+                    <SelectTrigger className="w-[200px]">
+                      <SelectValue placeholder="일반 상태" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="option1">옵션 1</SelectItem>
+                      <SelectItem value="option2">옵션 2</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="mb-2 block text-sm font-medium">
+                    Disabled
+                  </label>
+                  <Select disabled>
+                    <SelectTrigger className="w-[200px]">
+                      <SelectValue placeholder="비활성화 상태" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="option1">옵션 1</SelectItem>
+                      <SelectItem value="option2">옵션 2</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="mb-3 text-lg font-medium">
+                멋쟁이사자처럼 지역 선택
+              </h3>
+              <Select>
+                <SelectTrigger className="w-[280px]">
+                  <SelectValue placeholder="운영 지역을 선택하세요" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>수도권</SelectLabel>
+                    <SelectItem value="seoul">서울</SelectItem>
+                    <SelectItem value="incheon">인천</SelectItem>
+                    <SelectItem value="gyeonggi">경기</SelectItem>
+                  </SelectGroup>
+                  <SelectSeparator />
+                  <SelectGroup>
+                    <SelectLabel>강원권</SelectLabel>
+                    <SelectItem value="gangwon">강원</SelectItem>
+                    <SelectItem value="chuncheon">춘천</SelectItem>
+                  </SelectGroup>
+                  <SelectSeparator />
+                  <SelectGroup>
+                    <SelectLabel>충청권</SelectLabel>
+                    <SelectItem value="daejeon">대전</SelectItem>
+                    <SelectItem value="chungbuk">충북</SelectItem>
+                    <SelectItem value="chungnam">충남</SelectItem>
+                  </SelectGroup>
+                  <SelectSeparator />
+                  <SelectGroup>
+                    <SelectLabel>경상권</SelectLabel>
+                    <SelectItem value="busan">부산</SelectItem>
+                    <SelectItem value="daegu">대구</SelectItem>
+                    <SelectItem value="ulsan">울산</SelectItem>
+                    <SelectItem value="gyeongbuk">경북</SelectItem>
+                    <SelectItem value="gyeongnam">경남</SelectItem>
+                  </SelectGroup>
+                  <SelectSeparator />
+                  <SelectGroup>
+                    <SelectLabel>전라권</SelectLabel>
+                    <SelectItem value="gwangju">광주</SelectItem>
+                    <SelectItem value="jeonbuk">전북</SelectItem>
+                    <SelectItem value="jeonnam">전남</SelectItem>
+                  </SelectGroup>
+                  <SelectSeparator />
+                  <SelectGroup>
+                    <SelectLabel>제주권</SelectLabel>
+                    <SelectItem value="jeju">제주</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </section>
+
         {/* Typography */}
         <section>
           <h2 className="mb-6 flex items-center gap-2 text-2xl font-semibold">
@@ -545,6 +759,13 @@ function UIGuide() {
               <h3 className="mb-2 text-sm font-semibold">RadioGroup 사용법</h3>
               <pre className="text-muted-foreground overflow-x-auto text-xs">
                 {CODE_EXAMPLES.radioGroup}
+              </pre>
+            </div>
+
+            <div className="bg-muted rounded-lg p-4">
+              <h3 className="mb-2 text-sm font-semibold">Select 사용법</h3>
+              <pre className="text-muted-foreground overflow-x-auto text-xs">
+                {CODE_EXAMPLES.select}
               </pre>
             </div>
           </div>
