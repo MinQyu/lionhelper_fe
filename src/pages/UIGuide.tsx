@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card } from '@/components/ui/card';
+import { DatePicker } from '@/components/ui/date-picker';
 import {
   Select,
   SelectContent,
@@ -80,6 +81,16 @@ const CODE_EXAMPLES = {
     카드 내용이 들어갑니다.
   </p>
 </Card>`,
+
+  datePicker: `import { DatePicker } from '@/components/ui/date-picker';
+
+const [date, setDate] = useState<Date | undefined>();
+
+<DatePicker
+  date={date}
+  onDateChange={setDate}
+  placeholder="날짜를 선택하세요"
+/>`,
 };
 
 function UIGuide() {
@@ -91,6 +102,9 @@ function UIGuide() {
   });
   const [radioValue, setRadioValue] = useState('react');
   const [selectValue, setSelectValue] = useState('');
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+  const [startDate, setStartDate] = useState<Date | undefined>();
+  const [endDate, setEndDate] = useState<Date | undefined>();
 
   return (
     <div className="bg-background text-foreground min-h-screen">
@@ -104,7 +118,7 @@ function UIGuide() {
               </span>
             </div>
             <h1 className="from-primary bg-gradient-to-r to-orange-500 bg-clip-text text-3xl font-bold text-transparent">
-              멋쟁이사자처럼 UI 가이드
+              라이언 헬퍼 UI 가이드
             </h1>
           </div>
         </div>
@@ -165,6 +179,29 @@ function UIGuide() {
           </div>
         </section>
 
+        {/* Typography */}
+        <section>
+          <h2 className="mb-6 flex items-center gap-2 text-2xl font-semibold">
+            📖 Typography
+          </h2>
+
+          <div className="space-y-4">
+            <h1 className="text-4xl font-bold">Heading 1 (4xl)</h1>
+            <h2 className="text-3xl font-bold">Heading 2 (3xl)</h2>
+            <h3 className="text-2xl font-semibold">Heading 3 (2xl)</h3>
+            <h4 className="text-xl font-semibold">Heading 4 (xl)</h4>
+            <h5 className="text-lg font-medium">Heading 5 (lg)</h5>
+            <h6 className="text-base font-medium">Heading 6 (base)</h6>
+
+            <p className="text-base">일반 본문 텍스트입니다.</p>
+            <p className="text-muted-foreground text-sm">
+              작은 텍스트나 부연 설명에 사용하는 텍스트입니다.
+            </p>
+            <p className="text-muted-foreground text-xs">
+              매우 작은 텍스트로 라벨이나 메타 정보에 사용됩니다.
+            </p>
+          </div>
+        </section>
         {/* Button Components */}
         <section>
           <h2 className="mb-6 flex items-center gap-2 text-2xl font-semibold">
@@ -855,30 +892,114 @@ function UIGuide() {
           </div>
         </section>
 
-        {/* Typography */}
+        {/* Date Picker Components */}
         <section>
           <h2 className="mb-6 flex items-center gap-2 text-2xl font-semibold">
-            📖 Typography
+            📅 Date Picker 컴포넌트
           </h2>
 
-          <div className="space-y-4">
-            <h1 className="text-4xl font-bold">Heading 1 (4xl)</h1>
-            <h2 className="text-3xl font-bold">Heading 2 (3xl)</h2>
-            <h3 className="text-2xl font-semibold">Heading 3 (2xl)</h3>
-            <h4 className="text-xl font-semibold">Heading 4 (xl)</h4>
-            <h5 className="text-lg font-medium">Heading 5 (lg)</h5>
-            <h6 className="text-base font-medium">Heading 6 (base)</h6>
+          <div className="space-y-6">
+            <div>
+              <h3 className="mb-3 text-lg font-medium">Basic Date Picker</h3>
+              <div className="max-w-md space-y-4">
+                <div>
+                  <label className="mb-2 block text-sm font-medium">
+                    기본 날짜 선택
+                  </label>
+                  <DatePicker
+                    date={selectedDate}
+                    onDateChange={setSelectedDate}
+                    placeholder="날짜를 선택하세요"
+                  />
+                  {selectedDate && (
+                    <p className="text-muted-foreground mt-2 text-sm">
+                      선택된 날짜: {selectedDate.toLocaleDateString('ko-KR')}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
 
-            <p className="text-base">
-              일반 본문 텍스트입니다. 멋쟁이사자처럼에서 개발하는 프로젝트에
-              사용됩니다.
-            </p>
-            <p className="text-muted-foreground text-sm">
-              작은 텍스트나 부연 설명에 사용하는 텍스트입니다.
-            </p>
-            <p className="text-muted-foreground text-xs">
-              매우 작은 텍스트로 라벨이나 메타 정보에 사용됩니다.
-            </p>
+            <div>
+              <h3 className="mb-3 text-lg font-medium">Date Range Selection</h3>
+              <div className="max-w-md space-y-4">
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="mb-2 block text-sm font-medium">
+                      시작 날짜
+                    </label>
+                    <DatePicker
+                      date={startDate}
+                      onDateChange={setStartDate}
+                      placeholder="시작 날짜"
+                      className="w-full"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-2 block text-sm font-medium">
+                      종료 날짜
+                    </label>
+                    <DatePicker
+                      date={endDate}
+                      onDateChange={setEndDate}
+                      placeholder="종료 날짜"
+                      className="w-full"
+                    />
+                  </div>
+                </div>
+                {startDate && endDate && (
+                  <div className="bg-muted rounded-lg p-3">
+                    <p className="text-sm font-medium">선택된 기간:</p>
+                    <p className="text-muted-foreground text-sm">
+                      {startDate.toLocaleDateString('ko-KR')} ~{' '}
+                      {endDate.toLocaleDateString('ko-KR')}
+                    </p>
+                    <p className="text-muted-foreground text-xs mt-1">
+                      총{' '}
+                      {Math.ceil(
+                        (endDate.getTime() - startDate.getTime()) /
+                          (1000 * 60 * 60 * 24)
+                      )}
+                      일
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="mb-3 text-lg font-medium">Date Picker Variants</h3>
+              <div className="max-w-md space-y-4">
+                <div>
+                  <label className="mb-2 block text-sm font-medium">
+                    이벤트 날짜
+                  </label>
+                  <DatePicker
+                    placeholder="이벤트 날짜를 선택하세요"
+                    className="w-full"
+                  />
+                </div>
+                <div>
+                  <label className="mb-2 block text-sm font-medium">
+                    생년월일
+                  </label>
+                  <DatePicker
+                    placeholder="생년월일을 선택하세요"
+                    className="w-full"
+                  />
+                </div>
+                <div>
+                  <label className="mb-2 block text-sm font-medium">
+                    비활성화된 날짜 선택
+                  </label>
+                  <DatePicker
+                    placeholder="선택할 수 없습니다"
+                    disabled
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -984,6 +1105,53 @@ function UIGuide() {
                 <Button className="w-full">설정 저장</Button>
               </div>
             </Card>
+            <Card>
+              <h4 className="font-semibold mb-3">출장 신청서</h4>
+              <div className="space-y-3">
+                <div>
+                  <label className="text-sm font-medium">출장 시작일</label>
+                  <DatePicker
+                    placeholder="출장 시작일"
+                    className="w-full mt-1"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">출장 종료일</label>
+                  <DatePicker
+                    placeholder="출장 종료일"
+                    className="w-full mt-1"
+                  />
+                </div>
+                <Button className="w-full mt-3">신청하기</Button>
+              </div>
+            </Card>
+
+            <Card>
+              <h4 className="font-semibold mb-3">회의실 예약</h4>
+              <div className="space-y-3">
+                <div>
+                  <label className="text-sm font-medium">예약 날짜</label>
+                  <DatePicker
+                    placeholder="회의 날짜 선택"
+                    className="w-full mt-1"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">회의실</label>
+                  <Select>
+                    <SelectTrigger className="mt-1">
+                      <SelectValue placeholder="회의실 선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="room-a">회의실 A</SelectItem>
+                      <SelectItem value="room-b">회의실 B</SelectItem>
+                      <SelectItem value="room-c">회의실 C</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Button className="w-full mt-3">예약하기</Button>
+              </div>
+            </Card>
           </div>
         </section>
 
@@ -1035,6 +1203,13 @@ function UIGuide() {
                 {CODE_EXAMPLES.card}
               </pre>
             </div>
+
+            <div className="bg-muted rounded-lg p-4">
+              <h3 className="mb-2 text-sm font-semibold">Date Picker 사용법</h3>
+              <pre className="text-muted-foreground overflow-x-auto text-xs">
+                {CODE_EXAMPLES.datePicker}
+              </pre>
+            </div>
           </div>
         </section>
       </main>
@@ -1044,7 +1219,7 @@ function UIGuide() {
         <div className="container mx-auto px-6 py-8 text-center">
           <div className="mb-2 flex items-center justify-center gap-2">
             <span className="text-2xl">🦁</span>
-            <span className="font-semibold">멋쟁이사자처럼</span>
+            <span className="font-semibold">멋쟁이사자처럼 라이언 헬퍼</span>
           </div>
           <p className="text-muted-foreground text-sm">
             UI 컴포넌트 가이드 • shadcn/ui + Tailwind CSS
