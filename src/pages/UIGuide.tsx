@@ -35,23 +35,16 @@ const CODE_EXAMPLES = {
 
   checkbox: `import { Checkbox } from '@/components/ui/checkbox';
 
-<div className="flex items-center space-x-2">
-  <Checkbox id="terms" />
-  <label htmlFor="terms">
-    약관에 동의합니다
-  </label>
-</div>`,
+<Checkbox id="terms" label="약관에 동의합니다" />`,
 
   radioGroup: `import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 <RadioGroup defaultValue="option1">
   <div className="flex items-center space-x-2">
-    <RadioGroupItem value="option1" id="option1" />
-    <label htmlFor="option1">옵션 1</label>
+    <RadioGroupItem value="option1" id="option1" label="옵션 1" />
   </div>
   <div className="flex items-center space-x-2">
-    <RadioGroupItem value="option2" id="option2" />
-    <label htmlFor="option2">옵션 2</label>
+    <RadioGroupItem value="option2" id="option2" label="옵션 2" />
   </div>
 </RadioGroup>`,
 
@@ -306,7 +299,8 @@ function UIGuide() {
               <h3 className="mb-3 text-lg font-medium">Basic Checkbox</h3>
               <div className="flex items-center space-x-2">
                 <Checkbox
-                  id="basic-checkbox"
+                  label="basic-checkbox"
+                  labelClassName="text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                   checked={checkboxStates.basic}
                   onCheckedChange={checked =>
                     setCheckboxStates(prev => ({
@@ -328,34 +322,32 @@ function UIGuide() {
               <h3 className="mb-3 text-lg font-medium">Checkbox States</h3>
               <div className="space-y-3">
                 <div className="flex items-center space-x-2">
-                  <Checkbox id="normal" />
-                  <label htmlFor="normal" className="text-sm font-medium">
-                    Normal
-                  </label>
+                  <Checkbox
+                    label="Normal"
+                    labelClassName="text-sm font-medium"
+                  />
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Checkbox id="checked" defaultChecked />
-                  <label htmlFor="checked" className="text-sm font-medium">
-                    Checked
-                  </label>
+                  <Checkbox
+                    label="checked"
+                    defaultChecked
+                    labelClassName="text-sm font-medium"
+                  />
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Checkbox id="disabled" disabled />
-                  <label
-                    htmlFor="disabled"
-                    className="text-muted-foreground text-sm font-medium"
-                  >
-                    Disabled
-                  </label>
+                  <Checkbox
+                    label="disabled"
+                    disabled
+                    labelClassName="text-muted-foreground text-sm font-medium"
+                  />
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Checkbox id="disabled-checked" disabled defaultChecked />
-                  <label
-                    htmlFor="disabled-checked"
-                    className="text-muted-foreground text-sm font-medium"
-                  >
-                    Disabled & Checked
-                  </label>
+                  <Checkbox
+                    label="disabled-checked"
+                    disabled
+                    defaultChecked
+                    labelClassName="text-muted-foreground text-sm font-medium"
+                  />
                 </div>
               </div>
             </div>
@@ -364,28 +356,32 @@ function UIGuide() {
               <h3 className="mb-3 text-lg font-medium">Checkbox Group</h3>
               <div className="space-y-2">
                 <div className="flex items-center space-x-2">
-                  <Checkbox id="option1" />
-                  <label htmlFor="option1" className="text-sm font-medium">
-                    React
-                  </label>
+                  <Checkbox
+                    id="option1"
+                    label="React"
+                    labelClassName="text-sm font-medium"
+                  />
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Checkbox id="option2" />
-                  <label htmlFor="option2" className="text-sm font-medium">
-                    Vue
-                  </label>
+                  <Checkbox
+                    id="option2"
+                    label="Vue"
+                    labelClassName="text-sm font-medium"
+                  />
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Checkbox id="option3" />
-                  <label htmlFor="option3" className="text-sm font-medium">
-                    Angular
-                  </label>
+                  <Checkbox
+                    id="option3"
+                    label="Angular"
+                    labelClassName="text-sm font-medium"
+                  />
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Checkbox id="option4" />
-                  <label htmlFor="option4" className="text-sm font-medium">
-                    Svelte
-                  </label>
+                  <Checkbox
+                    id="option4"
+                    label="Svelte"
+                    labelClassName="text-sm font-medium"
+                  />
                 </div>
               </div>
             </div>
@@ -403,31 +399,21 @@ function UIGuide() {
               <h3 className="mb-3 text-lg font-medium">Basic RadioGroup</h3>
               <RadioGroup value={radioValue} onValueChange={setRadioValue}>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="react" id="radio-react" />
-                  <label
-                    htmlFor="radio-react"
-                    className="text-sm leading-none font-medium"
-                  >
-                    React
-                  </label>
+                  <RadioGroupItem
+                    value="react"
+                    id="radio-react"
+                    label="React"
+                  />
                 </div>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="vue" id="radio-vue" />
-                  <label
-                    htmlFor="radio-vue"
-                    className="text-sm leading-none font-medium"
-                  >
-                    Vue
-                  </label>
+                  <RadioGroupItem value="vue" id="radio-vue" label="Vue" />
                 </div>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="angular" id="radio-angular" />
-                  <label
-                    htmlFor="radio-angular"
-                    className="text-sm leading-none font-medium"
-                  >
-                    Angular
-                  </label>
+                  <RadioGroupItem
+                    value="angular"
+                    id="radio-angular"
+                    label="Angular"
+                  />
                 </div>
               </RadioGroup>
               <p className="text-muted-foreground mt-2 text-sm">
@@ -442,16 +428,18 @@ function UIGuide() {
                   <h4 className="mb-2 text-sm font-medium">Normal</h4>
                   <RadioGroup defaultValue="option1">
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="option1" id="normal1" />
-                      <label htmlFor="normal1" className="text-sm font-medium">
-                        옵션 1
-                      </label>
+                      <RadioGroupItem
+                        value="option1"
+                        id="normal1"
+                        label="옵션 1"
+                      />
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="option2" id="normal2" />
-                      <label htmlFor="normal2" className="text-sm font-medium">
-                        옵션 2
-                      </label>
+                      <RadioGroupItem
+                        value="option2"
+                        id="normal2"
+                        label="옵션 2"
+                      />
                     </div>
                   </RadioGroup>
                 </div>
@@ -460,22 +448,20 @@ function UIGuide() {
                   <h4 className="mb-2 text-sm font-medium">Disabled</h4>
                   <RadioGroup defaultValue="disabled1" disabled>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="disabled1" id="disabled1" />
-                      <label
-                        htmlFor="disabled1"
-                        className="text-muted-foreground text-sm font-medium"
-                      >
-                        비활성화된 옵션 1
-                      </label>
+                      <RadioGroupItem
+                        value="disabled1"
+                        id="disabled1"
+                        label="비활성화된 옵션 1"
+                        labelClassName="text-muted-foreground text-sm font-medium"
+                      />
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="disabled2" id="disabled2" />
-                      <label
-                        htmlFor="disabled2"
-                        className="text-muted-foreground text-sm font-medium"
-                      >
-                        비활성화된 옵션 2
-                      </label>
+                      <RadioGroupItem
+                        value="disabled2"
+                        id="disabled2"
+                        label="비활성화된 옵션 2"
+                        labelClassName="text-muted-foreground text-sm font-medium"
+                      />
                     </div>
                   </RadioGroup>
                 </div>
@@ -486,31 +472,28 @@ function UIGuide() {
               <h3 className="mb-3 text-lg font-medium">서비스 선택</h3>
               <RadioGroup defaultValue="basic">
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="basic" id="service-basic" />
-                  <label
-                    htmlFor="service-basic"
-                    className="text-sm font-medium"
-                  >
-                    기본 서비스 (무료)
-                  </label>
+                  <RadioGroupItem
+                    value="basic"
+                    id="service-basic"
+                    label="기본 서비스 (무료)"
+                    labelClassName="text-sm font-medium"
+                  />
                 </div>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="premium" id="service-premium" />
-                  <label
-                    htmlFor="service-premium"
-                    className="text-sm font-medium"
-                  >
-                    프리미엄 서비스 (월 9,900원)
-                  </label>
+                  <RadioGroupItem
+                    value="premium"
+                    id="service-premium"
+                    label="프리미엄 서비스 (월 9,900원)"
+                    labelClassName="text-sm font-medium"
+                  />
                 </div>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="enterprise" id="service-enterprise" />
-                  <label
-                    htmlFor="service-enterprise"
-                    className="text-sm font-medium"
-                  >
-                    기업용 서비스 (문의)
-                  </label>
+                  <RadioGroupItem
+                    value="enterprise"
+                    id="service-enterprise"
+                    label="기업용 서비스 (문의)"
+                    labelClassName="text-sm font-medium"
+                  />
                 </div>
               </RadioGroup>
             </div>
@@ -1146,16 +1129,18 @@ function UIGuide() {
                   </label>
                   <div className="space-y-2">
                     <div className="flex items-center space-x-2">
-                      <Checkbox id="email-notifications" />
-                      <label htmlFor="email-notifications" className="text-sm">
-                        이메일 알림
-                      </label>
+                      <Checkbox
+                        id="email-notifications"
+                        label="이메일 알림"
+                        labelClassName="text-sm"
+                      />
                     </div>
                     <div className="flex items-center space-x-2">
-                      <Checkbox id="push-notifications" />
-                      <label htmlFor="push-notifications" className="text-sm">
-                        푸시 알림
-                      </label>
+                      <Checkbox
+                        id="push-notifications"
+                        label="푸시 알림"
+                        labelClassName="text-sm"
+                      />
                     </div>
                   </div>
                 </div>
