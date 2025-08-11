@@ -5,6 +5,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card } from '@/components/ui/card';
 import { DatePicker } from '@/components/ui/date-picker';
+import { Badge } from '@/components/ui/badge';
 import {
   Select,
   SelectContent,
@@ -91,6 +92,16 @@ const [date, setDate] = useState<Date | undefined>();
   onDateChange={setDate}
   placeholder="날짜를 선택하세요"
 />`,
+
+  badge: `import { Badge } from '@/components/ui/badge';
+
+<Badge variant="default">기본</Badge>
+<Badge variant="secondary">보조</Badge>
+<Badge variant="destructive">삭제</Badge>
+<Badge variant="outline">외곽선</Badge>
+<Badge variant="success">성공</Badge>
+<Badge variant="warning">경고</Badge>
+<Badge variant="info">정보</Badge>`,
 };
 
 function UIGuide() {
@@ -1003,6 +1014,67 @@ function UIGuide() {
           </div>
         </section>
 
+        {/* Badge Components */}
+        <section>
+          <h2 className="mb-6 flex items-center gap-2 text-2xl font-semibold">
+            🏷️ Badge 컴포넌트
+          </h2>
+
+          <div className="space-y-6">
+            <div>
+              <h3 className="mb-3 text-lg font-medium">Badge Variants</h3>
+              <div className="flex flex-wrap gap-3">
+                <Badge variant="default">기본</Badge>
+                <Badge variant="secondary">보조</Badge>
+                <Badge variant="destructive">삭제</Badge>
+                <Badge variant="outline">외곽선</Badge>
+                <Badge variant="success">성공</Badge>
+                <Badge variant="warning">경고</Badge>
+                <Badge variant="info">정보</Badge>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="mb-3 text-lg font-medium">Badge Sizes</h3>
+              <div className="flex flex-wrap items-center gap-3">
+                <Badge size="sm" variant="default">
+                  작은 뱃지
+                </Badge>
+                <Badge size="default" variant="default">
+                  기본 뱃지
+                </Badge>
+                <Badge size="lg" variant="default">
+                  큰 뱃지
+                </Badge>
+              </div>
+            </div>
+
+            <div>
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <span>상태:</span>
+                  <Badge variant="success">활성</Badge>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span>우선순위:</span>
+                  <Badge variant="destructive">높음</Badge>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span>카테고리:</span>
+                  <Badge variant="outline">프론트엔드</Badge>
+                  <Badge variant="outline">React</Badge>
+                  <Badge variant="outline">TypeScript</Badge>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span>알림:</span>
+                  <Badge variant="info">3</Badge>
+                  <span>개의 새 메시지</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Usage Examples */}
         <section>
           <h2 className="mb-6 flex items-center gap-2 text-2xl font-semibold">
@@ -1208,6 +1280,13 @@ function UIGuide() {
               <h3 className="mb-2 text-sm font-semibold">Date Picker 사용법</h3>
               <pre className="text-muted-foreground overflow-x-auto text-xs">
                 {CODE_EXAMPLES.datePicker}
+              </pre>
+            </div>
+
+            <div className="bg-muted rounded-lg p-4">
+              <h3 className="mb-2 text-sm font-semibold">Badge 사용법</h3>
+              <pre className="text-muted-foreground overflow-x-auto text-xs">
+                {CODE_EXAMPLES.badge}
               </pre>
             </div>
           </div>
