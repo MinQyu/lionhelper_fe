@@ -21,6 +21,9 @@
   --color-border: #e2e8f0;
   --color-input: #e2e8f0;
   --color-ring: #fc7a3d;
+  --color-sidebar: #fffaf5;
+  --color-menu-active: #ffe3ce;
+  --color-menu-hover: #fff0e4;
   --radius: 0.75rem;
 }
 
