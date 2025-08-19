@@ -27,6 +27,7 @@ export default tseslint.config([
     },
     rules: {
       'prettier/prettier': 'warn',
+      'linebreak-style': 'off',
     },
   },
 ]);
