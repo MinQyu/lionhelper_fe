@@ -1,14 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
   Home,
-  BookOpen,
+  LaptopMinimalCheck,
   Bell,
   Shield,
   ChevronDown,
-  ChevronRight,
   BarChart3,
-  Users,
+  ClipboardList,
+  LogOut,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -34,13 +34,11 @@ const getMenuItemStyles = (isActive: boolean, isSubItem = false) => {
   const activeStyles = isActive
     ? 'text-primary bg-menu-active'
     : 'text-foreground';
-  const subItemStyles =
-    isSubItem && !isActive ? 'text-muted-foreground hover:text-foreground' : '';
+  const subItemStyles = isSubItem && isActive ? 'bg-sidebar' : '';
 
   return `${baseStyles} ${paddingStyles} ${activeStyles} ${subItemStyles}`.trim();
 };
 
-// 메뉴 아이템 컴포넌트
 const MenuItemComponent = ({
   item,
   className,
@@ -54,7 +52,6 @@ const MenuItemComponent = ({
   </Link>
 );
 
-// 서브메뉴 아이템 컴포넌트
 const SubMenuItemComponent = ({
   subItem,
   className,
@@ -68,7 +65,6 @@ const SubMenuItemComponent = ({
   </Link>
 );
 
-// 아코디언 버튼 컴포넌트
 const AccordionButtonComponent = ({
   item,
   isOpen,
@@ -80,23 +76,22 @@ const AccordionButtonComponent = ({
   onClick: () => void;
   className?: string;
 }) => (
-  <button onClick={onClick} className={className}>
+  <button onClick={onClick} className={`${className} accordion-button`}>
     <div className="flex items-center gap-3">
       <item.icon className="w-5 h-5" />
       <span className="font-bold">{item.title}</span>
     </div>
-    {isOpen ? (
-      <ChevronDown className="w-4 h-4" />
-    ) : (
-      <ChevronRight className="w-4 h-4" />
-    )}
+    <ChevronDown
+      className={`w-4 h-4 chevron-icon ${isOpen ? 'rotated' : ''}`}
+    />
   </button>
 );
 
 function Sidebar() {
-  const [isBootcampOpen, setIsBootcampOpen] = useState(false);
   const location = useLocation();
   const currentPath = location.pathname;
+  const isBootcampPath = currentPath.startsWith('/bootcamp/');
+  const [isBootcampOpen, setIsBootcampOpen] = useState(isBootcampPath);
 
   const menuItems: MenuItem[] = [
     {
@@ -108,7 +103,7 @@ function Sidebar() {
     {
       id: 'bootcamp',
       title: '부트캠프 관리',
-      icon: BookOpen,
+      icon: LaptopMinimalCheck,
       hasSubMenu: true,
       subItems: [
         {
@@ -118,10 +113,10 @@ function Sidebar() {
           href: '/bootcamp/overview',
         },
         {
-          id: 'individual',
+          id: 'course',
           title: '개별 과정',
-          icon: Users,
-          href: '/bootcamp/individual',
+          icon: ClipboardList,
+          href: '/bootcamp/[bootcampId]',
         },
       ],
     },
@@ -149,8 +144,8 @@ function Sidebar() {
     subItems?.some(subItem => currentPath === subItem.href) || false;
 
   return (
-    <aside className="w-56 bg-sidebar border-r border-border h-screen shadow-sm">
-      <div className="p-4">
+    <aside className="w-56 bg-sidebar border-r border-border h-screen shadow-sm flex flex-col text-lg">
+      <div className="p-4 flex-1">
         <div className="mt-2 mb-8">
           <Link to="/dashboard" className="block">
             <img
@@ -162,7 +157,7 @@ function Sidebar() {
         </div>
 
         <div className="flex items-center pl-2 mt-10 mb-10">
-          <span>000님의 라이언헬퍼</span>
+          <span className="font-bold">000님의 라이언헬퍼</span>
         </div>
 
         <nav aria-label="메인 네비게이션">
@@ -179,7 +174,11 @@ function Sidebar() {
                         isActiveParent(item.subItems)
                       )} justify-between`}
                     />
-                    {isBootcampOpen && (
+                    <div
+                      className={`accordion-content ${
+                        isBootcampOpen ? 'expanded' : 'collapsed'
+                      }`}
+                    >
                       <ul className="ml-4 mt-2 space-y-1 list-none">
                         {item.subItems?.map(subItem => (
                           <li key={subItem.id}>
@@ -193,7 +192,7 @@ function Sidebar() {
                           </li>
                         ))}
                       </ul>
-                    )}
+                    </div>
                   </div>
                 ) : (
                   <MenuItemComponent
@@ -207,6 +206,14 @@ function Sidebar() {
             ))}
           </ul>
         </nav>
+      </div>
+
+      {/* 로그아웃 버튼 */}
+      <div className="px-4 py-2 border-t border-border">
+        <button className="flex items-center gap-3 p-2 hover:cursor-pointer hover:text-primary rounded-lg transition-colors text-foreground w-full">
+          <LogOut className="w-5 h-5" />
+          <span className="font-bold">로그아웃</span>
+        </button>
       </div>
     </aside>
   );

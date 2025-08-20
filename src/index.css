@@ -13,7 +13,7 @@
   --color-muted: #f1f5f9;
   --color-muted-foreground: #64748b;
   --color-background: #ffffff;
-  --color-foreground: #0f172a;
+  --color-foreground: #3f3f3f;
   --color-card: #ffffff;
   --color-card-foreground: #0f172a;
   --color-popover: #ffffff;
@@ -37,5 +37,39 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer components {
+  /* 아코디언 애니메이션 스타일 */
+  .accordion-content {
+    overflow: hidden;
+    transition:
+      max-height 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 0.15s ease-out;
+  }
+
+  .accordion-content.collapsed {
+    max-height: 0;
+    opacity: 0;
+  }
+
+  .accordion-content.expanded {
+    max-height: 200px; /* 충분한 높이 설정 */
+    opacity: 1;
+  }
+
+  /* 체브론 아이콘 회전 애니메이션 */
+  .chevron-icon {
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .chevron-icon.rotated {
+    transform: rotate(180deg);
+  }
+
+  /* 버튼 호버/클릭 반응성 개선 */
+  .accordion-button {
+    transition: background-color 0.1s ease-out;
   }
 }
