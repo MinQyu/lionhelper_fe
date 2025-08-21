@@ -1,12 +1,12 @@
-import UIGuide from './pages/UIGuide';
-import Layout from './layout/Layout';
+import UIGuide from '@/pages/UIGuide';
+import Layout from '@/layout/Layout';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Dashboard from './pages/dashboard';
-import BootcampIndex from './pages/bootcamp';
-import BootcampOverview from './pages/bootcamp/overview';
-import BootcampDetail from './pages/bootcamp/[bootcampId]';
-import Notice from './pages/notice';
-import Admin from './pages/admin';
+import Dashboard from '@/pages/dashboard';
+import BootcampIndex from '@/pages/bootcamp';
+import BootcampOverview from '@/pages/bootcamp/overview';
+import BootcampDetail from '@/pages/bootcamp/[bootcampId]';
+import Notice from '@/pages/notice';
+import Admin from '@/pages/admin';
 
 function App() {
   return (
