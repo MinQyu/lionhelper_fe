@@ -122,7 +122,7 @@ function TaskStatusCard({
           </Card>
           {/* 기간별 업무 리마인더 */}
           {periodicTasks.length > 0 && (
-            <div>
+            <div className="space-y-2">
               {periodicTasks.map(task => (
                 <Card key={task.id} variant="outlined" className="px-3 py-2">
                   <div className="flex items-center justify-between text-primary">
