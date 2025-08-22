@@ -1,10 +1,12 @@
 import { useParams } from 'react-router-dom';
+import BootcampIndicator from '@/components/BootcampIndicator';
 
 function BootcampDetail() {
   const { CourseId } = useParams<{ CourseId: string }>();
 
   return (
-    <div className="p-6">
+    <div className="pt-8">
+      <BootcampIndicator />
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-foreground mb-2">
           부트캠프 과정 상세

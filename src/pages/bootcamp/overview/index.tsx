@@ -1,5 +1,6 @@
 import { useSearchParams } from 'react-router-dom';
 import Tab from '@/layout/Tab';
+import BootcampIndicator from '@/components/BootcampIndicator';
 import TaskStatusTab from './TaskStatusTab.tsx';
 import UncheckedTab from './UncheckedTab.tsx';
 import IssuesTab from './IssuesTab.tsx';
@@ -40,7 +41,8 @@ function BootcampOverview() {
   };
 
   return (
-    <div className="space-y-6 pt-16">
+    <div className="space-y-6 pt-8">
+      <BootcampIndicator />
       <Tab
         items={tabItems}
         defaultTab="taskStatus"

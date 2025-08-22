@@ -1,25 +1,12 @@
 import { Link, useLocation } from 'react-router-dom';
 import { BookOpen } from 'lucide-react';
-
-interface Course {
-  id: string;
-  course_name: string;
-}
+import { useBootcampStore } from '@/store';
 
 interface SubSidebarProps {
   isVisible: boolean;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
 }
-
-// 목업용 데이터
-const mockCourses: Course[] = [
-  { id: '1', course_name: '프론트엔드 14기' },
-  { id: '2', course_name: '백엔드 14기' },
-  { id: '3', course_name: '풀스택 14기' },
-  { id: '4', course_name: 'AI/ML 14기' },
-  { id: '5', course_name: '클라우드 엔지니어링 3기' },
-];
 
 const SubSidebar = ({
   isVisible,
@@ -28,6 +15,7 @@ const SubSidebar = ({
 }: SubSidebarProps) => {
   const location = useLocation();
   const currentPath = location.pathname;
+  const courses = useBootcampStore(state => state.courses);
 
   const isActiveCourse = (courseId: string) =>
     currentPath === `/bootcamp/${courseId}`;
@@ -55,14 +43,14 @@ const SubSidebar = ({
 
         <nav>
           <ul className="space-y-2">
-            {mockCourses.map(course => (
+            {courses.map(course => (
               <li key={course.id}>
                 <Link
                   to={`/bootcamp/${course.id}`}
-                  className={`block p-2 rounded-lg transition-colors hover:bg-menu-hover ${
+                  className={`block p-2 rounded-lg transition-colors hover:bg-menu-hover border ${
                     isActiveCourse(course.id)
-                      ? 'bg-menu-active text-primary border border-primary/20'
-                      : 'text-foreground'
+                      ? 'bg-menu-active text-primary border-primary/20'
+                      : 'text-foreground border-transparent'
                   }`}
                 >
                   <div className="flex items-start gap-3 pt-0.5" justify-center>
