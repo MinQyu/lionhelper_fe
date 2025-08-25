@@ -22,16 +22,15 @@ const SubSidebar = ({
 
   return (
     <div
-      className={`fixed left-56 top-0 h-screen bg-background border-r border-border shadow-lg transition-all duration-200 ease-in-out z-0 ${
+      className={`fixed left-56 top-0 h-screen bg-sidebar border-r border-border shadow-lg transition-all duration-200 ease-in-out z-50 ${
         isVisible
           ? 'translate-x-0 opacity-100'
           : '-translate-x-full opacity-0 pointer-events-none'
       }`}
-      style={{ width: '280px' }}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      <div className="p-4 h-full overflow-y-auto">
+      <div className="p-4 h-full">
         <div className="mb-6 pt-2">
           <h2 className="text-lg font-bold text-foreground">
             부트캠프 과정 목록
@@ -53,7 +52,7 @@ const SubSidebar = ({
                       : 'text-foreground border-transparent'
                   }`}
                 >
-                  <div className="flex items-start gap-3 pt-0.5" justify-center>
+                  <div className="flex items-start gap-2 pt-0.5">
                     <BookOpen className="w-5 h-5 flex-shrink-0" />
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-sm leading-tight">
