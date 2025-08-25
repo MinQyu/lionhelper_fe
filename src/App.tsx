@@ -7,12 +7,14 @@ import BootcampOverview from '@/pages/bootcamp/overview';
 import BootcampDetail from '@/pages/bootcamp/[CourseId]';
 import Notice from '@/pages/notice';
 import Admin from '@/pages/admin';
+import Landing from './pages/Landing';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<UIGuide />} />
+        <Route path="/" element={<Landing />} />
+        <Route path="/uiguide" element={<UIGuide />} />
       </Routes>
       <Layout>
         <Routes>
