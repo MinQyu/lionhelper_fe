@@ -2,15 +2,13 @@ import { create } from 'zustand';
 
 export interface Course {
   id: string;
-  course_name: string;
-  // 향후 API 연동 시 추가될 수 있는 필드들
-  description?: string;
-  instructor?: string;
-  start_date?: string;
-  end_date?: string;
-  status?: 'active' | 'inactive' | 'completed';
+  training_course: string;
+  dept: string;
+  start_date: string;
+  end_date: string;
+  manager_name: string;
+  created_at: string;
 }
-
 interface BootcampStore {
   // 상태
   courses: Course[];
@@ -30,11 +28,24 @@ interface BootcampStore {
 
 // 목업 데이터 (API 연동 전까지 사용)
 const mockCourses: Course[] = [
-  { id: '1', course_name: '프론트엔드 14기' },
-  { id: '2', course_name: '백엔드 14기' },
-  { id: '3', course_name: '풀스택 14기' },
-  { id: '4', course_name: 'AI/ML 14기' },
-  { id: '5', course_name: '클라우드 엔지니어링 3기' },
+  {
+    id: '1',
+    training_course: '데이터 분석 스쿨 100기',
+    dept: 'TechSol',
+    start_date: '2025-01-02',
+    end_date: '2025-06-01',
+    manager_name: '홍길동',
+    created_at: '2025-01-15T10:30:00',
+  },
+  {
+    id: '2',
+    training_course: '웹 개발 스쿨 50기',
+    dept: 'DevTeam',
+    start_date: '2025-02-01',
+    end_date: '2025-07-01',
+    manager_name: '김철수',
+    created_at: '2025-01-20T14:15:00',
+  },
 ];
 
 export const useBootcampStore = create<BootcampStore>((set, get) => ({

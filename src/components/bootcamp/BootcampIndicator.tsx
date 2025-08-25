@@ -13,7 +13,7 @@ function BootcampIndicator() {
     if (isOverviewPage) {
       return '전체 현황';
     }
-    return currentCourse?.course_name || '부트캠프 관리';
+    return currentCourse?.training_course || '부트캠프 관리';
   };
 
   const getIcon = () => {
@@ -33,8 +33,8 @@ function BootcampIndicator() {
           <h1 className="text-lg font-bold text-foreground">{getTitle()}</h1>
           <p className="text-sm text-muted-foreground">
             {isOverviewPage
-              ? '모든 부트캠프 과정의 현황을 확인하세요'
-              : '과정 기간 넣을 예정'}
+              ? '진행중인 부트캠프의 전체 현황입니다'
+              : `${currentCourse?.start_date} ~ ${currentCourse?.end_date}`}
           </p>
         </div>
       </div>
