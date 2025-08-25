@@ -1,6 +1,6 @@
 import { useSearchParams } from 'react-router-dom';
 import Tab from '@/layout/Tab';
-import BootcampIndicator from '@/components/BootcampIndicator';
+import BootcampIndicator from '@/components/bootcamp/BootcampIndicator.tsx';
 import TaskStatusTab from './TaskStatusTab.tsx';
 import UncheckedTab from './UncheckedTab.tsx';
 import IssuesTab from './IssuesTab.tsx';

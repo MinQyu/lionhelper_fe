@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import BootcampIndicator from '@/components/BootcampIndicator';
+import BootcampIndicator from '@/components/bootcamp/BootcampIndicator';
 
 function BootcampDetail() {
   const { CourseId } = useParams<{ CourseId: string }>();

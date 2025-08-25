@@ -2,7 +2,7 @@ import { useParams, useLocation } from 'react-router-dom';
 import { ChevronRight, BarChart3 } from 'lucide-react';
 import { useBootcampStore } from '@/store';
 
-const BootcampIndicator = () => {
+function BootcampIndicator() {
   const { CourseId } = useParams<{ CourseId: string }>();
   const location = useLocation();
   const getCourseById = useBootcampStore(state => state.getCourseById);
@@ -24,13 +24,13 @@ const BootcampIndicator = () => {
   };
 
   return (
-    <div className="bg-card border border-border rounded-lg p-4 mb-6">
+    <div className="bg-card border border-border rounded-lg p-3 mb-6">
       <div className="flex items-center gap-3">
         <div className="flex items-center justify-center w-10 h-10 bg-primary/10 rounded-lg">
           {getIcon()}
         </div>
         <div>
-          <h1 className="text-xl font-bold text-foreground">{getTitle()}</h1>
+          <h1 className="text-lg font-bold text-foreground">{getTitle()}</h1>
           <p className="text-sm text-muted-foreground">
             {isOverviewPage
               ? '모든 부트캠프 과정의 현황을 확인하세요'
@@ -40,6 +40,6 @@ const BootcampIndicator = () => {
       </div>
     </div>
   );
-};
+}
 
 export default BootcampIndicator;
