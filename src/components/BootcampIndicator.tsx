@@ -6,14 +6,9 @@ const BootcampIndicator = () => {
   const { CourseId } = useParams<{ CourseId: string }>();
   const location = useLocation();
   const getCourseById = useBootcampStore(state => state.getCourseById);
-
-  // overview 페이지인지 확인
   const isOverviewPage = location.pathname.includes('/bootcamp/overview');
-
-  // 현재 과정 정보 찾기
   const currentCourse = CourseId ? getCourseById(CourseId) : null;
 
-  // 표시할 제목 결정
   const getTitle = () => {
     if (isOverviewPage) {
       return '전체 현황';
@@ -21,7 +16,6 @@ const BootcampIndicator = () => {
     return currentCourse?.course_name || '부트캠프 관리';
   };
 
-  // 아이콘 결정
   const getIcon = () => {
     if (isOverviewPage) {
       return <BarChart3 className="w-5 h-5" />;
@@ -40,7 +34,7 @@ const BootcampIndicator = () => {
           <p className="text-sm text-muted-foreground">
             {isOverviewPage
               ? '모든 부트캠프 과정의 현황을 확인하세요'
-              : '선택된 과정의 상세 정보를 관리하세요'}
+              : '과정 기간 넣을 예정'}
           </p>
         </div>
       </div>
