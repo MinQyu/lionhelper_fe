@@ -93,5 +93,3 @@ export const useBootcampStore = create<BootcampStore>((set, get) => ({
 
   setError: error => set({ error }),
 }));
-
-
