@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import Sidebar from '@/layout/Sidebar';
-import SubSidebar from '@/components/SubSidebar';
+import SubSidebar from '@/layout/SubSidebar';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [isSubSidebarVisible, setIsSubSidebarVisible] = useState(false);

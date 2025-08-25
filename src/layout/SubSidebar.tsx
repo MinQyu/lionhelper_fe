@@ -57,7 +57,7 @@ const SubSidebar = ({
                     <BookOpen className="w-5 h-5 flex-shrink-0" />
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-sm leading-tight">
-                        {course.course_name}
+                        {course.training_course}
                       </h3>
                     </div>
                   </div>
