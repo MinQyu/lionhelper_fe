@@ -41,7 +41,7 @@ function BootcampOverview() {
   };
 
   return (
-    <div className="space-y-6 pt-8">
+    <div className="space-y-6">
       <BootcampIndicator />
       <Tab
         items={tabItems}

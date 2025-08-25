@@ -89,7 +89,7 @@ function Sidebar({ onCourseHover, onCourseLeave }: SidebarProps = {}) {
   };
 
   return (
-    <aside className="w-56 bg-sidebar border-r border-border h-screen shadow-sm flex flex-col text-lg z-50">
+    <aside className="w-56 fixed bg-sidebar border-r border-border h-screen shadow-sm flex flex-col text-lg z-50">
       <div className="p-4 flex-1">
         <div className="mt-2 mb-8">
           <Link to="/dashboard" className="block">

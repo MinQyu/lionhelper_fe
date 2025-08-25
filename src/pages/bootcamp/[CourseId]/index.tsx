@@ -5,7 +5,7 @@ function BootcampDetail() {
   const { CourseId } = useParams<{ CourseId: string }>();
 
   return (
-    <div className="pt-8">
+    <div>
       <BootcampIndicator />
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-foreground mb-2">
