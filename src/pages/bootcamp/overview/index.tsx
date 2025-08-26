@@ -1,9 +1,9 @@
 import { useSearchParams } from 'react-router-dom';
 import Tab from '@/layout/Tab';
 import BootcampIndicator from '@/components/bootcamp/BootcampIndicator.tsx';
-import TaskStatusTab from './TaskStatusTab.tsx';
-import UncheckedTab from './UncheckedTab.tsx';
-import IssuesTab from './IssuesTab.tsx';
+import TaskStatusTab from './tabs/TaskStatusTab.tsx';
+import UncheckedTab from './tabs/UncheckedTab.tsx';
+import IssuesTab from './tabs/IssuesTab.tsx';
 
 function BootcampOverview() {
   const [searchParams] = useSearchParams();

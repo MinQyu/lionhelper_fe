@@ -32,9 +32,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         onMouseEnter={handleSubSidebarShow}
         onMouseLeave={handleSubSidebarHide}
       />
-      <main className="flex-1 bg-background p-8 ml-56 lg:px-32">
-        {children}
-      </main>
+      <main className="flex-1 bg-background p-8 ml-56 px-32">{children}</main>
     </div>
   );
 }

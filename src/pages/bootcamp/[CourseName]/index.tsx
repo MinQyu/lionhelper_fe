@@ -1,10 +1,10 @@
 import { useParams } from 'react-router-dom';
 import BootcampIndicator from '@/components/bootcamp/BootcampIndicator';
 import Tab from '@/layout/Tab';
-import DailyTaskTap from './DailyTaskTap';
-import PeriodicTask from './PeriodicTaskTap';
-import AttendanceTap from './AttendanceTap';
-import IssuesTab from './IssuesTab';
+import DailyTaskTab from './tabs/DailyTaskTab';
+import PeriodicTaskTab from './tabs/PeriodicTaskTab';
+import AttendanceTab from './tabs/AttendanceTab';
+import IssuesTab from './tabs/IssuesTab';
 import { useSearchParams } from 'react-router-dom';
 
 function BootcampDetail() {
@@ -38,13 +38,13 @@ function BootcampDetail() {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'daily-task':
-        return <DailyTaskTap />;
+        return <DailyTaskTab />;
       case 'periodic-task':
-        return <PeriodicTask />;
+        return <PeriodicTaskTab />;
       case 'issues':
         return <IssuesTab />;
       case 'attendance':
-        return <AttendanceTap />;
+        return <AttendanceTab />;
     }
   };
 

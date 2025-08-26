@@ -1,5 +1,5 @@
 function IssuesTab() {
-  return <div>IssuesTab</div>;
+  return <div>Issues</div>;
 }
 
 export default IssuesTab;
