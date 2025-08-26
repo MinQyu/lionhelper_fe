@@ -7,18 +7,18 @@ import IssuesTab from './IssuesTab.tsx';
 
 function BootcampOverview() {
   const [searchParams] = useSearchParams();
-  const activeTab = searchParams.get('tab') || 'taskStatus';
+  const activeTab = searchParams.get('tab') || 'task-status';
 
   const tabItems = [
     {
-      id: 'taskStatus',
+      id: 'task-status',
       label: '업무 현황',
-      value: 'taskStatus',
+      value: 'task-status',
     },
     {
-      id: 'uncheckedDescription',
+      id: 'unchecked-description',
       label: '미체크 항목',
-      value: 'uncheckedDescription',
+      value: 'unchecked-description',
     },
     {
       id: 'issues',
@@ -29,9 +29,9 @@ function BootcampOverview() {
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case 'taskStatus':
+      case 'task-status':
         return <TaskStatusTab />;
-      case 'uncheckedDescription':
+      case 'unchecked-description':
         return <UncheckedTab />;
       case 'issues':
         return <IssuesTab />;
@@ -45,7 +45,7 @@ function BootcampOverview() {
       <BootcampIndicator />
       <Tab
         items={tabItems}
-        defaultTab="taskStatus"
+        defaultTab="task-status"
         basePath="/bootcamp/overview"
         queryParam="tab"
       >
