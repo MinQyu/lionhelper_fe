@@ -38,26 +38,38 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+}
 
-  /* time input 스타일링 */
-  input[type='time'] {
-    @apply appearance-none;
+@layer components {
+  /* 아코디언 애니메이션 스타일 */
+  .accordion-content {
+    overflow: hidden;
+    transition:
+      max-height 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 0.15s ease-out;
   }
 
-  input[type='time']::-webkit-calendar-picker-indicator {
-    @apply bg-transparent border-0 cursor-pointer;
+  .accordion-content.collapsed {
+    max-height: 0;
+    opacity: 0;
   }
 
-  input[type='time']::-webkit-datetime-edit {
-    @apply text-foreground;
+  .accordion-content.expanded {
+    max-height: 200px; /* 충분한 높이 설정 */
+    opacity: 1;
   }
 
-  input[type='time']::-webkit-datetime-edit-fields-wrapper {
-    @apply text-foreground;
+  /* 체브론 아이콘 회전 애니메이션 */
+  .chevron-icon {
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  input[type='time']::-webkit-datetime-edit-hour-field,
-  input[type='time']::-webkit-datetime-edit-minute-field {
-    @apply text-foreground;
+  .chevron-icon.rotated {
+    transform: rotate(180deg);
+  }
+
+  /* 버튼 호버/클릭 반응성 개선 */
+  .accordion-button {
+    transition: background-color 0.1s ease-out;
   }
 }

@@ -37,6 +37,8 @@ function Tab({
     if (activeItemByPath) {
       return activeItemByPath.value;
     }
+
+    // href가 없거나 매칭되지 않으면 쿼리 매개변수 확인
     const searchParams = new URLSearchParams(location.search);
     const tabFromUrl = searchParams.get(queryParam);
     return tabFromUrl || defaultTab || items[0]?.value || '';
@@ -51,11 +53,12 @@ function Tab({
 
   const handleTabChange = (value: string, href?: string) => {
     setActiveTab(value);
+    // 커스텀 href가 있으면 해당 경로로 이동
     if (href) {
       navigate(href);
     } else {
       const searchParams = new URLSearchParams(location.search);
-      searchParams.set(queryParam, value);
+      searchParams.set(queryParam, value); // 설정 가능한 쿼리 매개변수 사용
       const newPath = `${basePath || location.pathname}?${searchParams.toString()}`;
       navigate(newPath, { replace: true });
     }
@@ -64,6 +67,7 @@ function Tab({
 
   return (
     <div className={cn('w-full', className)}>
+      {/* 탭 헤더 */}
       <div className="border-b border-border">
         <nav className="flex space-x-8" aria-label="탭 네비게이션">
           {items.map(item => {
@@ -74,7 +78,7 @@ function Tab({
                 key={item.id}
                 onClick={() => handleTabChange(item.value, item.href)}
                 className={cn(
-                  'whitespace-nowrap py-2 px-1 border-b-3 text-base font-bold transition-colors cursor-pointer',
+                  'whitespace-nowrap py-2 px-1 border-b-2 text-base font-bold transition-colors cursor-pointer',
                   isActive
                     ? 'border-primary text-primary'
                     : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted-foreground'
@@ -89,8 +93,9 @@ function Tab({
         </nav>
       </div>
 
+      {/* 탭 컨텐츠 */}
       {children && (
-        <div className="mt-8 space-y-4" role="tabpanel">
+        <div className="mt-4 space-y-4" role="tabpanel">
           {children}
         </div>
       )}
