@@ -57,64 +57,72 @@ function TaskStatusTab() {
             ))}
           </SelectContent>
         </Select>
-        <table className="w-full mt-2 border-2 border-border rounded-lg overflow-hidden">
-          <thead className="bg-muted text-muted-foreground border-b-2 border-border">
-            <tr>
-              <th className="px-4 py-2 whitespace-nowrap text-center">
-                과정명
-              </th>
-              <th className="px-4 py-2 whitespace-nowrap text-center">
-                담당자
-              </th>
-              <th className="px-4 py-2 whitespace-nowrap text-center">
-                오늘의 업무
-              </th>
-              <th className="px-4 py-2 whitespace-nowrap text-center">
-                미체크
-              </th>
-              <th className="px-4 py-2 whitespace-nowrap text-center">이슈</th>
-              <th className="px-4 py-2 whitespace-nowrap text-center">
-                누적 체크율
-              </th>
-              <th className="px-4 py-2 whitespace-nowrap text-center">
-                출퇴근
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredData.map(course => (
-              <tr
-                key={course.training_course}
-                className="border-t-1 border-border hover:bg-muted/10 transition-colors"
-              >
-                <td className="px-4 py-2 text-center">
-                  {course.training_course}
-                </td>
-                <td className="px-4 py-2 text-center">{course.manager_name}</td>
-                <td className="px-4 py-2 text-center">
-                  <Badge
-                    variant={course.daily_task ? 'default' : 'outline'}
-                    className="w-16 justify-center"
-                  >
-                    {course.daily_task ? '완료' : '미완료'}
-                  </Badge>
-                </td>
-                <td className="px-4 py-2 text-center">
-                  {course.unchecked_task}
-                </td>
-                <td className="px-4 py-2 text-center">{course.issue_task}</td>
-                <td className="px-4 py-2 text-center">{course.check_rate}%</td>
-                <td className="px-4 py-2 text-center text-blue-600 cursor-pointer">
-                  <Link
-                    to={`/bootcamp/${course.training_course}?tab=attendance`}
-                  >
-                    조회
-                  </Link>
-                </td>
+        <div className="border-2 border-border rounded-lg mt-2">
+          <table className="w-full border-collapse overflow-hidden shadow-sm`">
+            <thead className="bg-muted text-muted-foreground border-b-2 border-border">
+              <tr>
+                <th className="px-4 py-2 whitespace-nowrap text-center">
+                  과정명
+                </th>
+                <th className="px-4 py-2 whitespace-nowrap text-center">
+                  담당자
+                </th>
+                <th className="px-4 py-2 whitespace-nowrap text-center">
+                  오늘의 업무
+                </th>
+                <th className="px-4 py-2 whitespace-nowrap text-center">
+                  미체크
+                </th>
+                <th className="px-4 py-2 whitespace-nowrap text-center">
+                  이슈
+                </th>
+                <th className="px-4 py-2 whitespace-nowrap text-center">
+                  누적 체크율
+                </th>
+                <th className="px-4 py-2 whitespace-nowrap text-center">
+                  출퇴근
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredData.map(course => (
+                <tr
+                  key={course.training_course}
+                  className="border-t-1 border-border hover:bg-muted/10 transition-colors"
+                >
+                  <td className="px-4 py-2 text-center">
+                    {course.training_course}
+                  </td>
+                  <td className="px-4 py-2 text-center">
+                    {course.manager_name}
+                  </td>
+                  <td className="px-4 py-2 text-center">
+                    <Badge
+                      variant={course.daily_task ? 'success' : 'destructive'}
+                      className="w-16 justify-center"
+                    >
+                      {course.daily_task ? '완료' : '미완료'}
+                    </Badge>
+                  </td>
+                  <td className="px-4 py-2 text-center">
+                    {course.unchecked_task}
+                  </td>
+                  <td className="px-4 py-2 text-center">{course.issue_task}</td>
+                  <td className="px-4 py-2 text-center">
+                    {course.check_rate}%
+                  </td>
+                  <td className="px-4 py-2 text-center text-blue-600 cursor-pointer">
+                    <Link
+                      to={`/bootcamp/${course.training_course}?tab=attendance`}
+                    >
+                      조회
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </Card>
     </div>
   );

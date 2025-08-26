@@ -24,7 +24,7 @@ function BootcampIndicator() {
   };
 
   return (
-    <div className="bg-card border border-border rounded-lg p-3 mb-6">
+    <div className="border border-border rounded-lg p-3 mb-6 w-fit">
       <div className="flex items-center gap-3">
         <div className="flex items-center justify-center w-10 h-10 bg-primary/10 rounded-lg">
           {getIcon()}
