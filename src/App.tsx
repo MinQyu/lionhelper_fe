@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Dashboard from '@/pages/dashboard';
 import BootcampIndex from '@/pages/bootcamp';
 import BootcampOverview from '@/pages/bootcamp/overview';
-import BootcampDetail from '@/pages/bootcamp/[CourseId]';
+import BootcampDetail from '@/pages/bootcamp/[CourseName]';
 import Notice from '@/pages/notice';
 import Admin from '@/pages/admin';
 import Landing from './pages/Landing';
@@ -21,7 +21,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/bootcamp" element={<BootcampIndex />} />
           <Route path="/bootcamp/overview" element={<BootcampOverview />} />
-          <Route path="/bootcamp/:CourseId" element={<BootcampDetail />} />
+          <Route path="/bootcamp/:CourseName" element={<BootcampDetail />} />
           <Route path="/notice" element={<Notice />} />
           <Route path="/admin" element={<Admin />} />
         </Routes>

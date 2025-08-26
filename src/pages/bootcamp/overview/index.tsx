@@ -35,20 +35,13 @@ function BootcampOverview() {
         return <UncheckedTab />;
       case 'issues':
         return <IssuesTab />;
-      default:
-        return <TaskStatusTab />;
     }
   };
 
   return (
     <div className="space-y-6">
       <BootcampIndicator />
-      <Tab
-        items={tabItems}
-        defaultTab="task-status"
-        basePath="/bootcamp/overview"
-        queryParam="tab"
-      >
+      <Tab items={tabItems} basePath="/bootcamp/overview" queryParam="tab">
         {renderTabContent()}
       </Tab>
     </div>

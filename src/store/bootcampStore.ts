@@ -22,6 +22,7 @@ interface BootcampStore {
   updateCourse: (id: string, updates: Partial<Course>) => void;
   deleteCourse: (id: string) => void;
   getCourseById: (id: string) => Course | undefined;
+  getCourseByName: (name: string) => Course | undefined;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
 }
@@ -98,6 +99,11 @@ export const useBootcampStore = create<BootcampStore>((set, get) => ({
   getCourseById: id => {
     const state = get();
     return state.courses.find(course => course.id === id);
+  },
+
+  getCourseByName: name => {
+    const state = get();
+    return state.courses.find(course => course.training_course === name);
   },
 
   setLoading: loading => set({ isLoading: loading }),

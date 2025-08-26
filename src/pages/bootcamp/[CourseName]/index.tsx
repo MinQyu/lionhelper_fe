@@ -8,7 +8,7 @@ import IssuesTab from './IssuesTab';
 import { useSearchParams } from 'react-router-dom';
 
 function BootcampDetail() {
-  const { CourseId } = useParams<{ CourseId: string }>();
+  const { CourseName } = useParams<{ CourseName: string }>();
   const [searchParams] = useSearchParams();
   const activeTab = searchParams.get('tab') || 'daily-task';
 
@@ -45,8 +45,6 @@ function BootcampDetail() {
         return <IssuesTab />;
       case 'attendance':
         return <AttendanceTap />;
-      default:
-        return <DailyTaskTap />;
     }
   };
 
@@ -55,8 +53,7 @@ function BootcampDetail() {
       <BootcampIndicator />
       <Tab
         items={tabItems}
-        defaultTab="daily-task"
-        basePath={`/bootcamp/${CourseId}`}
+        basePath={`/bootcamp/${CourseName}`}
         queryParam="tab"
       >
         {renderTabContent()}

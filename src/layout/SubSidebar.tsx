@@ -45,7 +45,7 @@ const SubSidebar = ({
             {courses.map(course => (
               <li key={course.id}>
                 <Link
-                  to={`/bootcamp/${course.id}`}
+                  to={`/bootcamp/${course.training_course}`}
                   className={`block p-2 rounded-lg transition-colors hover:bg-menu-hover border ${
                     isActiveCourse(course.id)
                       ? 'bg-menu-active text-primary border-primary/20'

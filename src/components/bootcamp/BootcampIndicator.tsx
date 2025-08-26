@@ -3,11 +3,11 @@ import { ChevronRight, BarChart3 } from 'lucide-react';
 import { useBootcampStore } from '@/store';
 
 function BootcampIndicator() {
-  const { CourseId } = useParams<{ CourseId: string }>();
+  const { CourseName } = useParams<{ CourseName: string }>();
   const location = useLocation();
-  const getCourseById = useBootcampStore(state => state.getCourseById);
+  const getCourseByName = useBootcampStore(state => state.getCourseByName);
   const isOverviewPage = location.pathname.includes('/bootcamp/overview');
-  const currentCourse = CourseId ? getCourseById(CourseId) : null;
+  const currentCourse = CourseName ? getCourseByName(CourseName) : null;
 
   const getTitle = () => {
     if (isOverviewPage) {
