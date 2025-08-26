@@ -15,17 +15,16 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/uiguide" element={<UIGuide />} />
-      </Routes>
-      <Layout>
-        <Routes>
+
+        <Route element={<Layout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/bootcamp" element={<BootcampIndex />} />
           <Route path="/bootcamp/overview" element={<BootcampOverview />} />
           <Route path="/bootcamp/:CourseName" element={<BootcampDetail />} />
           <Route path="/notice" element={<Notice />} />
           <Route path="/admin" element={<Admin />} />
-        </Routes>
-      </Layout>
+        </Route>
+      </Routes>
     </BrowserRouter>
   );
 }

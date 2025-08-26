@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { BookOpen } from 'lucide-react';
 import { useBootcampStore } from '@/store';
 
@@ -8,17 +8,17 @@ interface SubSidebarProps {
   onMouseLeave: () => void;
 }
 
-const SubSidebar = ({
+function SubSidebar({
   isVisible,
   onMouseEnter,
   onMouseLeave,
-}: SubSidebarProps) => {
-  const location = useLocation();
-  const currentPath = location.pathname;
+}: SubSidebarProps) {
+  const { CourseName } = useParams<{ CourseName: string }>();
   const courses = useBootcampStore(state => state.courses);
 
-  const isActiveCourse = (courseId: string) =>
-    currentPath === `/bootcamp/${courseId}`;
+  const isActiveCourse = (courseName: string) => {
+    return CourseName === courseName;
+  };
 
   return (
     <div
@@ -47,7 +47,7 @@ const SubSidebar = ({
                 <Link
                   to={`/bootcamp/${course.training_course}`}
                   className={`block p-2 rounded-lg transition-colors hover:bg-menu-hover border ${
-                    isActiveCourse(course.id)
+                    isActiveCourse(course.training_course)
                       ? 'bg-menu-active text-primary border-primary/20'
                       : 'text-foreground border-transparent'
                   }`}
@@ -68,6 +68,6 @@ const SubSidebar = ({
       </div>
     </div>
   );
-};
+}
 
 export default SubSidebar;

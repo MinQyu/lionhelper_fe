@@ -1,8 +1,9 @@
 import { useState, useRef } from 'react';
+import { Outlet } from 'react-router-dom';
 import Sidebar from '@/layout/Sidebar';
 import SubSidebar from '@/layout/SubSidebar';
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function Layout() {
   const [isSubSidebarVisible, setIsSubSidebarVisible] = useState(false);
   const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -32,7 +33,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         onMouseEnter={handleSubSidebarShow}
         onMouseLeave={handleSubSidebarHide}
       />
-      <main className="flex-1 bg-background p-8 ml-56 px-32">{children}</main>
+      <main className="flex-1 bg-background p-8 ml-56 px-32">
+        <Outlet />
+      </main>
     </div>
   );
 }
