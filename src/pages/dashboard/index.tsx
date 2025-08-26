@@ -49,7 +49,6 @@ function Dashboard() {
         queryParam="course"
       >
         {taskData && <TaskStatusCard {...taskData} />}
-        {taskData && <TaskStatusCard {...taskData} />}
       </Tab>
     </div>
   );
