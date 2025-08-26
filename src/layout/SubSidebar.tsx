@@ -31,7 +31,7 @@ function SubSidebar({
       onMouseLeave={onMouseLeave}
     >
       <div className="p-4 h-full">
-        <div className="mb-6 pt-2">
+        <div className="mb-6 pt-2 pl-2.5">
           <h2 className="text-lg font-bold text-foreground">
             부트캠프 과정 목록
           </h2>
