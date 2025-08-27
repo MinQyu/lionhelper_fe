@@ -22,7 +22,7 @@ function SubSidebar({
 
   return (
     <div
-      className={`fixed left-56 top-0 h-screen bg-sidebar border-r border-border shadow-lg transition-all duration-200 ease-in-out z-50 ${
+      className={`fixed left-56 xl:left-64 top-0 h-screen bg-sidebar border-r border-border shadow-lg transition-all duration-200 ease-in-out z-50 ${
         isVisible
           ? 'translate-x-0 opacity-100'
           : '-translate-x-full opacity-0 pointer-events-none'
@@ -30,12 +30,12 @@ function SubSidebar({
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      <div className="p-4 h-full">
+      <div className="p-4 h-full xl:p-5">
         <div className="mb-6 pt-2 pl-2.5">
-          <h2 className="text-lg font-bold text-foreground">
+          <h2 className="text-lg xl:text-xl font-bold text-foreground">
             부트캠프 과정 목록
           </h2>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-sm xl:text-base text-muted-foreground mt-1">
             과정을 선택하세요
           </p>
         </div>
@@ -55,7 +55,7 @@ function SubSidebar({
                   <div className="flex items-start gap-2 pt-0.5">
                     <BookOpen className="w-5 h-5 flex-shrink-0" />
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-sm leading-tight">
+                      <h3 className="font-semibold text-sm xl:text-base leading-tight">
                         {course.training_course}
                       </h3>
                     </div>

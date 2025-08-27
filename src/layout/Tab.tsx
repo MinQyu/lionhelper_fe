@@ -78,7 +78,7 @@ function Tab({
                 key={item.id}
                 onClick={() => handleTabChange(item.value, item.href)}
                 className={cn(
-                  'whitespace-nowrap py-2 px-1 border-b-2 text-base font-bold transition-colors cursor-pointer',
+                  'whitespace-nowrap py-2 px-1 border-b-2 text-lg xl:text-xl font-bold transition-colors cursor-pointer',
                   isActive
                     ? 'border-primary text-primary'
                     : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted-foreground'
@@ -95,7 +95,7 @@ function Tab({
 
       {/* 탭 컨텐츠 */}
       {children && (
-        <div className="mt-4 space-y-4" role="tabpanel">
+        <div className="mt-6 space-y-4 xl:mt-12 xl:space-y-6" role="tabpanel">
           {children}
         </div>
       )}

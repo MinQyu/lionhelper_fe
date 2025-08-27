@@ -33,7 +33,7 @@ export default function Layout() {
         onMouseEnter={handleSubSidebarShow}
         onMouseLeave={handleSubSidebarHide}
       />
-      <main className="flex-1 bg-background p-8 ml-56 px-32">
+      <main className="flex-1 bg-background py-8 ml-56 px-32 xl:px-80 xl:py-12">
         <Outlet />
       </main>
     </div>

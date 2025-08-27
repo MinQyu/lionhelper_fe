@@ -1,6 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap');
 @import 'tailwindcss';
 
-/* 멋쟁이사자처럼 테마 컬러 */
+/* 테일윈드 브레이크포인트 커스터마이징 */
 @theme {
   --color-primary: #fc7a3d;
   --color-primary-foreground: #ffffff;
@@ -25,12 +26,16 @@
   --color-menu-active: #ffe3ce;
   --color-menu-hover: #fff0e4;
   --radius: 0.75rem;
+
+  /* 브레이크포인트 커스터마이징 */
+  --breakpoint-xl: 1921px;
 }
 
 @layer base {
   body {
     @apply bg-background text-foreground;
-    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+    font-family:
+      'Noto Sans KR', system-ui, Avenir, Helvetica, Arial, sans-serif;
     line-height: 1.5;
     font-weight: 400;
     font-synthesis: none;
@@ -38,38 +43,11 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-}
 
-@layer components {
-  /* 아코디언 애니메이션 스타일 */
-  .accordion-content {
-    overflow: hidden;
-    transition:
-      max-height 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-      opacity 0.15s ease-out;
-  }
-
-  .accordion-content.collapsed {
-    max-height: 0;
-    opacity: 0;
-  }
-
-  .accordion-content.expanded {
-    max-height: 200px; /* 충분한 높이 설정 */
-    opacity: 1;
-  }
-
-  /* 체브론 아이콘 회전 애니메이션 */
-  .chevron-icon {
-    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .chevron-icon.rotated {
-    transform: rotate(180deg);
-  }
-
-  /* 버튼 호버/클릭 반응성 개선 */
-  .accordion-button {
-    transition: background-color 0.1s ease-out;
+  /* 1921px 이상의 화면에서 기본 폰트 크기 증가 */
+  @media (min-width: 1921px) {
+    body {
+      font-size: 1.125rem;
+    }
   }
 }

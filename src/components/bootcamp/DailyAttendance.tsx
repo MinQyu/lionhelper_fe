@@ -58,10 +58,14 @@ function DailyAttendance() {
 
   return (
     <Card className="flex flex-col gap-4">
-      <div className="flex flex-row gap-2 items-center">
+      <div className="flex flex-row gap-2 items-center xl:gap-3">
         <h3 className="font-bold">출퇴근 기록</h3>
         {!submitted && (
-          <Button className="w-6 h-6 p-1" variant="outline" onClick={addRecord}>
+          <Button
+            className="w-6 h-6 p-1 xl:w-7 xl:h-7 xl:p-2"
+            variant="outline"
+            onClick={addRecord}
+          >
             <PlusIcon size={14} />
           </Button>
         )}
@@ -71,7 +75,7 @@ function DailyAttendance() {
         {records.map((rec, index) => (
           <div
             key={index}
-            className="flex flex-row gap-2 p-2 border-1 border-muted rounded-lg items-center"
+            className="flex flex-row gap-2 p-2 border-1 border-border rounded-lg items-center xl:gap-3 xl:p-3 xl:text-lg"
           >
             <div className="flex flex-row gap-2 items-center flex-1">
               <Select
@@ -93,7 +97,7 @@ function DailyAttendance() {
                 placeholder="이름"
                 value={rec.name}
                 onChange={e => handleChange(index, 'name', e.target.value)}
-                className="w-32 text-center"
+                className="w-32 text-center xl:w-40 xl:text-lg"
               />
               <Input
                 disabled={submitted}
@@ -101,7 +105,7 @@ function DailyAttendance() {
                 placeholder="출근시간"
                 value={rec.startTime}
                 onChange={e => handleChange(index, 'startTime', e.target.value)}
-                className="w-36 text-center"
+                className="w-36 text-center xl:w-40 xl:text-lg"
               />
               <Input
                 disabled={submitted}
@@ -109,14 +113,14 @@ function DailyAttendance() {
                 placeholder="퇴근시간"
                 value={rec.endTime}
                 onChange={e => handleChange(index, 'endTime', e.target.value)}
-                className="w-36 text-center"
+                className="w-36 text-center xl:w-40 xl:text-lg"
               />
             </div>
 
             {!submitted && (
               <Button
                 variant="destructive"
-                className="w-6 h-6 p-1"
+                className="w-6 h-6 p-1 mr-2 xl:w-7 xl:h-7 xl:p-2 xl:mr-3"
                 onClick={() => removeRecord(index)}
               >
                 <MinusIcon size={14} />
@@ -128,7 +132,7 @@ function DailyAttendance() {
 
       <div className="flex justify-end">
         <Button
-          className="w-20 font-bold"
+          className="w-20 font-semibold"
           onClick={handleSubmit}
           disabled={submitted}
         >

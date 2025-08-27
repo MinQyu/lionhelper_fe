@@ -30,8 +30,10 @@ function BootcampIndicator() {
           {getIcon()}
         </div>
         <div>
-          <h1 className="text-lg font-bold text-foreground">{getTitle()}</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className="text-lg xl:text-xl font-bold text-foreground">
+            {getTitle()}
+          </h1>
+          <p className="text-sm xl:text-base text-muted-foreground">
             {isOverviewPage
               ? '진행중인 부트캠프의 전체 현황입니다'
               : `${currentCourse?.start_date} ~ ${currentCourse?.end_date}`}

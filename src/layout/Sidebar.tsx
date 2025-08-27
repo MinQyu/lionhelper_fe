@@ -12,7 +12,7 @@ interface MenuItem {
 // 공통 스타일 생성 함수
 const getMenuItemStyles = (isActive: boolean, isSubItem = false) => {
   const baseStyles =
-    'flex items-center gap-3 hover:bg-menu-hover rounded-lg transition-colors';
+    'flex items-center gap-3 hover:bg-menu-hover rounded-lg transition-colors xl:gap-4';
   const paddingStyles = isSubItem ? 'p-2 pl-6' : 'p-2';
   const activeStyles = isActive
     ? 'text-primary bg-menu-active'
@@ -39,7 +39,7 @@ const MenuItemComponent = ({
     onMouseEnter={onMouseEnter}
     onMouseLeave={onMouseLeave}
   >
-    <item.icon className="w-5 h-5" />
+    <item.icon className="w-5 h-5 xl:w-6 xl:h-6" />
     <span className="font-bold">{item.title}</span>
   </Link>
 );
@@ -81,7 +81,6 @@ function Sidebar({ onCourseHover, onCourseLeave }: SidebarProps = {}) {
   ];
 
   const isActiveMenu = (href: string) => {
-    // 부트캠프 관리는 /bootcamp로 시작하는 모든 경로에서 활성화
     if (href === '/bootcamp/overview') {
       return currentPath.startsWith('/bootcamp');
     }
@@ -89,8 +88,8 @@ function Sidebar({ onCourseHover, onCourseLeave }: SidebarProps = {}) {
   };
 
   return (
-    <aside className="w-56 fixed bg-sidebar border-r border-border h-screen shadow-sm flex flex-col text-lg z-100">
-      <div className="p-4 flex-1">
+    <aside className="w-56 xl:w-64 fixed bg-sidebar border-r border-border h-screen shadow-sm flex flex-col text-lg xl:text-xl z-100">
+      <div className="p-4 flex-1 xl:p-5">
         <div className="mt-2 mb-8">
           <Link to="/dashboard" className="block">
             <img
