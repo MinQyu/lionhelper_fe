@@ -70,7 +70,7 @@ function TaskStatusCard({
   const periodicTasks = getPeriodicTask(start_date, end_date);
 
   return (
-    <Card className="py-3">
+    <Card>
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <h4 className="font-semibold">업무 현황</h4>
