@@ -57,7 +57,7 @@ function DailyAttendance() {
   };
 
   return (
-    <Card className="flex flex-col gap-2">
+    <Card className="flex flex-col gap-4">
       <div className="flex flex-row gap-2 items-center">
         <h3 className="font-bold">출퇴근 기록</h3>
         {!submitted && (
@@ -73,40 +73,45 @@ function DailyAttendance() {
             key={index}
             className="flex flex-row gap-2 p-2 border-1 border-muted rounded-lg items-center"
           >
-            <Select
-              disabled={submitted}
-              value={rec.role}
-              onValueChange={value => handleChange(index, 'role', value)}
-            >
-              <SelectTrigger className="w-30">
-                <SelectValue placeholder="직급" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="주강사">주강사</SelectItem>
-                <SelectItem value="보조강사">보조강사</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="flex flex-row gap-2 items-center flex-1">
+              <Select
+                disabled={submitted}
+                value={rec.role}
+                onValueChange={value => handleChange(index, 'role', value)}
+              >
+                <SelectTrigger className="w-32">
+                  <SelectValue placeholder="직급" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="주강사">주강사</SelectItem>
+                  <SelectItem value="보조강사">보조강사</SelectItem>
+                </SelectContent>
+              </Select>
 
-            <Input
-              disabled={submitted}
-              placeholder="이름"
-              value={rec.name}
-              onChange={e => handleChange(index, 'name', e.target.value)}
-            />
-            <Input
-              disabled={submitted}
-              type="time"
-              placeholder="출근시간"
-              value={rec.startTime}
-              onChange={e => handleChange(index, 'startTime', e.target.value)}
-            />
-            <Input
-              disabled={submitted}
-              type="time"
-              placeholder="퇴근시간"
-              value={rec.endTime}
-              onChange={e => handleChange(index, 'endTime', e.target.value)}
-            />
+              <Input
+                disabled={submitted}
+                placeholder="이름"
+                value={rec.name}
+                onChange={e => handleChange(index, 'name', e.target.value)}
+                className="w-32 text-center"
+              />
+              <Input
+                disabled={submitted}
+                type="time"
+                placeholder="출근시간"
+                value={rec.startTime}
+                onChange={e => handleChange(index, 'startTime', e.target.value)}
+                className="w-36 text-center"
+              />
+              <Input
+                disabled={submitted}
+                type="time"
+                placeholder="퇴근시간"
+                value={rec.endTime}
+                onChange={e => handleChange(index, 'endTime', e.target.value)}
+                className="w-36 text-center"
+              />
+            </div>
 
             {!submitted && (
               <Button
