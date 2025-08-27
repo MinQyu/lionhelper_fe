@@ -1,5 +1,11 @@
+import DailyAttendance from '@/components/bootcamp/DailyAttendance';
+
 function DailyTaskTab() {
-  return <div>DailyTask</div>;
+  return (
+    <div>
+      <DailyAttendance />
+    </div>
+  );
 }
 
 export default DailyTaskTab;
