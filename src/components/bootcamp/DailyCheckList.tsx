@@ -117,6 +117,15 @@ function DailyCheckList() {
   };
 
   const handleSubmit = async () => {
+    // 모든 항목이 체크되었는지 확인
+    const totalItems = mockData.length;
+    const checkedItems = Object.keys(selectedValues).length;
+
+    if (checkedItems < totalItems) {
+      alert('모든 체크리스트 항목을 작성해주세요.');
+      return;
+    }
+
     const { checkList, unchecked } = prepareTaskCheckList();
     console.log('체크리스트 데이터:', checkList);
     console.log('미체크 항목:', unchecked);
@@ -146,6 +155,10 @@ function DailyCheckList() {
     // }
   };
 
+  const noCheckedCount = Object.values(selectedValues).filter(
+    value => value === 'false'
+  ).length;
+
   return (
     <Card>
       <h3 className="font-bold pb-2">데일리 체크리스트</h3>
@@ -167,6 +180,11 @@ function DailyCheckList() {
         </div>
       ))}
       <div className="flex justify-end mt-4">
+        <div className="flex items-center gap-4 mr-4">
+          <p className="text-sm xl:text-base text-muted-foreground">
+            미완료: {noCheckedCount}개
+          </p>
+        </div>
         <Button className="w-20 font-semibold" onClick={handleSubmit}>
           저장
         </Button>

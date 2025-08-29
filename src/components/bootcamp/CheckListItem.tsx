@@ -38,8 +38,10 @@ function CheckListItem({
           >
             <Info className="w-4 h-4 text-muted-foreground hover:text-foreground cursor-help transition-colors" />
             {isHovered && (
-              <div className="absolute left-6 top-0 z-50 w-80 p-3 bg-popover border border-border rounded-md shadow-lg">
-                <p className="text-sm">{item.guide}</p>
+              <div className="absolute left-6 top-0 z-50 p-3 bg-popover border border-border rounded-md shadow-lg min-w-max max-w-xs">
+                <p className="text-sm xl:text-base text-center whitespace-normal">
+                  {item.guide}
+                </p>
               </div>
             )}
           </div>
