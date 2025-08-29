@@ -1,0 +1,4817 @@
+{
+  "definitions": {},
+  "info": {
+    "contact": {
+      "email": "support@example.com",
+      "name": "API Support"
+    },
+    "description": "\n            ## 업무 관리 대시보드 API 문서\n            \n            이 API는 교육 과정 관리, 출퇴근 기록, 공지사항, 이슈 관리 등의 기능을 제공합니다.\n            \n            ### 주요 기능\n            - **인증 관리**: 로그인/로그아웃, 사용자 정보 조회\n            - **공지사항**: 공지사항 CRUD, 읽음 표시, 페이지네이션 및 필터링\n            - **업무 체크리스트**: 정기/비정기 업무 체크리스트 관리\n            - **이슈 관리**: 이슈 등록, 댓글, 해결 처리\n            - **출퇴근 기록**: 출퇴근 시간 기록 및 조회, 월별 필터링 및 페이지네이션\n            - **훈련 과정**: 훈련 과정 정보 관리\n            - **관리자 기능**: 체크율 통계, 미체크 항목 관리\n            - **알림**: Slack 연동 알림 시스템\n            \n            ### 페이지네이션\n            목록 조회 API는 페이지네이션을 지원합니다:\n            - `page`: 페이지 번호 (기본값: 1)\n            - `per_page`: 페이지당 항목 수 (기본값: 10, 최대: 100)\n            \n            페이지네이션 응답 형식:\n            ```json\n            {\n                \"success\": true,\n                \"message\": \"조회 성공\",\n                \"data\": {\n                    \"items\": [...],\n                    \"pagination\": {\n                        \"page\": 1,\n                        \"per_page\": 10,\n                        \"total_count\": 25,\n                        \"total_pages\": 3,\n                        \"has_next\": true,\n                        \"has_prev\": false\n                    }\n                },\n                \"status_code\": 200\n            }\n            ```\n            \n            ### 필터링 기능\n            - **공지사항**: 유형별 필터링, 제목/내용 검색\n            - **출퇴근 기록**: 년도/월별 필터링, 강사별 필터링, 훈련과정별 필터링\n            \n            ### 인증\n            대부분의 API는 세션 기반 인증을 사용합니다. 로그인 후 세션 쿠키가 자동으로 설정됩니다.\n            \n            ### 응답 형식\n            모든 API는 다음과 같은 통일된 응답 형식을 사용합니다:\n            ```json\n            {\n                \"success\": true,\n                \"message\": \"성공 메시지\",\n                \"data\": { ... },\n                \"status_code\": 200\n            }\n            ```\n            \n            ### 에러 처리\n            에러 발생 시 다음과 같은 형식으로 응답합니다:\n            ```json\n            {\n                \"success\": false,\n                \"message\": \"에러 메시지\",\n                \"status_code\": 400\n            }\n            ```\n            ",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    },
+    "title": "업무 관리 대시보드 API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "description": "API 서버의 기본 정보를 조회합니다.\n\n### 사용 예시\n```javascript\nconst response = await fetch('/', {\n  method: 'GET'\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "responses": {
+          "200": {
+            "description": "API 서버 정보 반환",
+            "examples": {
+              "application/json": {
+                "summary": "API 서버 정보 조회 성공 응답",
+                "value": {
+                  "data": {
+                    "status": "ok",
+                    "version": "1.0.0"
+                  },
+                  "message": "API 서버가 정상적으로 실행 중입니다.",
+                  "status_code": 200,
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "properties": {
+                    "status": {
+                      "example": "ok",
+                      "type": "string"
+                    },
+                    "version": {
+                      "example": "1.0.0",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "message": {
+                  "example": "API 서버가 정상적으로 실행 중입니다.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 200,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "API 서버 루트 경로",
+        "tags": ["System"]
+      }
+    },
+    "/admin": {
+      "get": {
+        "description": "사용자가 로그인한 경우 관리자 대시보드 (admin.html)을 반환합니다.\n로그인하지 않은 경우 로그인 페이지로 이동됩니다.\n\n### 사용 예시\n```javascript\n// 브라우저에서 직접 접근\nwindow.location.href = '/admin';\n\n// 또는 fetch로 HTML 내용 가져오기\nconst response = await fetch('/admin', {\n  method: 'GET',\n  credentials: 'include'\n});\n\nif (response.redirected) {\n  // 로그인 페이지로 리다이렉트된 경우\n  window.location.href = response.url;\n} else {\n  const html = await response.text();\n  document.body.innerHTML = html;\n}\n```\n",
+        "responses": {
+          "200": {
+            "content": {
+              "text/html": {
+                "example": "<!DOCTYPE html>\n<html>\n<head>\n  <title>관리자 대시보드</title>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n</head>\n<body>\n  <h1>관리자 대시보드</h1>\n  <div id=\"admin-dashboard-content\">\n    <!-- 관리자 대시보드 내용 -->\n  </div>\n</body>\n</html>\n",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "관리자 대시보드 HTML 페이지 반환"
+          },
+          "302": {
+            "description": "로그인되지 않은 경우 로그인 페이지로 리다이렉트",
+            "headers": {
+              "Content-Type": {
+                "description": "응답 콘텐츠 타입",
+                "schema": {
+                  "example": "text/html; charset=utf-8",
+                  "type": "string"
+                }
+              },
+              "Location": {
+                "description": "리다이렉트 URL",
+                "schema": {
+                  "example": "/login",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "summary": "관리자 대시보드 API",
+        "tags": ["Views"]
+      }
+    },
+    "/admin/task_status": {
+      "get": {
+        "description": "특정 날짜의 훈련 과정별 업무 체크리스트 체크율을 조회합니다.\n\n### 사용 예시\n```javascript\n// 당일 체크율 조회\nconst response = await fetch('/admin/task_status', {\n  method: 'GET',\n  credentials: 'include'\n});\n\n// 특정 날짜 체크율 조회\nconst response = await fetch('/admin/task_status?date=2025-01-15', {\n  method: 'GET',\n  credentials: 'include'\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "parameters": [
+          {
+            "description": "조회할 날짜 (YYYY-MM-DD 형식, 기본값은 당일)",
+            "example": "2025-01-15",
+            "in": "query",
+            "name": "date",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "훈련 과정별 체크율 데이터를 반환",
+            "examples": {
+              "application/json": {
+                "summary": "체크율 조회 성공 응답",
+                "value": {
+                  "data": {
+                    "task_status": [
+                      {
+                        "check_rate": "80.0%",
+                        "dept": "TechSol",
+                        "training_course": "데이터 분석 스쿨 4기"
+                      },
+                      {
+                        "check_rate": "83.3%",
+                        "dept": "DevTeam",
+                        "training_course": "웹 개발 스쿨 3기"
+                      }
+                    ],
+                    "timestamp": "2025-01-15T10:30:00",
+                    "total_courses": 2
+                  },
+                  "message": "업무 체크 상태 조회 성공",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "properties": {
+                    "task_status": {
+                      "items": {
+                        "properties": {
+                          "check_rate": {
+                            "example": "80.0%",
+                            "type": "string"
+                          },
+                          "dept": {
+                            "example": "TechSol",
+                            "type": "string"
+                          },
+                          "training_course": {
+                            "example": "데이터 분석 스쿨 4기",
+                            "type": "string"
+                          }
+                        },
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "timestamp": {
+                      "example": "2025-01-15T10:30:00",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "total_courses": {
+                      "example": 5,
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object"
+                },
+                "message": {
+                  "example": "업무 체크 상태 조회 성공",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "잘못된 날짜 형식",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "잘못된 날짜 형식입니다. YYYY-MM-DD 형식으로 입력해주세요.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 400,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "체크 상태 조회 실패",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "업무 체크 상태 조회 실패",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "훈련 과정별 업무 체크리스트 체크율 조회 API",
+        "tags": ["Admin"]
+      }
+    },
+    "/admin/task_status_combined": {
+      "get": {
+        "description": "각 훈련 과정별로 담당자, 당일 체크율, 전날 체크율, 전체 체크율을 조회합니다.\n종료된 지 1주일 이내의 과정만 포함됩니다.\n\n### 사용 예시\n```javascript\nconst response = await fetch('/admin/task_status_combined', {\n  method: 'GET',\n  credentials: 'include'\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "responses": {
+          "200": {
+            "description": "훈련 과정별 체크율 데이터 반환",
+            "examples": {
+              "application/json": {
+                "summary": "통합 체크율 조회 성공 응답",
+                "value": {
+                  "data": [
+                    {
+                      "daily_check_rate": "80.0%",
+                      "dept": "TechSol",
+                      "manager_name": "홍길동",
+                      "overall_check_rate": "78.5%",
+                      "training_course": "데이터 분석 스쿨 4기",
+                      "yesterday_check_rate": "75.0%"
+                    },
+                    {
+                      "daily_check_rate": "90.0%",
+                      "dept": "DevTeam",
+                      "manager_name": "김철수",
+                      "overall_check_rate": "87.5%",
+                      "training_course": "웹 개발 스쿨 3기",
+                      "yesterday_check_rate": "85.0%"
+                    }
+                  ],
+                  "message": "통합 업무 체크 상태 조회 성공",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "items": {
+                    "properties": {
+                      "daily_check_rate": {
+                        "example": "80.0%",
+                        "type": "string"
+                      },
+                      "dept": {
+                        "example": "TechSol",
+                        "type": "string"
+                      },
+                      "manager_name": {
+                        "example": "홍길동",
+                        "type": "string"
+                      },
+                      "overall_check_rate": {
+                        "example": "78.5%",
+                        "type": "string"
+                      },
+                      "training_course": {
+                        "example": "데이터 분석 스쿨 4기",
+                        "type": "string"
+                      },
+                      "yesterday_check_rate": {
+                        "example": "75.0%",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "message": {
+                  "example": "통합 업무 체크 상태 조회 성공",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "체크 상태 조회 실패",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "통합 업무 체크 상태 조회 실패",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "훈련 과정별 통합 체크율 조회 API",
+        "tags": ["Admin"]
+      }
+    },
+    "/admin/task_status_overall": {
+      "get": {
+        "description": "모든 훈련 과정의 전체 체크율을 조회합니다.\n\n### 사용 예시\n```javascript\nconst response = await fetch('/admin/task_status_overall', {\n  method: 'GET',\n  credentials: 'include'\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "responses": {
+          "200": {
+            "description": "훈련 과정별 전체 체크율 데이터 반환",
+            "examples": {
+              "application/json": {
+                "summary": "전체 체크율 조회 성공 응답",
+                "value": {
+                  "data": [
+                    {
+                      "check_rate": "80.0%",
+                      "dept": "TechSol",
+                      "training_course": "데이터 분석 스쿨 4기"
+                    },
+                    {
+                      "check_rate": "90.0%",
+                      "dept": "DevTeam",
+                      "training_course": "웹 개발 스쿨 3기"
+                    }
+                  ],
+                  "message": "전체 업무 체크 상태 조회 성공",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "items": {
+                    "properties": {
+                      "check_rate": {
+                        "example": "80.0%",
+                        "type": "string"
+                      },
+                      "dept": {
+                        "example": "TechSol",
+                        "type": "string"
+                      },
+                      "training_course": {
+                        "example": "데이터 분석 스쿨 4기",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "message": {
+                  "example": "전체 업무 체크 상태 조회 성공",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "체크율 조회 실패",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "전체 업무 체크 상태 조회 실패",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "훈련 과정별 전체 체크율 조회 API",
+        "tags": ["Admin"]
+      }
+    },
+    "/attendance": {
+      "get": {
+        "description": "출퇴근 기록을 월별로 필터링하고 페이지네이션을 통해 조회하거나 파일로 다운로드합니다.\n\n### 사용 예시\n```javascript\n// 기본 조회 (최신 10개)\nconst response = await fetch('/attendance', {\n  method: 'GET',\n  credentials: 'include'\n});\n\n// 특정 월 조회\nconst response = await fetch('/attendance?year=2025&month=1', {\n  method: 'GET',\n  credentials: 'include'\n});\n\n// 페이지네이션 적용\nconst response = await fetch('/attendance?year=2025&month=1&page=2&per_page=5', {\n  method: 'GET',\n  credentials: 'include'\n});\n\n// 강사별 필터링\nconst response = await fetch('/attendance?instructor=1', {\n  method: 'GET',\n  credentials: 'include'\n});\n\n// Excel 파일로 다운로드\nconst response = await fetch('/attendance?format=excel&year=2025&month=1', {\n  method: 'GET',\n  credentials: 'include'\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "parameters": [
+          {
+            "description": "페이지 번호 (기본값: 1)",
+            "example": 1,
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "description": "페이지당 항목 수 (기본값: 10, 최대: 100)",
+            "example": 10,
+            "in": "query",
+            "name": "per_page",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "description": "조회할 년도",
+            "example": 2025,
+            "in": "query",
+            "name": "year",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "description": "조회할 월 (1-12)",
+            "example": 1,
+            "in": "query",
+            "name": "month",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "description": "강사 ID 필터",
+            "example": "1",
+            "in": "query",
+            "name": "instructor",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "훈련 과정명 필터",
+            "example": "데이터 분석 스쿨 4기",
+            "in": "query",
+            "name": "training_course",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "강사명 또는 훈련과정명 검색",
+            "example": "홍길동",
+            "in": "query",
+            "name": "search",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "excel 형식으로 다운로드 (기본값 JSON 반환)",
+            "example": "excel",
+            "in": "query",
+            "name": "format",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "조회할 레코드 개수 제한 (페이지네이션 무시)",
+            "example": 10,
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "출퇴근 기록 데이터와 페이지네이션 정보 반환 또는 파일 다운로드",
+            "examples": {
+              "application/json": {
+                "summary": "출퇴근 기록 조회 성공 응답",
+                "value": {
+                  "data": {
+                    "items": [
+                      {
+                        "check_in_time": "09:00",
+                        "check_out_time": "18:00",
+                        "daily_log": true,
+                        "date": "2025-01-15",
+                        "id": 1,
+                        "instructor": "1",
+                        "instructor_name": "홍길동",
+                        "training_course": "데이터 분석 스쿨 4기"
+                      },
+                      {
+                        "check_in_time": "08:30",
+                        "check_out_time": "17:30",
+                        "daily_log": false,
+                        "date": "2025-01-14",
+                        "id": 2,
+                        "instructor": "2",
+                        "instructor_name": "김철수",
+                        "training_course": "데이터 분석 스쿨 4기"
+                      }
+                    ],
+                    "pagination": {
+                      "has_next": true,
+                      "has_prev": false,
+                      "page": 1,
+                      "per_page": 10,
+                      "total_count": 25,
+                      "total_pages": 3
+                    }
+                  },
+                  "message": "출퇴근 기록 조회 성공",
+                  "success": true
+                }
+              }
+            },
+            "headers": {
+              "Content-Disposition": {
+                "description": "파일 다운로드 시 헤더",
+                "schema": {
+                  "example": "attachment; filename=출퇴근_기록.xlsx",
+                  "type": "string"
+                }
+              },
+              "Content-Type": {
+                "description": "파일 타입",
+                "schema": {
+                  "example": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                  "type": "string"
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "properties": {
+                    "items": {
+                      "items": {
+                        "properties": {
+                          "check_in_time": {
+                            "example": "09:00",
+                            "type": "string"
+                          },
+                          "check_out_time": {
+                            "example": "18:00",
+                            "type": "string"
+                          },
+                          "daily_log": {
+                            "example": true,
+                            "type": "boolean"
+                          },
+                          "date": {
+                            "example": "2025-01-15",
+                            "format": "date",
+                            "type": "string"
+                          },
+                          "id": {
+                            "example": 1,
+                            "type": "integer"
+                          },
+                          "instructor": {
+                            "example": "1",
+                            "type": "string"
+                          },
+                          "instructor_name": {
+                            "example": "홍길동",
+                            "type": "string"
+                          },
+                          "training_course": {
+                            "example": "데이터 분석 스쿨 4기",
+                            "type": "string"
+                          }
+                        },
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "pagination": {
+                      "properties": {
+                        "has_next": {
+                          "example": true,
+                          "type": "boolean"
+                        },
+                        "has_prev": {
+                          "example": false,
+                          "type": "boolean"
+                        },
+                        "page": {
+                          "example": 1,
+                          "type": "integer"
+                        },
+                        "per_page": {
+                          "example": 10,
+                          "type": "integer"
+                        },
+                        "total_count": {
+                          "example": 25,
+                          "type": "integer"
+                        },
+                        "total_pages": {
+                          "example": 3,
+                          "type": "integer"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
+                },
+                "message": {
+                  "example": "출퇴근 기록 조회 성공",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "잘못된 파라미터",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "잘못된 월 값입니다.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 400,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "데이터 조회 실패",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "출퇴근 기록 조회 실패",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "출퇴근 기록 조회 API (월별 필터링 및 페이지네이션 지원)",
+        "tags": ["Attendance"]
+      },
+      "post": {
+        "description": "새로운 출퇴근 기록을 저장합니다.\n\n### 사용 예시\n```javascript\nconst response = await fetch('/attendance', {\n  method: 'POST',\n  headers: {\n    'Content-Type': 'application/json',\n  },\n  credentials: 'include',\n  body: JSON.stringify({\n    date: '2025-01-15',\n    instructor: '1',\n    instructor_name: '홍길동',\n    training_course: '데이터 분석 스쿨 4기',\n    check_in_time: '09:00',\n    check_out_time: '18:00',\n    daily_log: true\n  })\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "check_in_time": {
+                  "description": "출근 시간 (HH:MM 형식)",
+                  "example": "09:00",
+                  "type": "string"
+                },
+                "check_out_time": {
+                  "description": "퇴근 시간 (HH:MM 형식)",
+                  "example": "18:00",
+                  "type": "string"
+                },
+                "daily_log": {
+                  "description": "일일 로그 작성 여부",
+                  "example": true,
+                  "type": "boolean"
+                },
+                "date": {
+                  "description": "출퇴근 날짜",
+                  "example": "2025-01-15",
+                  "format": "date",
+                  "type": "string"
+                },
+                "instructor": {
+                  "description": "강사 ID",
+                  "example": "1",
+                  "type": "string"
+                },
+                "instructor_name": {
+                  "description": "강사명",
+                  "example": "홍길동",
+                  "type": "string"
+                },
+                "training_course": {
+                  "description": "훈련 과정명",
+                  "example": "데이터 분석 스쿨 4기",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "date",
+                "instructor",
+                "instructor_name",
+                "training_course",
+                "check_in_time",
+                "check_out_time"
+              ],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "출퇴근 기록 저장 성공",
+            "examples": {
+              "application/json": {
+                "summary": "출퇴근 기록 저장 성공 응답",
+                "value": {
+                  "data": {
+                    "check_in_time": "09:00",
+                    "check_out_time": "18:00",
+                    "daily_log": true,
+                    "date": "2025-01-15",
+                    "id": 1,
+                    "instructor": "1",
+                    "instructor_name": "홍길동",
+                    "training_course": "데이터 분석 스쿨 4기"
+                  },
+                  "message": "출퇴근 기록 저장 성공!",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "properties": {
+                    "check_in_time": {
+                      "example": "09:00",
+                      "type": "string"
+                    },
+                    "check_out_time": {
+                      "example": "18:00",
+                      "type": "string"
+                    },
+                    "daily_log": {
+                      "example": true,
+                      "type": "boolean"
+                    },
+                    "date": {
+                      "example": "2025-01-15",
+                      "format": "date",
+                      "type": "string"
+                    },
+                    "id": {
+                      "example": 1,
+                      "type": "integer"
+                    },
+                    "instructor": {
+                      "example": "1",
+                      "type": "string"
+                    },
+                    "instructor_name": {
+                      "example": "홍길동",
+                      "type": "string"
+                    },
+                    "training_course": {
+                      "example": "데이터 분석 스쿨 4기",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "message": {
+                  "example": "출퇴근 기록 저장 성공!",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "필수 데이터 누락",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "날짜, 강사 정보, 훈련 과정, 출퇴근 시간은 필수 입력 항목입니다.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 400,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "출퇴근 기록 저장 실패",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "출퇴근 기록 저장 실패",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "출퇴근 기록 저장 API",
+        "tags": ["Attendance"]
+      }
+    },
+    "/front_for_pro": {
+      "get": {
+        "description": "사용자가 로그인한 경우 대시보드 페이지 (front_for_pro.html)을 반환합니다.\n로그인하지 않은 경우 로그인 페이지로 이동됩니다.\n\n### 사용 예시\n```javascript\n// 브라우저에서 직접 접근\nwindow.location.href = '/front_for_pro';\n\n// 또는 fetch로 HTML 내용 가져오기\nconst response = await fetch('/front_for_pro', {\n  method: 'GET',\n  credentials: 'include'\n});\n\nif (response.redirected) {\n  // 로그인 페이지로 리다이렉트된 경우\n  window.location.href = response.url;\n} else {\n  const html = await response.text();\n  document.body.innerHTML = html;\n}\n```\n",
+        "responses": {
+          "200": {
+            "content": {
+              "text/html": {
+                "example": "<!DOCTYPE html>\n<html>\n<head>\n  <title>업무 관리 대시보드</title>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n</head>\n<body>\n  <h1>업무 관리 대시보드</h1>\n  <div id=\"dashboard-content\">\n    <!-- 대시보드 내용 -->\n  </div>\n</body>\n</html>\n",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "대시보드 HTML 페이지 반환"
+          },
+          "302": {
+            "description": "로그인되지 않은 경우 로그인 페이지로 리다이렉트",
+            "headers": {
+              "Content-Type": {
+                "description": "응답 콘텐츠 타입",
+                "schema": {
+                  "example": "text/html; charset=utf-8",
+                  "type": "string"
+                }
+              },
+              "Location": {
+                "description": "리다이렉트 URL",
+                "schema": {
+                  "example": "/login",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "summary": "프론트엔드 개발자용 대시보드 API",
+        "tags": ["Views"]
+      }
+    },
+    "/healthcheck": {
+      "get": {
+        "description": "API 서버의 상태를 확인합니다.\n\n### 사용 예시\n```javascript\nconst response = await fetch('/healthcheck', {\n  method: 'GET'\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "responses": {
+          "200": {
+            "description": "시스템 정상 동작",
+            "examples": {
+              "application/json": {
+                "summary": "시스템 상태 확인 성공 응답",
+                "value": {
+                  "data": {
+                    "status": "ok"
+                  },
+                  "message": "Service is running!",
+                  "status_code": 200,
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "properties": {
+                    "status": {
+                      "example": "ok",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "message": {
+                  "example": "Service is running!",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 200,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "시스템 상태 확인 API",
+        "tags": ["System"]
+      }
+    },
+    "/irregular_tasks": {
+      "get": {
+        "description": "비정기 업무 체크리스트의 가장 최근 상태를 조회합니다.\n\n### 사용 예시\n```javascript\nconst response = await fetch('/irregular_tasks', {\n  method: 'GET',\n  credentials: 'include'\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "responses": {
+          "200": {
+            "description": "비정기 업무 체크리스트 조회 성공",
+            "examples": {
+              "application/json": {
+                "summary": "비정기 업무 체크리스트 조회 성공 응답",
+                "value": {
+                  "data": [
+                    {
+                      "checked_date": "2025-01-15T10:30:00",
+                      "id": 1,
+                      "is_checked": false,
+                      "task_name": "프로젝트 발표",
+                      "training_course": "데이터 분석 스쿨 4기"
+                    },
+                    {
+                      "checked_date": "2025-01-14T15:20:00",
+                      "id": 2,
+                      "is_checked": true,
+                      "task_name": "포트폴리오 작성",
+                      "training_course": "데이터 분석 스쿨 4기"
+                    }
+                  ],
+                  "message": "비정기 업무 체크리스트 조회 성공",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "items": {
+                    "properties": {
+                      "checked_date": {
+                        "example": "2025-01-15T10:30:00",
+                        "format": "date-time",
+                        "type": "string"
+                      },
+                      "id": {
+                        "example": 1,
+                        "type": "integer"
+                      },
+                      "is_checked": {
+                        "example": false,
+                        "type": "boolean"
+                      },
+                      "task_name": {
+                        "example": "프로젝트 발표",
+                        "type": "string"
+                      },
+                      "training_course": {
+                        "example": "데이터 분석 스쿨 4기",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "message": {
+                  "example": "비정기 업무 체크리스트 조회 성공",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "비정기 업무 조회 실패",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "비정기 업무 조회 실패",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "비정기 업무 체크리스트 조회 API",
+        "tags": ["Irregular Tasks"]
+      },
+      "post": {
+        "description": "비정기 업무 체크리스트를 저장합니다. 기존 데이터를 덮어씌우지 않고 새로운 체크 상태를 추가합니다.\n\n### 사용 예시\n```javascript\nconst response = await fetch('/irregular_tasks', {\n  method: 'POST',\n  headers: {\n    'Content-Type': 'application/json',\n  },\n  credentials: 'include',\n  body: JSON.stringify({\n    updates: [\n      {\n        task_name: \"프로젝트 발표\",\n        is_checked: true\n      },\n      {\n        task_name: \"포트폴리오 작성\",\n        is_checked: false\n      }\n    ],\n    training_course: \"데이터 분석 스쿨 4기\"\n  })\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "parameters": [
+          {
+            "description": "저장할 비정기 업무 체크리스트 업데이트 데이터",
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "training_course": {
+                  "description": "훈련 과정명",
+                  "example": "데이터 분석 스쿨 4기",
+                  "type": "string"
+                },
+                "updates": {
+                  "description": "비정기 업무 체크리스트 업데이트 항목들",
+                  "items": {
+                    "properties": {
+                      "is_checked": {
+                        "description": "체크 여부",
+                        "example": true,
+                        "type": "boolean"
+                      },
+                      "task_name": {
+                        "description": "업무 항목명",
+                        "example": "프로젝트 발표",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "required": ["updates", "training_course"],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "비정기 업무 체크리스트 저장 성공",
+            "examples": {
+              "application/json": {
+                "summary": "비정기 업무 체크리스트 저장 성공 응답",
+                "value": {
+                  "data": null,
+                  "message": "비정기 업무 체크리스트가 저장되었습니다!",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "example": null,
+                  "type": null
+                },
+                "message": {
+                  "example": "비정기 업무 체크리스트가 저장되었습니다!",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "비정기 업무 체크리스트 저장 실패",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "비정기 업무 체크리스트 저장 실패",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "비정기 업무 체크리스트 추가 저장 API",
+        "tags": ["Irregular Tasks"]
+      }
+    },
+    "/issues": {
+      "get": {
+        "description": "해결되지 않은 이슈들의 목록을 조회합니다.\n\n### 사용 예시\n```javascript\nconst response = await fetch('/issues', {\n  method: 'GET',\n  credentials: 'include'\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "responses": {
+          "200": {
+            "description": "해결되지 않은 이슈 목록 반환",
+            "examples": {
+              "application/json": {
+                "summary": "이슈 목록 조회 성공 응답",
+                "value": {
+                  "data": [
+                    {
+                      "issues": [
+                        {
+                          "comments": [
+                            {
+                              "comment": "이 문제는 이미 확인했습니다.",
+                              "created_at": "2025-01-15T11:00:00",
+                              "created_by": "관리자",
+                              "id": 1
+                            }
+                          ],
+                          "content": "시스템 로그인이 안 되는 문제가 있습니다.",
+                          "created_at": "2025-01-15T10:30:00",
+                          "date": "2025-01-15",
+                          "id": 1,
+                          "resolved": false,
+                          "training_course": "데이터 분석 스쿨 4기",
+                          "username": "홍길동"
+                        }
+                      ],
+                      "training_course": "데이터 분석 스쿨 4기"
+                    },
+                    {
+                      "issues": [
+                        {
+                          "comments": [],
+                          "content": "과제 제출 시스템 오류",
+                          "created_at": "2025-01-14T15:20:00",
+                          "date": "2025-01-14",
+                          "id": 2,
+                          "resolved": false,
+                          "training_course": "웹 개발 스쿨 3기",
+                          "username": "김철수"
+                        }
+                      ],
+                      "training_course": "웹 개발 스쿨 3기"
+                    }
+                  ],
+                  "message": "이슈 목록 조회 성공",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "items": {
+                    "properties": {
+                      "issues": {
+                        "items": {
+                          "properties": {
+                            "comments": {
+                              "items": {
+                                "properties": {
+                                  "comment": {
+                                    "example": "이 문제는 이미 확인했습니다.",
+                                    "type": "string"
+                                  },
+                                  "created_at": {
+                                    "example": "2025-01-15T11:00:00",
+                                    "format": "date-time",
+                                    "type": "string"
+                                  },
+                                  "created_by": {
+                                    "example": "관리자",
+                                    "type": "string"
+                                  },
+                                  "id": {
+                                    "example": 1,
+                                    "type": "integer"
+                                  }
+                                },
+                                "type": "object"
+                              },
+                              "type": "array"
+                            },
+                            "content": {
+                              "example": "시스템 로그인이 안 되는 문제가 있습니다.",
+                              "type": "string"
+                            },
+                            "created_at": {
+                              "example": "2025-01-15T10:30:00",
+                              "format": "date-time",
+                              "type": "string"
+                            },
+                            "date": {
+                              "example": "2025-01-15",
+                              "format": "date",
+                              "type": "string"
+                            },
+                            "id": {
+                              "example": 1,
+                              "type": "integer"
+                            },
+                            "resolved": {
+                              "example": false,
+                              "type": "boolean"
+                            },
+                            "training_course": {
+                              "example": "데이터 분석 스쿨 4기",
+                              "type": "string"
+                            },
+                            "username": {
+                              "example": "홍길동",
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        "type": "array"
+                      },
+                      "training_course": {
+                        "example": "데이터 분석 스쿨 4기",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "message": {
+                  "example": "이슈 목록 조회 성공",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "이슈 목록 조회 실패",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "이슈 목록을 불러오는 중 오류 발생",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "해결되지 않은 이슈 목록 조회 API",
+        "tags": ["Issues"]
+      },
+      "post": {
+        "description": "새로운 이슈를 생성합니다. 생성 후 Slack 알림이 자동으로 전송됩니다.\n\n### 사용 예시\n```javascript\nconst response = await fetch('/issues', {\n  method: 'POST',\n  headers: {\n    'Content-Type': 'application/json',\n  },\n  credentials: 'include',\n  body: JSON.stringify({\n    content: '시스템 로그인이 안 되는 문제가 있습니다.',\n    training_course: '데이터 분석 스쿨 4기',\n    username: '홍길동',\n    date: '2025-01-15'\n  })\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "content": {
+                  "description": "이슈 내용",
+                  "example": "시스템 로그인이 안 되는 문제가 있습니다.",
+                  "type": "string"
+                },
+                "date": {
+                  "description": "이슈 발생 날짜 (선택사항)",
+                  "example": "2025-01-15",
+                  "type": "string"
+                },
+                "training_course": {
+                  "description": "교육 과정명",
+                  "example": "데이터 분석 스쿨 4기",
+                  "type": "string"
+                },
+                "username": {
+                  "description": "작성자명",
+                  "example": "홍길동",
+                  "type": "string"
+                }
+              },
+              "required": ["content", "training_course", "username"],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "이슈 생성 성공",
+            "examples": {
+              "application/json": {
+                "summary": "이슈 생성 성공 응답",
+                "value": {
+                  "data": {
+                    "content": "시스템 로그인이 안 되는 문제가 있습니다.",
+                    "created_at": "2025-01-15T10:30:00",
+                    "date": "2025-01-15",
+                    "id": 1,
+                    "resolved": false,
+                    "training_course": "데이터 분석 스쿨 4기",
+                    "username": "홍길동"
+                  },
+                  "message": "이슈가 성공적으로 생성되었습니다.",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "properties": {
+                    "content": {
+                      "example": "시스템 로그인이 안 되는 문제가 있습니다.",
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "example": "2025-01-15T10:30:00",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "date": {
+                      "example": "2025-01-15",
+                      "format": "date",
+                      "type": "string"
+                    },
+                    "id": {
+                      "example": 1,
+                      "type": "integer"
+                    },
+                    "resolved": {
+                      "example": false,
+                      "type": "boolean"
+                    },
+                    "training_course": {
+                      "example": "데이터 분석 스쿨 4기",
+                      "type": "string"
+                    },
+                    "username": {
+                      "example": "홍길동",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "message": {
+                  "example": "이슈가 성공적으로 생성되었습니다.",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "필수 필드 누락",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "이슈 내용, 교육 과정, 작성자는 필수 입력 항목입니다.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 400,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "서버 오류",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "이슈 생성 중 오류가 발생했습니다.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "이슈 생성 API",
+        "tags": ["Issues"]
+      }
+    },
+    "/issues/comments": {
+      "get": {
+        "description": "특정 이슈에 등록된 댓글들의 목록을 조회합니다.\n\n### 사용 예시\n```javascript\nconst response = await fetch('/issues/comments?issue_id=1', {\n  method: 'GET',\n  credentials: 'include'\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "parameters": [
+          {
+            "description": "조회할 이슈 ID",
+            "example": 1,
+            "in": "query",
+            "name": "issue_id",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "이슈사항의 댓글 목록 반환",
+            "examples": {
+              "application/json": {
+                "summary": "댓글 목록 조회 성공 응답",
+                "value": {
+                  "data": [
+                    {
+                      "comment": "이 문제는 이미 확인했습니다. 곧 해결하겠습니다.",
+                      "created_at": "2025-01-15T11:00:00",
+                      "created_by": "관리자",
+                      "id": 1,
+                      "issue_id": 1
+                    },
+                    {
+                      "comment": "해결되었습니다. 확인해보세요.",
+                      "created_at": "2025-01-15T14:30:00",
+                      "created_by": "시스템관리자",
+                      "id": 2,
+                      "issue_id": 1
+                    }
+                  ],
+                  "message": "댓글 조회 성공",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "items": {
+                    "properties": {
+                      "comment": {
+                        "example": "이 문제는 이미 확인했습니다. 곧 해결하겠습니다.",
+                        "type": "string"
+                      },
+                      "created_at": {
+                        "example": "2025-01-15T11:00:00",
+                        "format": "date-time",
+                        "type": "string"
+                      },
+                      "created_by": {
+                        "example": "관리자",
+                        "type": "string"
+                      },
+                      "id": {
+                        "example": 1,
+                        "type": "integer"
+                      },
+                      "issue_id": {
+                        "example": 1,
+                        "type": "integer"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "message": {
+                  "example": "댓글 조회 성공",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "댓글 조회 실패",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "댓글 조회 실패",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "이슈사항의 댓글 조회 API",
+        "tags": ["Issues"]
+      },
+      "post": {
+        "description": "특정 이슈에 댓글을 추가합니다. 댓글 등록 후 Slack 알림이 전송됩니다.\n\n### 사용 예시\n```javascript\nconst response = await fetch('/issues/comments', {\n  method: 'POST',\n  headers: {\n    'Content-Type': 'application/json',\n  },\n  credentials: 'include',\n  body: JSON.stringify({\n    issue_id: 1,\n    comment: '이 문제는 이미 확인했습니다. 곧 해결하겠습니다.',\n    created_by: '관리자'\n  })\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "comment": {
+                  "description": "댓글 내용",
+                  "example": "이 문제는 이미 확인했습니다. 곧 해결하겠습니다.",
+                  "type": "string"
+                },
+                "created_by": {
+                  "description": "작성자명",
+                  "example": "관리자",
+                  "type": "string"
+                },
+                "issue_id": {
+                  "description": "이슈 ID",
+                  "example": 1,
+                  "type": "integer"
+                }
+              },
+              "required": ["issue_id", "comment", "created_by"],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "댓글 추가 성공",
+            "examples": {
+              "application/json": {
+                "summary": "댓글 추가 성공 응답",
+                "value": {
+                  "data": {
+                    "comment": "이 문제는 이미 확인했습니다. 곧 해결하겠습니다.",
+                    "created_at": "2025-01-15T11:00:00",
+                    "created_by": "관리자",
+                    "id": 1,
+                    "issue_id": 1
+                  },
+                  "message": "댓글이 등록되었습니다.",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "properties": {
+                    "comment": {
+                      "example": "이 문제는 이미 확인했습니다. 곧 해결하겠습니다.",
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "example": "2025-01-15T11:00:00",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "created_by": {
+                      "example": "관리자",
+                      "type": "string"
+                    },
+                    "id": {
+                      "example": 1,
+                      "type": "integer"
+                    },
+                    "issue_id": {
+                      "example": 1,
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object"
+                },
+                "message": {
+                  "example": "댓글이 등록되었습니다.",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "필수 데이터 누락",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "이슈 ID, 댓글 내용, 작성자는 필수 입력 항목입니다.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 400,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "이슈를 찾을 수 없음",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "해당 이슈를 찾을 수 없습니다.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 404,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "서버 오류",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "댓글 등록 실패",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "이슈 댓글 추가 API",
+        "tags": ["Issues"]
+      }
+    },
+    "/issues/download": {
+      "get": {
+        "description": "모든 이슈사항을 Excel 파일로 다운로드합니다.\n\n### 사용 예시\n```javascript\nconst response = await fetch('/issues/download', {\n  method: 'GET',\n  credentials: 'include'\n});\n\n// 파일 다운로드 처리\nconst blob = await response.blob();\nconst url = window.URL.createObjectURL(blob);\nconst a = document.createElement('a');\na.href = url;\na.download = '이슈사항.xlsx';\na.click();\n```\n",
+        "responses": {
+          "200": {
+            "description": "이슈사항을 Excel 파일로 다운로드",
+            "headers": {
+              "Content-Disposition": {
+                "description": "파일 다운로드 헤더",
+                "schema": {
+                  "example": "attachment; filename=이슈사항.xlsx",
+                  "type": "string"
+                }
+              },
+              "Content-Type": {
+                "description": "Excel 파일 타입",
+                "schema": {
+                  "example": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                  "type": "string"
+                }
+              }
+            },
+            "schema": {
+              "format": "binary",
+              "type": "file"
+            }
+          },
+          "500": {
+            "description": "이슈사항 다운로드 실패",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "이슈 다운로드 실패",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "이슈사항을 Excel 파일로 다운로드하는 API",
+        "tags": ["Issues"]
+      }
+    },
+    "/issues/resolve": {
+      "post": {
+        "description": "특정 이슈를 해결 처리합니다. 해결된 이슈는 목록에서 제외됩니다.\n\n### 사용 예시\n```javascript\nconst response = await fetch('/issues/resolve', {\n  method: 'POST',\n  headers: {\n    'Content-Type': 'application/json',\n  },\n  credentials: 'include',\n  body: JSON.stringify({\n    issue_id: 1\n  })\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "issue_id": {
+                  "description": "해결할 이슈 ID",
+                  "example": 1,
+                  "type": "integer"
+                }
+              },
+              "required": ["issue_id"],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "이슈 해결 성공",
+            "examples": {
+              "application/json": {
+                "summary": "이슈 해결 성공 응답",
+                "value": {
+                  "data": {
+                    "content": "시스템 로그인이 안 되는 문제가 있습니다.",
+                    "created_at": "2025-01-15T10:30:00",
+                    "date": "2025-01-15",
+                    "id": 1,
+                    "resolved": true,
+                    "training_course": "데이터 분석 스쿨 4기",
+                    "username": "홍길동"
+                  },
+                  "message": "이슈가 해결되었습니다.",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "properties": {
+                    "content": {
+                      "example": "시스템 로그인이 안 되는 문제가 있습니다.",
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "example": "2025-01-15T10:30:00",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "date": {
+                      "example": "2025-01-15",
+                      "format": "date",
+                      "type": "string"
+                    },
+                    "id": {
+                      "example": 1,
+                      "type": "integer"
+                    },
+                    "resolved": {
+                      "example": true,
+                      "type": "boolean"
+                    },
+                    "training_course": {
+                      "example": "데이터 분석 스쿨 4기",
+                      "type": "string"
+                    },
+                    "username": {
+                      "example": "홍길동",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "message": {
+                  "example": "이슈가 해결되었습니다.",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "요청 데이터 오류",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "이슈 ID를 입력해주세요.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 400,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "이슈 해결 실패",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "이슈 해결 실패",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "이슈 해결 API",
+        "tags": ["Issues"]
+      }
+    },
+    "/login": {
+      "post": {
+        "description": "사용자명과 비밀번호를 받아 로그인을 처리합니다.\n로그인 성공 시 세션 쿠키가 자동으로 설정됩니다.\n\n### 사용 예시\n```javascript\nconst response = await fetch('/login', {\n  method: 'POST',\n  headers: {\n    'Content-Type': 'application/json',\n  },\n  credentials: 'include', // 세션 쿠키 포함\n  body: JSON.stringify({\n    username: 'user123',\n    password: 'password123'\n  })\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "password": {
+                  "description": "비밀번호",
+                  "example": "password123",
+                  "type": "string"
+                },
+                "username": {
+                  "description": "사용자명",
+                  "example": "user123",
+                  "type": "string"
+                }
+              },
+              "required": ["username", "password"],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "로그인 성공",
+            "examples": {
+              "application/json": {
+                "summary": "로그인 성공 응답",
+                "value": {
+                  "data": {
+                    "id": 1,
+                    "name": "홍길동",
+                    "role": "user",
+                    "username": "user123"
+                  },
+                  "message": "로그인 성공!",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "properties": {
+                    "id": {
+                      "example": 1,
+                      "type": "integer"
+                    },
+                    "name": {
+                      "example": "홍길동",
+                      "type": "string"
+                    },
+                    "role": {
+                      "example": "user",
+                      "type": "string"
+                    },
+                    "username": {
+                      "example": "user123",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "message": {
+                  "example": "로그인 성공!",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "필수 데이터 누락 또는 유효성 검사 실패",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "사용자명과 비밀번호를 입력해주세요.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 400,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "잘못된 ID 또는 비밀번호",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "잘못된 사용자명 또는 비밀번호입니다.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 401,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "서버 오류",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "서버 오류 발생",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "사용자 로그인 API",
+        "tags": ["Authentication"]
+      }
+    },
+    "/logout": {
+      "post": {
+        "description": "현재 로그인된 사용자의 세션을 삭제합니다.\n\n### 사용 예시\n```javascript\nconst response = await fetch('/logout', {\n  method: 'POST',\n  credentials: 'include' // 세션 쿠키 포함\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "responses": {
+          "200": {
+            "description": "로그아웃 완료",
+            "examples": {
+              "application/json": {
+                "summary": "로그아웃 성공 응답",
+                "value": {
+                  "data": null,
+                  "message": "로그아웃 완료!",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "example": null,
+                  "type": null
+                },
+                "message": {
+                  "example": "로그아웃 완료!",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "사용자 로그아웃 API",
+        "tags": ["Authentication"]
+      }
+    },
+    "/me": {
+      "get": {
+        "description": "현재 세션에 로그인된 사용자의 정보를 반환합니다.\n\n### 사용 예시\n```javascript\nconst response = await fetch('/me', {\n  method: 'GET',\n  credentials: 'include' // 세션 쿠키 포함\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "responses": {
+          "200": {
+            "description": "현재 로그인된 사용자 정보 반환",
+            "examples": {
+              "application/json": {
+                "summary": "사용자 정보 조회 성공 응답",
+                "value": {
+                  "data": {
+                    "user": {
+                      "id": 1,
+                      "name": "홍길동",
+                      "role": "user",
+                      "username": "user123"
+                    }
+                  },
+                  "message": "사용자 정보 조회 성공",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "properties": {
+                    "user": {
+                      "properties": {
+                        "id": {
+                          "example": 1,
+                          "type": "integer"
+                        },
+                        "name": {
+                          "example": "홍길동",
+                          "type": "string"
+                        },
+                        "role": {
+                          "example": "user",
+                          "type": "string"
+                        },
+                        "username": {
+                          "example": "user123",
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
+                },
+                "message": {
+                  "example": "사용자 정보 조회 성공",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "로그인 필요",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "로그인이 필요합니다.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 401,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "현재 로그인된 사용자 정보 조회 API",
+        "tags": ["Authentication"]
+      }
+    },
+    "/notices": {
+      "get": {
+        "description": "등록된 공지사항을 페이지네이션을 통해 조회합니다.\n\n### 사용 예시\n```javascript\n// 기본 조회 (1페이지, 10개씩)\nconst response = await fetch('/notices', {\n  method: 'GET',\n  credentials: 'include'\n});\n\n// 페이지네이션 적용\nconst response = await fetch('/notices?page=2&per_page=5', {\n  method: 'GET',\n  credentials: 'include'\n});\n\n// 필터링 적용\nconst response = await fetch('/notices?type=공지사항&search=회의', {\n  method: 'GET',\n  credentials: 'include'\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "parameters": [
+          {
+            "description": "페이지 번호 (기본값: 1)",
+            "example": 1,
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "description": "페이지당 항목 수 (기본값: 10, 최대: 100)",
+            "example": 10,
+            "in": "query",
+            "name": "per_page",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "description": "공지사항 유형 필터",
+            "example": "공지사항",
+            "in": "query",
+            "name": "type",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "제목 또는 내용 검색",
+            "example": "회의",
+            "in": "query",
+            "name": "search",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "공지사항 목록과 페이지네이션 정보를 포함한 응답",
+            "examples": {
+              "application/json": {
+                "summary": "공지사항 목록 조회 성공 응답",
+                "value": {
+                  "data": {
+                    "items": [
+                      {
+                        "content": "내일 오후 2시에 전체 회의가 있습니다.",
+                        "created_by": "관리자",
+                        "date": "2025-01-15T10:30:00",
+                        "id": 1,
+                        "title": "중요 공지사항",
+                        "type": "공지사항"
+                      },
+                      {
+                        "content": "오늘 밤 12시부터 2시간 동안 시스템 점검이 있습니다.",
+                        "created_by": "시스템관리자",
+                        "date": "2025-01-14T15:20:00",
+                        "id": 2,
+                        "title": "시스템 점검 안내",
+                        "type": "안내"
+                      }
+                    ],
+                    "pagination": {
+                      "has_next": true,
+                      "has_prev": false,
+                      "page": 1,
+                      "per_page": 10,
+                      "total_count": 25,
+                      "total_pages": 3
+                    }
+                  },
+                  "message": "공지사항 조회 성공",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "properties": {
+                    "items": {
+                      "items": {
+                        "properties": {
+                          "content": {
+                            "example": "내일 오후 2시에 전체 회의가 있습니다.",
+                            "type": "string"
+                          },
+                          "created_by": {
+                            "example": "관리자",
+                            "type": "string"
+                          },
+                          "date": {
+                            "example": "2025-01-15T10:30:00",
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "id": {
+                            "example": 1,
+                            "type": "integer"
+                          },
+                          "title": {
+                            "example": "중요 공지사항",
+                            "type": "string"
+                          },
+                          "type": {
+                            "example": "공지사항",
+                            "type": "string"
+                          }
+                        },
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "pagination": {
+                      "properties": {
+                        "has_next": {
+                          "example": true,
+                          "type": "boolean"
+                        },
+                        "has_prev": {
+                          "example": false,
+                          "type": "boolean"
+                        },
+                        "page": {
+                          "example": 1,
+                          "type": "integer"
+                        },
+                        "per_page": {
+                          "example": 10,
+                          "type": "integer"
+                        },
+                        "total_count": {
+                          "example": 25,
+                          "type": "integer"
+                        },
+                        "total_pages": {
+                          "example": 3,
+                          "type": "integer"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
+                },
+                "message": {
+                  "example": "공지사항 조회 성공",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "잘못된 파라미터",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "잘못된 페이지 번호입니다.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 400,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "공지사항을 불러오는 데 실패함",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "공지사항을 불러오는데 실패했습니다.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "공지사항 조회 API (페이지네이션 지원)",
+        "tags": ["Notices"]
+      },
+      "post": {
+        "description": "새로운 공지사항을 생성합니다. 생성 후 Slack 알림이 자동으로 전송됩니다.\n\n### 사용 예시\n```javascript\nconst response = await fetch('/notices', {\n  method: 'POST',\n  headers: {\n    'Content-Type': 'application/json',\n  },\n  credentials: 'include',\n  body: JSON.stringify({\n    title: '중요 공지사항',\n    content: '내일 오후 2시에 전체 회의가 있습니다.',\n    created_by: '관리자',\n    type: '공지사항'\n  })\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "content": {
+                  "description": "공지사항 내용",
+                  "example": "내일 오후 2시에 전체 회의가 있습니다.",
+                  "type": "string"
+                },
+                "created_by": {
+                  "description": "작성자명",
+                  "example": "관리자",
+                  "type": "string"
+                },
+                "title": {
+                  "description": "공지사항 제목",
+                  "example": "중요 공지사항",
+                  "type": "string"
+                },
+                "type": {
+                  "description": "공지사항 유형, 기본값은 공지사항",
+                  "example": "공지사항",
+                  "type": "string"
+                }
+              },
+              "required": ["title", "content", "created_by"],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "공지사항 추가 성공",
+            "examples": {
+              "application/json": {
+                "summary": "공지사항 생성 성공 응답",
+                "value": {
+                  "data": {
+                    "content": "내일 오후 2시에 전체 회의가 있습니다.",
+                    "created_at": "2025-01-15T10:30:00",
+                    "created_by": "관리자",
+                    "id": 1,
+                    "title": "중요 공지사항",
+                    "type": "공지사항"
+                  },
+                  "message": "공지사항이 성공적으로 생성되었습니다.",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "properties": {
+                    "content": {
+                      "example": "내일 오후 2시에 전체 회의가 있습니다.",
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "example": "2025-01-15T10:30:00",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "created_by": {
+                      "example": "관리자",
+                      "type": "string"
+                    },
+                    "id": {
+                      "example": 1,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "example": "중요 공지사항",
+                      "type": "string"
+                    },
+                    "type": {
+                      "example": "공지사항",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "message": {
+                  "example": "공지사항이 성공적으로 생성되었습니다.",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "필수 데이터 누락",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "제목, 내용, 작성자는 필수 입력 항목입니다.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 400,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "403": {
+            "description": "권한 없음",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "공지사항 작성 권한이 없습니다.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 403,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "서버 오류",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "공지사항 추가 실패",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "공지사항 추가 API",
+        "tags": ["Notices"]
+      }
+    },
+    "/notices/read": {
+      "post": {
+        "description": "특정 사용자가 공지사항을 읽었다고 표시합니다.\n\n### 사용 예시\n```javascript\nconst response = await fetch('/notices/read', {\n  method: 'POST',\n  headers: {\n    'Content-Type': 'application/json',\n  },\n  credentials: 'include',\n  body: JSON.stringify({\n    notice_id: 1,\n    username: '홍길동'\n  })\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "notice_id": {
+                  "description": "공지사항 ID",
+                  "example": 1,
+                  "type": "integer"
+                },
+                "username": {
+                  "description": "사용자명",
+                  "example": "홍길동",
+                  "type": "string"
+                }
+              },
+              "required": ["notice_id", "username"],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "읽음 표시 성공",
+            "examples": {
+              "application/json": {
+                "summary": "읽음 표시 성공 응답",
+                "value": {
+                  "data": {
+                    "id": 1,
+                    "notice_id": 1,
+                    "read_at": "2025-01-15T11:00:00",
+                    "username": "홍길동"
+                  },
+                  "message": "읽음 표시가 완료되었습니다.",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "properties": {
+                    "id": {
+                      "example": 1,
+                      "type": "integer"
+                    },
+                    "notice_id": {
+                      "example": 1,
+                      "type": "integer"
+                    },
+                    "read_at": {
+                      "example": "2025-01-15T11:00:00",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "username": {
+                      "example": "홍길동",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "message": {
+                  "example": "읽음 표시가 완료되었습니다.",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "필수 데이터 누락",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "공지사항 ID와 사용자명을 입력해주세요.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 400,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "서버 오류 발생",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "공지사항 읽음 표시 실패",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "공지사항 읽음 표시 API",
+        "tags": ["Notices"]
+      }
+    },
+    "/notices/reads": {
+      "get": {
+        "description": "특정 공지사항을 읽은 사용자들의 목록을 조회합니다.\n\n### 사용 예시\n```javascript\nconst response = await fetch('/notices/reads?notice_id=1', {\n  method: 'GET',\n  credentials: 'include'\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "parameters": [
+          {
+            "description": "조회할 공지사항 ID",
+            "example": 1,
+            "in": "query",
+            "name": "notice_id",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "공지사항을 읽은 사용자 목록 반환",
+            "examples": {
+              "application/json": {
+                "summary": "읽은 사용자 목록 조회 성공 응답",
+                "value": {
+                  "data": [
+                    {
+                      "id": 1,
+                      "read_at": "2025-01-15T11:00:00",
+                      "username": "홍길동"
+                    },
+                    {
+                      "id": 2,
+                      "read_at": "2025-01-15T11:30:00",
+                      "username": "김철수"
+                    }
+                  ],
+                  "message": "공지사항 읽음 목록 조회 성공",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "items": {
+                    "properties": {
+                      "id": {
+                        "example": 1,
+                        "type": "integer"
+                      },
+                      "read_at": {
+                        "example": "2025-01-15T11:00:00",
+                        "format": "date-time",
+                        "type": "string"
+                      },
+                      "username": {
+                        "example": "홍길동",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "message": {
+                  "example": "공지사항 읽음 목록 조회 성공",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "공지사항 ID 누락",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "공지사항 ID를 입력해주세요.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 400,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "서버 오류 발생",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "공지사항 읽음 목록 조회 실패",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "공지사항별 읽은 사용자 목록 조회 API",
+        "tags": ["Notices"]
+      }
+    },
+    "/notices/{notice_id}": {
+      "delete": {
+        "description": "지정된 ID의 공지사항을 삭제합니다.\n\n### 사용 예시\n```javascript\nconst response = await fetch('/notices/1', {\n  method: 'DELETE',\n  credentials: 'include'\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "parameters": [
+          {
+            "description": "삭제할 공지사항 ID",
+            "example": 1,
+            "in": "path",
+            "name": "notice_id",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "공지사항 삭제 성공",
+            "examples": {
+              "application/json": {
+                "summary": "공지사항 삭제 성공 응답",
+                "value": {
+                  "data": {
+                    "content": "삭제된 공지사항 내용",
+                    "created_at": "2025-01-15T10:30:00",
+                    "created_by": "관리자",
+                    "id": 1,
+                    "title": "삭제된 공지사항",
+                    "type": "공지사항"
+                  },
+                  "message": "공지사항이 성공적으로 삭제되었습니다.",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "properties": {
+                    "content": {
+                      "example": "삭제된 공지사항 내용",
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "example": "2025-01-15T10:30:00",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "created_by": {
+                      "example": "관리자",
+                      "type": "string"
+                    },
+                    "id": {
+                      "example": 1,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "example": "삭제된 공지사항",
+                      "type": "string"
+                    },
+                    "type": {
+                      "example": "공지사항",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "message": {
+                  "example": "공지사항이 성공적으로 삭제되었습니다.",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "공지사항을 찾을 수 없음",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "해당 공지사항을 찾을 수 없습니다.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 404,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "서버 오류 발생",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "공지사항 삭제 중 오류가 발생했습니다.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "공지사항 삭제 API",
+        "tags": ["Notices"]
+      },
+      "put": {
+        "description": "지정된 ID의 공지사항을 수정합니다.\n\n### 사용 예시\n```javascript\nconst response = await fetch('/notices/1', {\n  method: 'PUT',\n  headers: {\n    'Content-Type': 'application/json',\n  },\n  credentials: 'include',\n  body: JSON.stringify({\n    title: '수정된 공지사항 제목',\n    content: '수정된 공지사항 내용입니다.',\n    type: '공지사항',\n    username: '홍길동'\n  })\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "parameters": [
+          {
+            "description": "수정할 공지사항 ID",
+            "example": 1,
+            "in": "path",
+            "name": "notice_id",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "content": {
+                  "example": "수정된 공지사항 내용입니다.",
+                  "type": "string"
+                },
+                "title": {
+                  "example": "수정된 공지사항 제목",
+                  "type": "string"
+                },
+                "type": {
+                  "example": "공지사항",
+                  "type": "string"
+                },
+                "username": {
+                  "example": "홍길동",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "공지사항 수정 성공",
+            "examples": {
+              "application/json": {
+                "summary": "공지사항 수정 성공 응답",
+                "value": {
+                  "data": {
+                    "content": "수정된 공지사항 내용입니다.",
+                    "created_at": "2025-01-15T10:30:00",
+                    "created_by": "관리자",
+                    "id": 1,
+                    "title": "수정된 공지사항 제목",
+                    "type": "공지사항"
+                  },
+                  "message": "공지사항이 성공적으로 수정되었습니다.",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "properties": {
+                    "content": {
+                      "example": "수정된 공지사항 내용입니다.",
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "example": "2025-01-15T10:30:00",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "created_by": {
+                      "example": "관리자",
+                      "type": "string"
+                    },
+                    "id": {
+                      "example": 1,
+                      "type": "integer"
+                    },
+                    "title": {
+                      "example": "수정된 공지사항 제목",
+                      "type": "string"
+                    },
+                    "type": {
+                      "example": "공지사항",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "message": {
+                  "example": "공지사항이 성공적으로 수정되었습니다.",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "필수 데이터 누락",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "수정할 내용을 입력해주세요.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 400,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "공지사항을 찾을 수 없음",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "해당 공지사항을 찾을 수 없습니다.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 404,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "서버 오류 발생",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "공지사항 수정 중 오류가 발생했습니다.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "공지사항 수정 API",
+        "tags": ["Notices"]
+      }
+    },
+    "/notifications/unread-count": {
+      "get": {
+        "description": "특정 사용자의 미확인 알림 개수를 조회하고 마지막 확인 시간을 업데이트합니다.\n\n### 사용 예시\n```javascript\nconst response = await fetch('/notifications/unread-count?username=홍길동', {\n  method: 'GET',\n  credentials: 'include'\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "parameters": [
+          {
+            "description": "사용자명",
+            "example": "홍길동",
+            "in": "query",
+            "name": "username",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "미확인 알림 개수 반환",
+            "examples": {
+              "application/json": {
+                "summary": "미확인 알림 개수 조회 성공 응답",
+                "value": {
+                  "data": {
+                    "new_comments": 5,
+                    "new_issues": 2,
+                    "new_notices": 3
+                  },
+                  "message": "미확인 알림 개수 조회 성공",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "properties": {
+                    "new_comments": {
+                      "example": 5,
+                      "type": "integer"
+                    },
+                    "new_issues": {
+                      "example": 2,
+                      "type": "integer"
+                    },
+                    "new_notices": {
+                      "example": 3,
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object"
+                },
+                "message": {
+                  "example": "미확인 알림 개수 조회 성공",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "사용자명 누락",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "사용자명을 입력해주세요.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 400,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "서버 오류",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "알림 개수 조회 실패",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "사용자별 미확인 알림 개수 조회 API",
+        "tags": ["Notifications"]
+      }
+    },
+    "/tasks": {
+      "get": {
+        "description": "업무 체크리스트 데이터를 조회합니다. 카테고리별 필터링이 가능합니다.\n\n### 사용 예시\n```javascript\n// 모든 업무 체크리스트 조회\nconst response = await fetch('/tasks', {\n  method: 'GET',\n  credentials: 'include'\n});\n\n// 특정 카테고리의 업무 체크리스트 조회\nconst response = await fetch('/tasks?task_category=개발', {\n  method: 'GET',\n  credentials: 'include'\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "parameters": [
+          {
+            "description": "업무 체크리스트의 카테고리 (예: 개발, 디자인)",
+            "example": "개발",
+            "in": "query",
+            "name": "task_category",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "모든 업무 체크리스트 데이터를 반환함",
+            "examples": {
+              "application/json": {
+                "summary": "업무 체크리스트 조회 성공 응답",
+                "value": {
+                  "data": [
+                    {
+                      "due": 1,
+                      "guide": "매일 출석을 체크합니다",
+                      "id": 1,
+                      "task_category": "일반",
+                      "task_name": "출석 체크",
+                      "task_period": "일일"
+                    },
+                    {
+                      "due": 7,
+                      "guide": "주간 과제를 제출합니다",
+                      "id": 2,
+                      "task_category": "개발",
+                      "task_name": "과제 제출",
+                      "task_period": "주간"
+                    }
+                  ],
+                  "message": "업무 체크리스트 조회 성공",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "items": {
+                    "properties": {
+                      "due": {
+                        "example": 1,
+                        "type": "integer"
+                      },
+                      "guide": {
+                        "example": "매일 출석을 체크합니다",
+                        "type": "string"
+                      },
+                      "id": {
+                        "example": 1,
+                        "type": "integer"
+                      },
+                      "task_category": {
+                        "example": "일반",
+                        "type": "string"
+                      },
+                      "task_name": {
+                        "example": "출석 체크",
+                        "type": "string"
+                      },
+                      "task_period": {
+                        "example": "일일",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "message": {
+                  "example": "업무 체크리스트 조회 성공",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "서버 오류로 인해 업무 체크리스트 조회 실패",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "업무 체크리스트 조회 실패",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "업무 체크리스트 조회 API",
+        "tags": ["Tasks"]
+      },
+      "post": {
+        "description": "업무 체크리스트를 저장합니다. 동일한 날짜의 데이터가 있으면 업데이트됩니다.\n\n### 사용 예시\n```javascript\nconst response = await fetch('/tasks', {\n  method: 'POST',\n  headers: {\n    'Content-Type': 'application/json',\n  },\n  credentials: 'include',\n  body: JSON.stringify({\n    updates: [\n      {\n        task_name: \"출석 체크\",\n        is_checked: true\n      },\n      {\n        task_name: \"과제 제출\",\n        is_checked: false\n      }\n    ],\n    training_course: \"데이터 분석 스쿨 4기\",\n    username: \"홍길동\"\n  })\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "parameters": [
+          {
+            "description": "저장할 체크리스트 업데이트 데이터",
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "training_course": {
+                  "description": "훈련 과정명",
+                  "example": "데이터 분석 스쿨 4기",
+                  "type": "string"
+                },
+                "updates": {
+                  "description": "체크리스트 업데이트 항목들",
+                  "items": {
+                    "properties": {
+                      "is_checked": {
+                        "description": "체크 여부",
+                        "example": true,
+                        "type": "boolean"
+                      },
+                      "task_name": {
+                        "description": "업무 항목명",
+                        "example": "출석 체크",
+                        "type": "string"
+                      }
+                    },
+                    "required": ["task_name", "is_checked"],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "username": {
+                  "description": "사용자명",
+                  "example": "홍길동",
+                  "type": "string"
+                }
+              },
+              "required": ["updates", "training_course", "username"],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "업무 체크리스트 저장/업데이트 성공",
+            "examples": {
+              "application/json": {
+                "summary": "체크리스트 저장 성공 응답",
+                "value": {
+                  "data": null,
+                  "message": "체크리스트가 성공적으로 저장/업데이트되었습니다!",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "example": null,
+                  "type": null
+                },
+                "message": {
+                  "example": "체크리스트가 성공적으로 저장/업데이트되었습니다!",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "요청 데이터 없음",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "요청 데이터가 없습니다.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 400,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "업무 체크리스트 저장 실패",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "체크리스트 저장 실패",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "업무 체크리스트 저장 API",
+        "tags": ["Tasks"]
+      }
+    },
+    "/tasks/update": {
+      "put": {
+        "description": "당일 저장된 체크리스트를 업데이트합니다. 기존 데이터가 없으면 404 에러가 발생합니다.\n\n### 사용 예시\n```javascript\nconst response = await fetch('/tasks/update', {\n  method: 'PUT',\n  headers: {\n    'Content-Type': 'application/json',\n  },\n  credentials: 'include',\n  body: JSON.stringify({\n    updates: [\n      {\n        task_name: \"출석 체크\",\n        is_checked: true\n      },\n      {\n        task_name: \"과제 제출\",\n        is_checked: true\n      }\n    ],\n    training_course: \"데이터 분석 스쿨 4기\"\n  })\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "parameters": [
+          {
+            "description": "업데이트할 체크리스트 데이터",
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "training_course": {
+                  "description": "훈련 과정명",
+                  "example": "데이터 분석 스쿨 4기",
+                  "type": "string"
+                },
+                "updates": {
+                  "description": "체크리스트 업데이트 항목들",
+                  "items": {
+                    "properties": {
+                      "is_checked": {
+                        "description": "체크 여부",
+                        "example": true,
+                        "type": "boolean"
+                      },
+                      "task_name": {
+                        "description": "업무 항목명",
+                        "example": "출석 체크",
+                        "type": "string"
+                      }
+                    },
+                    "required": ["task_name", "is_checked"],
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "required": ["updates", "training_course"],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "체크리스트 업데이트 성공",
+            "examples": {
+              "application/json": {
+                "summary": "체크리스트 업데이트 성공 응답",
+                "value": {
+                  "data": {
+                    "training_course": "데이터 분석 스쿨 4기",
+                    "updated_count": 2
+                  },
+                  "message": "체크리스트가 성공적으로 업데이트되었습니다!",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "properties": {
+                    "training_course": {
+                      "example": "데이터 분석 스쿨 4기",
+                      "type": "string"
+                    },
+                    "updated_count": {
+                      "example": 2,
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object"
+                },
+                "message": {
+                  "example": "체크리스트가 성공적으로 업데이트되었습니다!",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "업데이트할 체크리스트가 존재하지 않음",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "업데이트할 체크리스트가 존재하지 않습니다.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 404,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "업데이트 실패",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "체크리스트 업데이트 실패",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "당일 업무 체크리스트 업데이트 API",
+        "tags": ["Tasks"]
+      }
+    },
+    "/training_courses": {
+      "get": {
+        "description": "(현재 진행 중이거나 종료된 지 1주일 이내의 과정만 반환)<br/>",
+        "responses": {
+          "200": {
+            "description": "유효한 훈련과정 목록 반환",
+            "examples": {
+              "application/json": {
+                "summary": "훈련 과정 목록 조회 성공 응답",
+                "value": {
+                  "data": ["데이터 분석 스쿨 4기", "웹 개발 스쿨 3기"],
+                  "message": "훈련 과정 목록 조회 성공",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "example": ["데이터 분석 스쿨 4기", "웹 개발 스쿨 3기"],
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "message": {
+                  "example": "훈련 과정 목록 조회 성공",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "훈련과정 목록 불러오기 실패",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "훈련 과정 목록을 불러오는데 실패했습니다.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "training_info 테이블에서 training_course 목록을 가져오는 API",
+        "tags": ["Training Info"]
+      }
+    },
+    "/training_info": {
+      "get": {
+        "description": "저장된 모든 훈련 과정 정보를 조회합니다.\n\n### 사용 예시\n```javascript\nconst response = await fetch('/training_info', {\n  method: 'GET',\n  credentials: 'include'\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "responses": {
+          "200": {
+            "description": "저장된 훈련 과정 목록 반환",
+            "examples": {
+              "application/json": {
+                "summary": "훈련 과정 목록 조회 성공 응답",
+                "value": {
+                  "data": [
+                    {
+                      "dept": "TechSol",
+                      "end_date": "2025-06-01",
+                      "id": 1,
+                      "manager_name": "홍길동",
+                      "start_date": "2025-01-02",
+                      "training_course": "데이터 분석 스쿨 4기"
+                    },
+                    {
+                      "dept": "DevTeam",
+                      "end_date": "2025-07-01",
+                      "id": 2,
+                      "manager_name": "김철수",
+                      "start_date": "2025-02-01",
+                      "training_course": "웹 개발 스쿨 3기"
+                    }
+                  ],
+                  "message": "훈련 과정 목록 조회 성공",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "items": {
+                    "properties": {
+                      "dept": {
+                        "example": "TechSol",
+                        "type": "string"
+                      },
+                      "end_date": {
+                        "example": "2025-06-01",
+                        "format": "date",
+                        "type": "string"
+                      },
+                      "id": {
+                        "example": 1,
+                        "type": "integer"
+                      },
+                      "manager_name": {
+                        "example": "홍길동",
+                        "type": "string"
+                      },
+                      "start_date": {
+                        "example": "2025-01-02",
+                        "format": "date",
+                        "type": "string"
+                      },
+                      "training_course": {
+                        "example": "데이터 분석 스쿨 4기",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "message": {
+                  "example": "훈련 과정 목록 조회 성공",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "훈련 과정 목록 조회 실패",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "훈련 과정 목록 조회 실패",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "훈련 과정 목록 조회 API",
+        "tags": ["Training Info"]
+      },
+      "post": {
+        "description": "새로운 훈련 과정 정보를 저장합니다.\n\n### 사용 예시\n```javascript\nconst response = await fetch('/training_info', {\n  method: 'POST',\n  headers: {\n    'Content-Type': 'application/json',\n  },\n  credentials: 'include',\n  body: JSON.stringify({\n    training_course: \"데이터 분석 스쿨 100기\",\n    start_date: \"2025-01-02\",\n    end_date: \"2025-06-01\",\n    dept: \"TechSol\",\n    manager_name: \"홍길동\"\n  })\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "parameters": [
+          {
+            "description": "훈련 과정 정보를 JSON 형식으로 전달",
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "dept": {
+                  "example": "TechSol",
+                  "type": "string"
+                },
+                "end_date": {
+                  "example": "2025-06-01",
+                  "format": "date",
+                  "type": "string"
+                },
+                "manager_name": {
+                  "example": "홍길동",
+                  "type": "string"
+                },
+                "start_date": {
+                  "example": "2025-01-02",
+                  "format": "date",
+                  "type": "string"
+                },
+                "training_course": {
+                  "example": "데이터 분석 스쿨 100기",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "training_course",
+                "start_date",
+                "end_date",
+                "dept",
+                "manager_name"
+              ],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "훈련 과정 저장 성공",
+            "examples": {
+              "application/json": {
+                "summary": "훈련 과정 저장 성공 응답",
+                "value": {
+                  "data": {
+                    "dept": "TechSol",
+                    "end_date": "2025-06-01",
+                    "id": 1,
+                    "manager_name": "홍길동",
+                    "start_date": "2025-01-02",
+                    "training_course": "데이터 분석 스쿨 100기"
+                  },
+                  "message": "훈련 과정이 저장되었습니다!",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "properties": {
+                    "dept": {
+                      "example": "TechSol",
+                      "type": "string"
+                    },
+                    "end_date": {
+                      "example": "2025-06-01",
+                      "format": "date",
+                      "type": "string"
+                    },
+                    "id": {
+                      "example": 1,
+                      "type": "integer"
+                    },
+                    "manager_name": {
+                      "example": "홍길동",
+                      "type": "string"
+                    },
+                    "start_date": {
+                      "example": "2025-01-02",
+                      "format": "date",
+                      "type": "string"
+                    },
+                    "training_course": {
+                      "example": "데이터 분석 스쿨 100기",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "message": {
+                  "example": "훈련 과정이 저장되었습니다!",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "필수 필드 누락",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "필수 필드가 누락되었습니다.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 400,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "훈련 과정 저장 실패",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "훈련 과정 저장 실패",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "훈련 과정 정보 저장 API",
+        "tags": ["Training Info"]
+      }
+    },
+    "/unchecked_comments": {
+      "get": {
+        "description": "특정 미체크 항목의 댓글 목록을 조회합니다.\n\n### 사용 예시\n```javascript\nconst response = await fetch('/unchecked_comments?unchecked_id=1', {\n  method: 'GET',\n  credentials: 'include'\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "parameters": [
+          {
+            "description": "조회할 미체크 항목 ID",
+            "example": 1,
+            "in": "query",
+            "name": "unchecked_id",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "미체크 항목의 댓글 목록 반환",
+            "examples": {
+              "application/json": {
+                "summary": "댓글 목록 조회 성공 응답",
+                "value": {
+                  "data": [
+                    {
+                      "comment": "이 문제를 해결하기 위해 추가 조치가 필요합니다.",
+                      "created_at": "2025-01-15T10:30:00",
+                      "id": 1,
+                      "unchecked_id": 1
+                    },
+                    {
+                      "comment": "관련 부서에 문의하여 해결 방안을 모색하겠습니다.",
+                      "created_at": "2025-01-15T11:00:00",
+                      "id": 2,
+                      "unchecked_id": 1
+                    }
+                  ],
+                  "message": "미체크 항목 댓글 조회 성공",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "items": {
+                    "properties": {
+                      "comment": {
+                        "example": "이 문제를 해결하기 위해 추가 조치가 필요합니다.",
+                        "type": "string"
+                      },
+                      "created_at": {
+                        "example": "2025-01-15T10:30:00",
+                        "format": "date-time",
+                        "type": "string"
+                      },
+                      "id": {
+                        "example": 1,
+                        "type": "integer"
+                      },
+                      "unchecked_id": {
+                        "example": 1,
+                        "type": "integer"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "message": {
+                  "example": "미체크 항목 댓글 조회 성공",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "미체크 항목 ID 누락",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "미체크 항목 ID가 누락되었습니다.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 400,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "댓글 조회 실패",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "미체크 항목 댓글 조회 실패",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "미체크 항목의 댓글 조회 API",
+        "tags": ["Unchecked Comments"]
+      },
+      "post": {
+        "description": "특정 미체크 항목에 댓글을 추가합니다.\n\n### 사용 예시\n```javascript\nconst response = await fetch('/unchecked_comments', {\n  method: 'POST',\n  headers: {\n    'Content-Type': 'application/json',\n  },\n  credentials: 'include',\n  body: JSON.stringify({\n    unchecked_id: 1,\n    comment: \"이 문제를 해결하기 위해 추가 조치가 필요합니다.\"\n  })\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "comment": {
+                  "description": "댓글 내용",
+                  "example": "이 문제를 해결하기 위해 추가 조치가 필요합니다.",
+                  "type": "string"
+                },
+                "unchecked_id": {
+                  "description": "미체크 항목 ID",
+                  "example": 1,
+                  "type": "integer"
+                }
+              },
+              "required": ["unchecked_id", "comment"],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "댓글 저장 성공",
+            "examples": {
+              "application/json": {
+                "summary": "댓글 저장 성공 응답",
+                "value": {
+                  "data": null,
+                  "message": "댓글이 저장되었습니다.",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "example": null,
+                  "type": null
+                },
+                "message": {
+                  "example": "댓글이 저장되었습니다.",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "요청 데이터 오류",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "요청 데이터가 올바르지 않습니다.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 400,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "서버 오류 발생",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "댓글 저장 실패",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "미체크 항목에 댓글 추가 API",
+        "tags": ["Unchecked Comments"]
+      }
+    },
+    "/unchecked_descriptions": {
+      "get": {
+        "description": "미체크 항목의 설명과 액션 플랜을 부서명과 함께 조회합니다.\n\n### 사용 예시\n```javascript\nconst response = await fetch('/unchecked_descriptions', {\n  method: 'GET',\n  credentials: 'include'\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "responses": {
+          "200": {
+            "description": "미체크 항목 목록 조회 성공",
+            "examples": {
+              "application/json": {
+                "summary": "미체크 항목 목록 조회 성공 응답",
+                "value": {
+                  "data": [
+                    {
+                      "action_plan": "매일 출석을 체크하도록 안내",
+                      "content": "출석 체크 미완료",
+                      "created_at": "2025-01-15T10:30:00",
+                      "deadline": "2025-01-18",
+                      "dept": "TechSol",
+                      "due_days": 3,
+                      "id": 1,
+                      "is_overdue": false,
+                      "resolved": false,
+                      "training_course": "데이터 분석 스쿨 4기"
+                    }
+                  ],
+                  "message": "미체크 항목 목록 조회 성공",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "items": {
+                    "properties": {
+                      "action_plan": {
+                        "example": "매일 출석을 체크하도록 안내",
+                        "type": "string"
+                      },
+                      "content": {
+                        "example": "출석 체크 미완료",
+                        "type": "string"
+                      },
+                      "created_at": {
+                        "example": "2025-01-15T10:30:00",
+                        "format": "date-time",
+                        "type": "string"
+                      },
+                      "deadline": {
+                        "example": "2025-01-18",
+                        "format": "date",
+                        "type": "string"
+                      },
+                      "dept": {
+                        "example": "TechSol",
+                        "type": "string"
+                      },
+                      "due_days": {
+                        "example": 3,
+                        "type": "integer"
+                      },
+                      "id": {
+                        "example": 1,
+                        "type": "integer"
+                      },
+                      "is_overdue": {
+                        "example": false,
+                        "type": "boolean"
+                      },
+                      "resolved": {
+                        "example": false,
+                        "type": "boolean"
+                      },
+                      "training_course": {
+                        "example": "데이터 분석 스쿨 4기",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "message": {
+                  "example": "미체크 항목 목록 조회 성공",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "미체크 항목 목록 조회 실패",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "미체크 항목 목록 조회 실패",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "미체크 항목 설명 및 액션 플랜 조회 API (부서명 포함)",
+        "tags": ["Unchecked Descriptions"]
+      },
+      "post": {
+        "description": "새로운 미체크 항목의 설명과 액션 플랜을 저장합니다.\n\n### 사용 예시\n```javascript\nconst response = await fetch('/unchecked_descriptions', {\n  method: 'POST',\n  headers: {\n    'Content-Type': 'application/json',\n  },\n  credentials: 'include',\n  body: JSON.stringify({\n    content: \"출석 체크 미완료\",\n    action_plan: \"매일 출석을 체크하도록 안내\",\n    training_course: \"데이터 분석 스쿨 4기\"\n  })\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "action_plan": {
+                  "description": "액션 플랜",
+                  "example": "매일 출석을 체크하도록 안내",
+                  "type": "string"
+                },
+                "content": {
+                  "description": "미체크 항목 내용",
+                  "example": "출석 체크 미완료",
+                  "type": "string"
+                },
+                "training_course": {
+                  "description": "훈련 과정명",
+                  "example": "데이터 분석 스쿨 4기",
+                  "type": "string"
+                }
+              },
+              "required": ["content", "action_plan", "training_course"],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "미체크 항목과 액션 플랜이 성공적으로 저장됨",
+            "examples": {
+              "application/json": {
+                "summary": "미체크 항목 저장 성공 응답",
+                "value": {
+                  "data": null,
+                  "message": "미체크 항목과 액션 플랜이 저장되었습니다!",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "example": null,
+                  "type": null
+                },
+                "message": {
+                  "example": "미체크 항목과 액션 플랜이 저장되었습니다!",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "필수 데이터 누락",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "필수 데이터가 누락되었습니다.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 400,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "서버 오류 발생",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "미체크 항목 저장 실패",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "미체크 항목 설명과 액션 플랜 저장 API",
+        "tags": ["Unchecked Descriptions"]
+      }
+    },
+    "/unchecked_descriptions/resolve": {
+      "post": {
+        "description": "특정 미체크 항목을 해결된 상태로 변경합니다.\n\n### 사용 예시\n```javascript\nconst response = await fetch('/unchecked_descriptions/resolve', {\n  method: 'POST',\n  headers: {\n    'Content-Type': 'application/json',\n  },\n  credentials: 'include',\n  body: JSON.stringify({\n    unchecked_id: 1\n  })\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "unchecked_id": {
+                  "description": "해결할 미체크 항목 ID",
+                  "example": 1,
+                  "type": "integer"
+                }
+              },
+              "required": ["unchecked_id"],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "미체크 항목 해결 성공",
+            "examples": {
+              "application/json": {
+                "summary": "미체크 항목 해결 성공 응답",
+                "value": {
+                  "data": null,
+                  "message": "미체크 항목이 해결되었습니다.",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "example": null,
+                  "type": null
+                },
+                "message": {
+                  "example": "미체크 항목이 해결되었습니다.",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "요청 데이터 오류",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "요청 데이터가 올바르지 않습니다.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 400,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "서버 오류 발생",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "미체크 항목 해결 실패",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "미체크 항목 해결 API",
+        "tags": ["Unchecked Descriptions"]
+      }
+    },
+    "/user/change-password": {
+      "post": {
+        "description": "현재 비밀번호를 확인한 후 새로운 비밀번호로 변경합니다.\n\n### 사용 예시\n```javascript\nconst response = await fetch('/user/change-password', {\n  method: 'POST',\n  headers: {\n    'Content-Type': 'application/json',\n  },\n  credentials: 'include',\n  body: JSON.stringify({\n    username: 'user123',\n    current_password: 'current123',\n    new_password: 'new123'\n  })\n});\n\nconst result = await response.json();\nconsole.log(result);\n```\n",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "current_password": {
+                  "description": "현재 비밀번호",
+                  "example": "current123",
+                  "type": "string"
+                },
+                "new_password": {
+                  "description": "새로운 비밀번호",
+                  "example": "new123",
+                  "type": "string"
+                },
+                "username": {
+                  "description": "사용자명",
+                  "example": "user123",
+                  "type": "string"
+                }
+              },
+              "required": ["username", "current_password", "new_password"],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "비밀번호 변경 성공",
+            "examples": {
+              "application/json": {
+                "summary": "비밀번호 변경 성공 응답",
+                "value": {
+                  "data": null,
+                  "message": "비밀번호가 성공적으로 변경되었습니다.",
+                  "success": true
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "data": {
+                  "example": null,
+                  "type": null
+                },
+                "message": {
+                  "example": "비밀번호가 성공적으로 변경되었습니다.",
+                  "type": "string"
+                },
+                "success": {
+                  "example": true,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "필수 데이터 누락 또는 유효성 검사 실패",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "모든 필드를 입력해주세요.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 400,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "현재 비밀번호가 일치하지 않음",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "현재 비밀번호가 일치하지 않습니다.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 401,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "서버 오류 발생",
+            "schema": {
+              "properties": {
+                "details": {
+                  "example": null,
+                  "type": "object"
+                },
+                "error": {
+                  "example": "비밀번호 변경 중 오류가 발생했습니다.",
+                  "type": "string"
+                },
+                "status_code": {
+                  "example": 500,
+                  "type": "integer"
+                },
+                "success": {
+                  "example": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "사용자 비밀번호 변경 API",
+        "tags": ["Authentication"]
+      }
+    }
+  },
+  "securityDefinitions": {
+    "sessionAuth": {
+      "description": "세션 기반 인증 (로그인 후 자동 설정)",
+      "in": "cookie",
+      "name": "session",
+      "type": "apiKey"
+    }
+  },
+  "swagger": "2.0"
+}
