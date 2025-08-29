@@ -1,5 +1,11 @@
+import IssueRegister from '@/components/bootcamp/IssueRegister';
+
 function IssuesTab() {
-  return <div>Issues</div>;
+  return (
+    <div>
+      <IssueRegister />
+    </div>
+  );
 }
 
 export default IssuesTab;
