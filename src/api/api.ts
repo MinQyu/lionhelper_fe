@@ -11,9 +11,9 @@
  */
 
 export type QueryParamsType = Record<string | number, any>;
-export type ResponseFormat = keyof Omit<Body, "body" | "bodyUsed">;
+export type ResponseFormat = keyof Omit<Body, 'body' | 'bodyUsed'>;
 
-export interface FullRequestParams extends Omit<RequestInit, "body"> {
+export interface FullRequestParams extends Omit<RequestInit, 'body'> {
   /** set parameter to `true` for call `securityWorker` for this request */
   secure?: boolean;
   /** request path */
@@ -34,14 +34,14 @@ export interface FullRequestParams extends Omit<RequestInit, "body"> {
 
 export type RequestParams = Omit<
   FullRequestParams,
-  "body" | "method" | "query" | "path"
+  'body' | 'method' | 'query' | 'path'
 >;
 
 export interface ApiConfig<SecurityDataType = unknown> {
   baseUrl?: string;
-  baseApiParams?: Omit<RequestParams, "baseUrl" | "cancelToken" | "signal">;
+  baseApiParams?: Omit<RequestParams, 'baseUrl' | 'cancelToken' | 'signal'>;
   securityWorker?: (
-    securityData: SecurityDataType | null,
+    securityData: SecurityDataType | null
   ) => Promise<RequestParams | void> | RequestParams | void;
   customFetch?: typeof fetch;
 }
@@ -55,26 +55,26 @@ export interface HttpResponse<D extends unknown, E extends unknown = unknown>
 type CancelToken = Symbol | string | number;
 
 export enum ContentType {
-  Json = "application/json",
-  JsonApi = "application/vnd.api+json",
-  FormData = "multipart/form-data",
-  UrlEncoded = "application/x-www-form-urlencoded",
-  Text = "text/plain",
+  Json = 'application/json',
+  JsonApi = 'application/vnd.api+json',
+  FormData = 'multipart/form-data',
+  UrlEncoded = 'application/x-www-form-urlencoded',
+  Text = 'text/plain',
 }
 
 export class HttpClient<SecurityDataType = unknown> {
-  public baseUrl: string = "";
+  public baseUrl: string = '';
   private securityData: SecurityDataType | null = null;
-  private securityWorker?: ApiConfig<SecurityDataType>["securityWorker"];
+  private securityWorker?: ApiConfig<SecurityDataType>['securityWorker'];
   private abortControllers = new Map<CancelToken, AbortController>();
   private customFetch = (...fetchParams: Parameters<typeof fetch>) =>
     fetch(...fetchParams);
 
   private baseApiParams: RequestParams = {
-    credentials: "same-origin",
+    credentials: 'include',
     headers: {},
-    redirect: "follow",
-    referrerPolicy: "no-referrer",
+    redirect: 'follow',
+    referrerPolicy: 'no-referrer',
   };
 
   constructor(apiConfig: ApiConfig<SecurityDataType> = {}) {
@@ -87,7 +87,7 @@ export class HttpClient<SecurityDataType = unknown> {
 
   protected encodeQueryParam(key: string, value: any) {
     const encodedKey = encodeURIComponent(key);
-    return `${encodedKey}=${encodeURIComponent(typeof value === "number" ? value : `${value}`)}`;
+    return `${encodedKey}=${encodeURIComponent(typeof value === 'number' ? value : `${value}`)}`;
   }
 
   protected addQueryParam(query: QueryParamsType, key: string) {
@@ -96,39 +96,39 @@ export class HttpClient<SecurityDataType = unknown> {
 
   protected addArrayQueryParam(query: QueryParamsType, key: string) {
     const value = query[key];
-    return value.map((v: any) => this.encodeQueryParam(key, v)).join("&");
+    return value.map((v: any) => this.encodeQueryParam(key, v)).join('&');
   }
 
   protected toQueryString(rawQuery?: QueryParamsType): string {
     const query = rawQuery || {};
     const keys = Object.keys(query).filter(
-      (key) => "undefined" !== typeof query[key],
+      key => 'undefined' !== typeof query[key]
     );
     return keys
-      .map((key) =>
+      .map(key =>
         Array.isArray(query[key])
           ? this.addArrayQueryParam(query, key)
-          : this.addQueryParam(query, key),
+          : this.addQueryParam(query, key)
       )
-      .join("&");
+      .join('&');
   }
 
   protected addQueryParams(rawQuery?: QueryParamsType): string {
     const queryString = this.toQueryString(rawQuery);
-    return queryString ? `?${queryString}` : "";
+    return queryString ? `?${queryString}` : '';
   }
 
   private contentFormatters: Record<ContentType, (input: any) => any> = {
     [ContentType.Json]: (input: any) =>
-      input !== null && (typeof input === "object" || typeof input === "string")
+      input !== null && (typeof input === 'object' || typeof input === 'string')
         ? JSON.stringify(input)
         : input,
     [ContentType.JsonApi]: (input: any) =>
-      input !== null && (typeof input === "object" || typeof input === "string")
+      input !== null && (typeof input === 'object' || typeof input === 'string')
         ? JSON.stringify(input)
         : input,
     [ContentType.Text]: (input: any) =>
-      input !== null && typeof input !== "string"
+      input !== null && typeof input !== 'string'
         ? JSON.stringify(input)
         : input,
     [ContentType.FormData]: (input: any) => {
@@ -142,9 +142,9 @@ export class HttpClient<SecurityDataType = unknown> {
           key,
           property instanceof Blob
             ? property
-            : typeof property === "object" && property !== null
+            : typeof property === 'object' && property !== null
               ? JSON.stringify(property)
-              : `${property}`,
+              : `${property}`
         );
         return formData;
       }, new FormData());
@@ -154,7 +154,7 @@ export class HttpClient<SecurityDataType = unknown> {
 
   protected mergeRequestParams(
     params1: RequestParams,
-    params2?: RequestParams,
+    params2?: RequestParams
   ): RequestParams {
     return {
       ...this.baseApiParams,
@@ -169,7 +169,7 @@ export class HttpClient<SecurityDataType = unknown> {
   }
 
   protected createAbortSignal = (
-    cancelToken: CancelToken,
+    cancelToken: CancelToken
   ): AbortSignal | undefined => {
     if (this.abortControllers.has(cancelToken)) {
       const abortController = this.abortControllers.get(cancelToken);
@@ -205,7 +205,7 @@ export class HttpClient<SecurityDataType = unknown> {
     ...params
   }: FullRequestParams): Promise<HttpResponse<T, E>> => {
     const secureParams =
-      ((typeof secure === "boolean" ? secure : this.baseApiParams.secure) &&
+      ((typeof secure === 'boolean' ? secure : this.baseApiParams.secure) &&
         this.securityWorker &&
         (await this.securityWorker(this.securityData))) ||
       {};
@@ -215,13 +215,13 @@ export class HttpClient<SecurityDataType = unknown> {
     const responseFormat = format || requestParams.format;
 
     return this.customFetch(
-      `${baseUrl || this.baseUrl || ""}${path}${queryString ? `?${queryString}` : ""}`,
+      `${baseUrl || this.baseUrl || ''}${path}${queryString ? `?${queryString}` : ''}`,
       {
         ...requestParams,
         headers: {
           ...(requestParams.headers || {}),
           ...(type && type !== ContentType.FormData
-            ? { "Content-Type": type }
+            ? { 'Content-Type': type }
             : {}),
         },
         signal:
@@ -229,11 +229,11 @@ export class HttpClient<SecurityDataType = unknown> {
             ? this.createAbortSignal(cancelToken)
             : requestParams.signal) || null,
         body:
-          typeof body === "undefined" || body === null
+          typeof body === 'undefined' || body === null
             ? null
             : payloadFormatter(body),
-      },
-    ).then(async (response) => {
+      }
+    ).then(async response => {
       const r = response as HttpResponse<T, E>;
       r.data = null as unknown as T;
       r.error = null as unknown as E;
@@ -241,7 +241,7 @@ export class HttpClient<SecurityDataType = unknown> {
       const data = !responseFormat
         ? r
         : await response[responseFormat]()
-            .then((data) => {
+            .then(data => {
               if (r.ok) {
                 r.data = data;
               } else {
@@ -249,7 +249,7 @@ export class HttpClient<SecurityDataType = unknown> {
               }
               return r;
             })
-            .catch((e) => {
+            .catch(e => {
               r.error = e;
               return r;
             });
@@ -369,8 +369,8 @@ export class Api<
       any
     >({
       path: `/`,
-      method: "GET",
-      format: "json",
+      method: 'GET',
+      format: 'json',
       ...params,
     });
 
@@ -386,7 +386,7 @@ export class Api<
     adminList: (params: RequestParams = {}) =>
       this.request<string, void>({
         path: `/admin`,
-        method: "GET",
+        method: 'GET',
         ...params,
       }),
 
@@ -406,7 +406,7 @@ export class Api<
          */
         date?: string;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<
         {
@@ -454,9 +454,9 @@ export class Api<
           }
       >({
         path: `/admin/task_status`,
-        method: "GET",
+        method: 'GET',
         query: query,
-        format: "json",
+        format: 'json',
         ...params,
       }),
 
@@ -502,8 +502,8 @@ export class Api<
         }
       >({
         path: `/admin/task_status_combined`,
-        method: "GET",
-        format: "json",
+        method: 'GET',
+        format: 'json',
         ...params,
       }),
 
@@ -543,8 +543,8 @@ export class Api<
         }
       >({
         path: `/admin/task_status_overall`,
-        method: "GET",
-        format: "json",
+        method: 'GET',
+        format: 'json',
         ...params,
       }),
   };
@@ -605,7 +605,7 @@ export class Api<
          */
         limit?: number;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<
         {
@@ -673,9 +673,9 @@ export class Api<
           }
       >({
         path: `/attendance`,
-        method: "GET",
+        method: 'GET',
         query: query,
-        format: "json",
+        format: 'json',
         ...params,
       }),
 
@@ -726,7 +726,7 @@ export class Api<
          */
         training_course: string;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<
         {
@@ -778,10 +778,10 @@ export class Api<
           }
       >({
         path: `/attendance`,
-        method: "POST",
+        method: 'POST',
         body: body,
         type: ContentType.Json,
-        format: "json",
+        format: 'json',
         ...params,
       }),
   };
@@ -797,7 +797,7 @@ export class Api<
     frontForProList: (params: RequestParams = {}) =>
       this.request<string, void>({
         path: `/front_for_pro`,
-        method: "GET",
+        method: 'GET',
         ...params,
       }),
   };
@@ -827,8 +827,8 @@ export class Api<
         any
       >({
         path: `/healthcheck`,
-        method: "GET",
-        format: "json",
+        method: 'GET',
+        format: 'json',
         ...params,
       }),
   };
@@ -876,8 +876,8 @@ export class Api<
         }
       >({
         path: `/irregular_tasks`,
-        method: "GET",
-        format: "json",
+        method: 'GET',
+        format: 'json',
         ...params,
       }),
 
@@ -910,7 +910,7 @@ export class Api<
           task_name?: string;
         }[];
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<
         {
@@ -933,10 +933,10 @@ export class Api<
         }
       >({
         path: `/irregular_tasks`,
-        method: "POST",
+        method: 'POST',
         body: body,
         type: ContentType.Json,
-        format: "json",
+        format: 'json',
         ...params,
       }),
   };
@@ -1008,8 +1008,8 @@ export class Api<
         }
       >({
         path: `/issues`,
-        method: "GET",
-        format: "json",
+        method: 'GET',
+        format: 'json',
         ...params,
       }),
 
@@ -1044,7 +1044,7 @@ export class Api<
          */
         username: string;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<
         {
@@ -1097,10 +1097,10 @@ export class Api<
           }
       >({
         path: `/issues`,
-        method: "POST",
+        method: 'POST',
         body: body,
         type: ContentType.Json,
-        format: "json",
+        format: 'json',
         ...params,
       }),
 
@@ -1120,7 +1120,7 @@ export class Api<
          */
         issue_id: number;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<
         {
@@ -1156,9 +1156,9 @@ export class Api<
         }
       >({
         path: `/issues/comments`,
-        method: "GET",
+        method: 'GET',
         query: query,
-        format: "json",
+        format: 'json',
         ...params,
       }),
 
@@ -1188,7 +1188,7 @@ export class Api<
          */
         issue_id: number;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<
         {
@@ -1244,10 +1244,10 @@ export class Api<
           }
       >({
         path: `/issues/comments`,
-        method: "POST",
+        method: 'POST',
         body: body,
         type: ContentType.Json,
-        format: "json",
+        format: 'json',
         ...params,
       }),
 
@@ -1274,7 +1274,7 @@ export class Api<
         }
       >({
         path: `/issues/download`,
-        method: "GET",
+        method: 'GET',
         ...params,
       }),
 
@@ -1294,7 +1294,7 @@ export class Api<
          */
         issue_id: number;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<
         {
@@ -1347,10 +1347,10 @@ export class Api<
           }
       >({
         path: `/issues/resolve`,
-        method: "POST",
+        method: 'POST',
         body: body,
         type: ContentType.Json,
-        format: "json",
+        format: 'json',
         ...params,
       }),
   };
@@ -1376,7 +1376,7 @@ export class Api<
          */
         username: string;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<
         {
@@ -1427,10 +1427,10 @@ export class Api<
           }
       >({
         path: `/login`,
-        method: "POST",
+        method: 'POST',
         body: body,
         type: ContentType.Json,
-        format: "json",
+        format: 'json',
         ...params,
       }),
   };
@@ -1456,8 +1456,8 @@ export class Api<
         any
       >({
         path: `/logout`,
-        method: "POST",
-        format: "json",
+        method: 'POST',
+        format: 'json',
         ...params,
       }),
   };
@@ -1502,8 +1502,8 @@ export class Api<
         }
       >({
         path: `/me`,
-        method: "GET",
-        format: "json",
+        method: 'GET',
+        format: 'json',
         ...params,
       }),
   };
@@ -1539,7 +1539,7 @@ export class Api<
          */
         search?: string;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<
         {
@@ -1603,9 +1603,9 @@ export class Api<
           }
       >({
         path: `/notices`,
-        method: "GET",
+        method: 'GET',
         query: query,
-        format: "json",
+        format: 'json',
         ...params,
       }),
 
@@ -1640,7 +1640,7 @@ export class Api<
          */
         type?: string;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<
         {
@@ -1698,10 +1698,10 @@ export class Api<
           }
       >({
         path: `/notices`,
-        method: "POST",
+        method: 'POST',
         body: body,
         type: ContentType.Json,
-        format: "json",
+        format: 'json',
         ...params,
       }),
 
@@ -1726,7 +1726,7 @@ export class Api<
          */
         username: string;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<
         {
@@ -1770,10 +1770,10 @@ export class Api<
           }
       >({
         path: `/notices/read`,
-        method: "POST",
+        method: 'POST',
         body: body,
         type: ContentType.Json,
-        format: "json",
+        format: 'json',
         ...params,
       }),
 
@@ -1793,7 +1793,7 @@ export class Api<
          */
         notice_id: number;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<
         {
@@ -1835,9 +1835,9 @@ export class Api<
           }
       >({
         path: `/notices/reads`,
-        method: "GET",
+        method: 'GET',
         query: query,
-        format: "json",
+        format: 'json',
         ...params,
       }),
 
@@ -1896,8 +1896,8 @@ export class Api<
           }
       >({
         path: `/notices/${noticeId}`,
-        method: "DELETE",
-        format: "json",
+        method: 'DELETE',
+        format: 'json',
         ...params,
       }),
 
@@ -1921,7 +1921,7 @@ export class Api<
         /** @example "홍길동" */
         username?: string;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<
         {
@@ -1979,10 +1979,10 @@ export class Api<
           }
       >({
         path: `/notices/${noticeId}`,
-        method: "PUT",
+        method: 'PUT',
         body: body,
         type: ContentType.Json,
-        format: "json",
+        format: 'json',
         ...params,
       }),
   };
@@ -2003,7 +2003,7 @@ export class Api<
          */
         username: string;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<
         {
@@ -2042,9 +2042,9 @@ export class Api<
           }
       >({
         path: `/notifications/unread-count`,
-        method: "GET",
+        method: 'GET',
         query: query,
-        format: "json",
+        format: 'json',
         ...params,
       }),
   };
@@ -2065,7 +2065,7 @@ export class Api<
          */
         task_category?: string;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<
         {
@@ -2100,9 +2100,9 @@ export class Api<
         }
       >({
         path: `/tasks`,
-        method: "GET",
+        method: 'GET',
         query: query,
-        format: "json",
+        format: 'json',
         ...params,
       }),
 
@@ -2140,7 +2140,7 @@ export class Api<
          */
         username: string;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<
         {
@@ -2173,10 +2173,10 @@ export class Api<
           }
       >({
         path: `/tasks`,
-        method: "POST",
+        method: 'POST',
         body: body,
         type: ContentType.Json,
-        format: "json",
+        format: 'json',
         ...params,
       }),
 
@@ -2209,7 +2209,7 @@ export class Api<
           task_name: string;
         }[];
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<
         {
@@ -2246,10 +2246,10 @@ export class Api<
           }
       >({
         path: `/tasks/update`,
-        method: "PUT",
+        method: 'PUT',
         body: body,
         type: ContentType.Json,
-        format: "json",
+        format: 'json',
         ...params,
       }),
   };
@@ -2284,8 +2284,8 @@ export class Api<
         }
       >({
         path: `/training_courses`,
-        method: "GET",
-        format: "json",
+        method: 'GET',
+        format: 'json',
         ...params,
       }),
   };
@@ -2338,8 +2338,8 @@ export class Api<
         }
       >({
         path: `/training_info`,
-        method: "GET",
-        format: "json",
+        method: 'GET',
+        format: 'json',
         ...params,
       }),
 
@@ -2370,7 +2370,7 @@ export class Api<
         /** @example "데이터 분석 스쿨 100기" */
         training_course: string;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<
         {
@@ -2421,10 +2421,10 @@ export class Api<
           }
       >({
         path: `/training_info`,
-        method: "POST",
+        method: 'POST',
         body: body,
         type: ContentType.Json,
-        format: "json",
+        format: 'json',
         ...params,
       }),
   };
@@ -2445,7 +2445,7 @@ export class Api<
          */
         unchecked_id: number;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<
         {
@@ -2489,9 +2489,9 @@ export class Api<
           }
       >({
         path: `/unchecked_comments`,
-        method: "GET",
+        method: 'GET',
         query: query,
-        format: "json",
+        format: 'json',
         ...params,
       }),
 
@@ -2516,7 +2516,7 @@ export class Api<
          */
         unchecked_id: number;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<
         {
@@ -2549,10 +2549,10 @@ export class Api<
           }
       >({
         path: `/unchecked_comments`,
-        method: "POST",
+        method: 'POST',
         body: body,
         type: ContentType.Json,
-        format: "json",
+        format: 'json',
         ...params,
       }),
   };
@@ -2613,8 +2613,8 @@ export class Api<
         }
       >({
         path: `/unchecked_descriptions`,
-        method: "GET",
-        format: "json",
+        method: 'GET',
+        format: 'json',
         ...params,
       }),
 
@@ -2644,7 +2644,7 @@ export class Api<
          */
         training_course: string;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<
         {
@@ -2677,10 +2677,10 @@ export class Api<
           }
       >({
         path: `/unchecked_descriptions`,
-        method: "POST",
+        method: 'POST',
         body: body,
         type: ContentType.Json,
-        format: "json",
+        format: 'json',
         ...params,
       }),
 
@@ -2700,7 +2700,7 @@ export class Api<
          */
         unchecked_id: number;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<
         {
@@ -2733,10 +2733,10 @@ export class Api<
           }
       >({
         path: `/unchecked_descriptions/resolve`,
-        method: "POST",
+        method: 'POST',
         body: body,
         type: ContentType.Json,
-        format: "json",
+        format: 'json',
         ...params,
       }),
   };
@@ -2767,7 +2767,7 @@ export class Api<
          */
         username: string;
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<
         {
@@ -2810,10 +2810,10 @@ export class Api<
           }
       >({
         path: `/user/change-password`,
-        method: "POST",
+        method: 'POST',
         body: body,
         type: ContentType.Json,
-        format: "json",
+        format: 'json',
         ...params,
       }),
   };

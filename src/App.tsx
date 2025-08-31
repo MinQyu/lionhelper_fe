@@ -7,16 +7,37 @@ import BootcampOverview from '@/pages/bootcamp/overview';
 import BootcampDetail from '@/pages/bootcamp/[CourseName]';
 import Notice from '@/pages/notice';
 import Admin from '@/pages/admin';
-import Landing from './pages/Landing';
+import Login from '@/pages/login';
+import PrivateRoute from '@/components/PrivateRoute';
+import { useEffect } from 'react';
+import { useAuthStore } from '@/store/authStore';
 
-function App() {
+function AppContent() {
+  const { checkAuthStatus, initialized } = useAuthStore();
+
+  useEffect(() => {
+    checkAuthStatus();
+  }, [checkAuthStatus]);
+
+  if (!initialized) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-gray-600">로딩 중...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/uiguide" element={<UIGuide />} />
+    <Routes>
+      <Route path="/uiguide" element={<UIGuide />} />
+      <Route path="/" element={<Login />} />
 
-        <Route element={<Layout />}>
+      {/* 보호된 라우트들 */}
+      <Route element={<Layout />}>
+        <Route element={<PrivateRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/bootcamp" element={<BootcampIndex />} />
           <Route path="/bootcamp/overview" element={<BootcampOverview />} />
@@ -24,7 +45,15 @@ function App() {
           <Route path="/notice" element={<Notice />} />
           <Route path="/admin" element={<Admin />} />
         </Route>
-      </Routes>
+      </Route>
+    </Routes>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   );
 }
