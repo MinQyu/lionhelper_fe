@@ -36,6 +36,7 @@ function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
 
   return (
     <input
+      type={type}
       {...props}
       {...extraProps}
       data-slot="input"
