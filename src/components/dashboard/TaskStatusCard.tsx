@@ -6,9 +6,10 @@ interface TaskStatusCardProps {
   daily_task: boolean;
   unchecked_task: number;
   issue: number;
-  check_rate: number;
+  check_rate: string;
   start_date: Date;
   end_date: Date;
+  training_course: string;
 }
 
 interface PeriodicTask {
@@ -66,6 +67,7 @@ function TaskStatusCard({
   check_rate,
   start_date,
   end_date,
+  training_course,
 }: TaskStatusCardProps) {
   const periodicTasks = getPeriodicTask(start_date, end_date);
 
@@ -74,49 +76,60 @@ function TaskStatusCard({
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <h4 className="font-semibold">업무 현황</h4>
-          <Link to="/" className="hover:underline cursor-pointer text-sm">
+          <Link
+            to={`/bootcamp/${training_course}`}
+            className="hover:underline cursor-pointer text-sm xl:text-base"
+          >
             관리 페이지 이동 {`->`}
           </Link>
         </div>
         <div className="space-y-2">
           <Card variant="outlined" className="flex justify-between px-3 py-2">
-            <span className="text-sm">오늘의 업무</span>
+            <span className="text-sm flex items-center xl:text-base">
+              오늘의 업무
+            </span>
             <Badge
               variant={daily_task ? 'success' : 'destructive'}
-              className="w-14 px-0"
+              className="w-14 xl:w-18 px-0"
             >
               {daily_task ? '완료' : '미완료'}
             </Badge>
           </Card>
           <Card variant="outlined" className="flex justify-between px-3 py-2">
-            <span className="text-sm">미체크 항목</span>
+            <span className="text-sm flex items-center xl:text-base">
+              미체크 항목
+            </span>
             <Badge
               variant={unchecked_task > 0 ? 'destructive' : 'success'}
-              className="w-14"
+              className="w-14 xl:w-18"
             >
               {unchecked_task}개
             </Badge>
           </Card>
           <Card variant="outlined" className="flex justify-between px-3 py-2">
-            <span className="text-sm">이슈사항</span>
+            <span className="text-sm flex items-center xl:text-base">
+              이슈사항
+            </span>
             <Badge
               variant={issue > 0 ? 'destructive' : 'success'}
-              className="w-14"
+              className="w-14 xl:w-18"
             >
               {issue}개
             </Badge>
           </Card>
           <Card variant="outlined" className="flex flex-col gap-2 px-3 py-2">
             <div className="flex justify-between">
-              <span className="text-sm">누적 체크율</span>
-              <Badge variant="secondary" className="w-14">
-                {check_rate}%
+              <span className="text-sm flex items-center xl:text-base">
+                누적 체크율
+              </span>
+              <Badge variant="secondary" className="w-14 xl:w-18">
+                {check_rate}
               </Badge>
             </div>
             <div className="bg-secondary h-2 rounded-full">
               <div
                 className="bg-primary h-2 rounded-full"
-                style={{ width: `${check_rate}%` }}
+                style={{ width: `${check_rate}` }}
               ></div>
             </div>
           </Card>
