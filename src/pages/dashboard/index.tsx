@@ -158,7 +158,7 @@ function Dashboard() {
       daily_task: Math.random() > 0.5, // 임시 데이터
       unchecked_task: Math.floor(Math.random() * 10),
       issue: Math.floor(Math.random() * 5),
-      check_rate: course.overall_check_rate,
+      check_rate: course.overall_check_rate as string,
       start_date: new Date(), // 임시로 현재 날짜 사용
       end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 임시로 30일 후
     };
