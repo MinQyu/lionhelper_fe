@@ -1,6 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import { BookOpen } from 'lucide-react';
-import { useBootcampStore } from '@/store';
+import { useEffect, useState } from 'react';
+import { apiClient } from '@/api/apiClient';
 
 interface SubSidebarProps {
   isVisible: boolean;
@@ -14,11 +15,53 @@ function SubSidebar({
   onMouseLeave,
 }: SubSidebarProps) {
   const { CourseName } = useParams<{ CourseName: string }>();
-  const courses = useBootcampStore(state => state.courses);
+  const [courseNames, setCourseNames] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      setIsLoading(true);
+      try {
+        const response = await apiClient.trainingCourses.trainingCoursesList();
+        if (response.data.success && response.data.data) {
+          setCourseNames(response.data.data);
+        }
+      } catch (error) {
+        console.error('코스 목록 조회 오류:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCourses();
+  }, []);
 
   const isActiveCourse = (courseName: string) => {
-    return CourseName === courseName;
+    // URL 디코딩된 CourseName과 비교
+    const decodedCourseName = CourseName ? decodeURIComponent(CourseName) : '';
+    return decodedCourseName === courseName;
   };
+
+  if (isLoading) {
+    return (
+      <div
+        className={`fixed left-56 xl:left-64 top-0 h-screen bg-sidebar border-r border-border shadow-lg transition-all duration-200 ease-in-out z-50 ${
+          isVisible
+            ? 'translate-x-0 opacity-100'
+            : '-translate-x-full opacity-0 pointer-events-none'
+        }`}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+      >
+        <div className="p-4 h-full xl:p-5 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">코스 목록을 불러오는 중...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -30,8 +73,8 @@ function SubSidebar({
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      <div className="p-4 h-full xl:p-5">
-        <div className="mb-6 pt-2 pl-2.5">
+      <div className="p-4 h-full xl:p-5 flex flex-col">
+        <div className="mb-6 pt-2 pl-2.5 flex-shrink-0">
           <h2 className="text-lg xl:text-xl font-bold text-foreground">
             부트캠프 과정 목록
           </h2>
@@ -40,14 +83,14 @@ function SubSidebar({
           </p>
         </div>
 
-        <nav>
-          <ul className="space-y-2">
-            {courses.map(course => (
-              <li key={course.id}>
+        <nav className="flex-1 overflow-y-auto min-h-0">
+          <ul className="space-y-2 pr-2">
+            {courseNames.map(course => (
+              <li key={course}>
                 <Link
-                  to={`/bootcamp/${course.training_course}`}
+                  to={`/bootcamp/${encodeURIComponent(course)}`}
                   className={`block p-2 rounded-lg transition-colors hover:bg-menu-hover border ${
-                    isActiveCourse(course.training_course)
+                    isActiveCourse(course)
                       ? 'bg-menu-active text-primary border-primary/20'
                       : 'text-foreground border-transparent'
                   }`}
@@ -56,7 +99,7 @@ function SubSidebar({
                     <BookOpen className="w-5 h-5 flex-shrink-0" />
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-sm xl:text-base leading-tight">
-                        {course.training_course}
+                        {course}
                       </h3>
                     </div>
                   </div>

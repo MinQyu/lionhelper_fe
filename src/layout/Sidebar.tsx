@@ -1,6 +1,7 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Home, LaptopMinimalCheck, Bell, Shield, LogOut } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
+import { useAuthStore } from '@/store/authStore';
 
 interface MenuItem {
   id: string;
@@ -51,6 +52,9 @@ interface SidebarProps {
 
 function Sidebar({ onCourseHover, onCourseLeave }: SidebarProps = {}) {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuthStore();
+
   const currentPath = location.pathname;
 
   const menuItems: MenuItem[] = [
@@ -87,6 +91,15 @@ function Sidebar({ onCourseHover, onCourseLeave }: SidebarProps = {}) {
     return currentPath === href;
   };
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/');
+    } catch (error) {
+      console.error('로그아웃 오류:', error);
+    }
+  };
+
   return (
     <aside className="w-56 xl:w-64 fixed bg-sidebar border-r border-border h-screen shadow-sm flex flex-col text-lg xl:text-xl z-100">
       <div className="p-4 flex-1 xl:p-5">
@@ -101,7 +114,9 @@ function Sidebar({ onCourseHover, onCourseLeave }: SidebarProps = {}) {
         </div>
 
         <div className="flex items-center pl-2 mt-10 mb-10">
-          <span className="font-bold">000님의 라이언헬퍼</span>
+          <span className="font-bold">
+            {user?.name || user?.username}님의 라이언헬퍼
+          </span>
         </div>
 
         <nav aria-label="메인 네비게이션">
@@ -126,7 +141,10 @@ function Sidebar({ onCourseHover, onCourseLeave }: SidebarProps = {}) {
 
       {/* 로그아웃 버튼 */}
       <div className="px-4 py-2 border-t border-border">
-        <button className="flex items-center gap-3 p-2 hover:cursor-pointer hover:text-primary rounded-lg transition-colors text-foreground w-full">
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-3 p-2 hover:cursor-pointer hover:text-primary rounded-lg transition-colors text-foreground w-full"
+        >
           <LogOut className="w-5 h-5" />
           <span className="font-bold">로그아웃</span>
         </button>
