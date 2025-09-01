@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import Tab from '@/layout/Tab';
 import TaskStatusCard from '@/components/dashboard/TaskStatusCard';
 import { useAuthStore } from '@/store/authStore';
+import { useBootcampStore } from '@/store/bootcampStore';
 import { apiClient } from '@/api/apiClient';
 
 interface TaskStatusData {
@@ -16,6 +17,7 @@ interface TaskStatusData {
 
 function Dashboard() {
   const { user } = useAuthStore();
+  const { getCourseByName, fetchCourses } = useBootcampStore();
   const [searchParams] = useSearchParams();
   const [activeCourseName, setActiveCourseName] = useState<string | null>(null);
   const [taskStatusData, setTaskStatusData] = useState<TaskStatusData[]>([]);
@@ -24,10 +26,14 @@ function Dashboard() {
 
   // taskStatusCombinedList API에서 데이터 가져오기
   useEffect(() => {
-    const fetchTaskStatus = async () => {
+    const fetchData = async () => {
       setIsLoading(true);
       setError(null);
       try {
+        // bootcampstore 데이터 로드
+        await fetchCourses();
+
+        // taskStatusCombinedList API 호출
         const response = await apiClient.admin.taskStatusCombinedList();
         if (response.data.success && response.data.data) {
           // 사용자가 담당하는 과정만 필터링
@@ -53,15 +59,15 @@ function Dashboard() {
           );
         }
       } catch (error) {
-        console.error('태스크 상태 조회 오류:', error);
-        setError('태스크 상태를 불러오는 중 오류가 발생했습니다.');
+        console.error('데이터 조회 오류:', error);
+        setError('데이터를 불러오는 중 오류가 발생했습니다.');
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchTaskStatus();
-  }, [user]);
+    fetchData();
+  }, [user, fetchCourses]);
 
   useEffect(() => {
     const courseName = searchParams.get('course');
@@ -148,10 +154,18 @@ function Dashboard() {
     setActiveCourseName(value);
   };
 
-  // 현재 과정에 대한 태스크 데이터를 TaskStatusCard props에 맞게 변환
   const getTaskData = (courseName: string) => {
     const course = taskStatusData.find(c => c.training_course === courseName);
     if (!course) return null;
+
+    const bootcampCourse = getCourseByName(courseName);
+    const startDate = bootcampCourse?.start_date
+      ? new Date(bootcampCourse.start_date)
+      : new Date();
+
+    const endDate = bootcampCourse?.end_date
+      ? new Date(bootcampCourse.end_date)
+      : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
     return {
       training_course: courseName,
@@ -159,8 +173,8 @@ function Dashboard() {
       unchecked_task: Math.floor(Math.random() * 10),
       issue: Math.floor(Math.random() * 5),
       check_rate: course.overall_check_rate as string,
-      start_date: new Date(), // 임시로 현재 날짜 사용
-      end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 임시로 30일 후
+      start_date: startDate,
+      end_date: endDate,
     };
   };
 

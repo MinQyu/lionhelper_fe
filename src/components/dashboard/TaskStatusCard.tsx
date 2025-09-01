@@ -18,48 +18,6 @@ interface PeriodicTask {
   url: string;
 }
 
-const getPeriodicTask = (start_date: Date, end_date: Date): PeriodicTask[] => {
-  const periodic_task: PeriodicTask[] = [];
-  const today = new Date();
-  const start = new Date(start_date);
-  const end = new Date(end_date);
-
-  const getDiffDays = (start_date: Date, end_date: Date) => {
-    const diffTime = Math.abs(end_date.getTime() - start_date.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
-  };
-
-  // 금요일마다 주간 체크리스트
-  if (today.getDay() === 5) {
-    periodic_task.push({
-      id: 1,
-      description: '주간 체크리스트 작성일입니다',
-      url: '/',
-    });
-  }
-
-  // 개강 2주차 체크리스트
-  if (getDiffDays(start, today) === 14) {
-    periodic_task.push({
-      id: 2,
-      description: '개강 2주차 체크리스트 작성일입니다',
-      url: '/',
-    });
-  }
-
-  // 수료후 1주일간 수료 체크리스트
-  if (getDiffDays(end, today) >= 0 && getDiffDays(end, today) <= 7) {
-    periodic_task.push({
-      id: 3,
-      description: '수료 체크리스트 작성 기간입니다',
-      url: '/',
-    });
-  }
-
-  return periodic_task;
-};
-
 function TaskStatusCard({
   daily_task,
   unchecked_task,
@@ -69,6 +27,50 @@ function TaskStatusCard({
   end_date,
   training_course,
 }: TaskStatusCardProps) {
+  const getPeriodicTask = (
+    start_date: Date,
+    end_date: Date
+  ): PeriodicTask[] => {
+    const periodic_task: PeriodicTask[] = [];
+    const today = new Date();
+    const start = new Date(start_date);
+    const end = new Date(end_date);
+
+    const getDiffDays = (start_date: Date, end_date: Date) => {
+      const diffTime = Math.abs(end_date.getTime() - start_date.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      return diffDays;
+    };
+
+    // 금요일마다 주간 체크리스트
+    if (today.getDay() === 5) {
+      periodic_task.push({
+        id: 1,
+        description: '주간 체크리스트 작성일입니다',
+        url: `/bootcamp/${encodeURIComponent(training_course)}/?tab=periodic-task`,
+      });
+    }
+
+    // 개강 2주차 체크리스트
+    if (getDiffDays(start, today) === 14) {
+      periodic_task.push({
+        id: 2,
+        description: '개강 2주차 체크리스트 작성일입니다',
+        url: `/bootcamp/${encodeURIComponent(training_course)}/?tab=periodic-task`,
+      });
+    }
+
+    // 수료후 1주일간 수료 체크리스트
+    if (getDiffDays(end, today) >= 0 && getDiffDays(end, today) <= 7) {
+      periodic_task.push({
+        id: 3,
+        description: '수료 체크리스트 작성 기간입니다',
+        url: `/bootcamp/${encodeURIComponent(training_course)}/?tab=periodic-task`,
+      });
+    }
+
+    return periodic_task;
+  };
   const periodicTasks = getPeriodicTask(start_date, end_date);
 
   return (

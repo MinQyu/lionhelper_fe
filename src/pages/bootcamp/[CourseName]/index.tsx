@@ -53,7 +53,7 @@ function BootcampDetail() {
       <BootcampIndicator />
       <Tab
         items={tabItems}
-        basePath={`/bootcamp/${CourseName}`}
+        basePath={`/bootcamp/${encodeURIComponent(CourseName as string)}`}
         queryParam="tab"
       >
         {renderTabContent()}
