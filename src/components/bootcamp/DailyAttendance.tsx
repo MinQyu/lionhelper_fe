@@ -10,6 +10,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { MinusIcon, PlusIcon } from 'lucide-react';
+import { useParams } from 'react-router-dom';
+import { apiClient } from '@/api/apiClient';
 
 interface Attendance {
   role: string;
@@ -19,10 +21,12 @@ interface Attendance {
 }
 
 function DailyAttendance() {
+  const { CourseName } = useParams<{ CourseName: string }>();
   const [records, setRecords] = useState<Attendance[]>([
     { role: '', name: '', startTime: '', endTime: '' },
   ]);
   const [submitted, setSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const addRecord = () => {
     setRecords([
@@ -46,14 +50,55 @@ function DailyAttendance() {
     setRecords(updated);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     for (const rec of records) {
       if (!rec.role || !rec.name || !rec.startTime || !rec.endTime) {
         alert('모든 항목을 입력해주세요.');
         return;
       }
     }
-    setSubmitted(true);
+
+    if (!CourseName) {
+      alert('교육 과정 정보를 찾을 수 없습니다.');
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const promises = records.map(rec => {
+        const today = new Date();
+        const dateString = today.toISOString().split('T')[0]; // '2025-09-01' 형식
+        const instructorId = rec.role === '주강사' ? '1' : '2';
+
+        return apiClient.attendance.attendanceCreate({
+          date: dateString,
+          instructor: instructorId,
+          instructor_name: rec.name,
+          training_course: CourseName,
+          check_in_time: rec.startTime,
+          check_out_time: rec.endTime,
+          daily_log: true,
+        });
+      });
+
+      const responses = await Promise.all(promises);
+      const allSuccess = responses.every(response => response.data.success);
+      console.log(responses);
+      if (allSuccess) {
+        alert('출퇴근 기록이 성공적으로 등록되었습니다!');
+        setSubmitted(true);
+      } else {
+        alert('일부 기록 등록에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('출퇴근 기록 등록 오류:', error);
+      alert(
+        '출퇴근 기록 등록 중 오류가 발생했습니다. 백엔드 서버가 실행 중인지 확인해주세요.'
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -87,8 +132,12 @@ function DailyAttendance() {
                   <SelectValue placeholder="직급" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="주강사">주강사</SelectItem>
-                  <SelectItem value="보조강사">보조강사</SelectItem>
+                  <SelectItem value="주강사" id="1">
+                    주강사
+                  </SelectItem>
+                  <SelectItem value="보조강사" id="2">
+                    보조강사
+                  </SelectItem>
                 </SelectContent>
               </Select>
 
@@ -113,7 +162,7 @@ function DailyAttendance() {
                 placeholder="퇴근시간"
                 value={rec.endTime}
                 onChange={e => handleChange(index, 'endTime', e.target.value)}
-                className="w-36 text-center xl:w-40 xl:text-lg"
+                className="w-32 text-center xl:w-40 xl:text-lg"
               />
             </div>
 
@@ -134,9 +183,9 @@ function DailyAttendance() {
         <Button
           className="w-20 font-semibold"
           onClick={handleSubmit}
-          disabled={submitted}
+          disabled={submitted || isLoading}
         >
-          등록
+          {isLoading ? '등록 중...' : '등록'}
         </Button>
       </div>
     </Card>
