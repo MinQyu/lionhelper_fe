@@ -5,11 +5,11 @@ import { useState } from 'react';
 
 interface CheckListItemProps {
   item: {
-    id: number;
-    guide: string;
-    task_category: string;
-    task_name: string;
-    task_period: string;
+    id?: number;
+    guide?: string;
+    task_category?: string;
+    task_name?: string;
+    task_period?: string;
   };
   selectedValue: string;
   reason: string;
@@ -49,7 +49,7 @@ function CheckListItem({
         <div className="flex items-center space-x-4">
           <RadioGroup
             value={selectedValue}
-            onValueChange={value => onValueChange(item.id, value)}
+            onValueChange={value => onValueChange(item.id!, value)}
           >
             <div className="flex flex-row items-center space-x-4">
               <div className="flex items-center space-x-2">
@@ -69,7 +69,7 @@ function CheckListItem({
               <Input
                 placeholder="사유를 입력해주세요"
                 value={reason}
-                onChange={e => onInputChange(item.id, e.target.value)}
+                onChange={e => onInputChange(item.id!, e.target.value)}
               />
             </div>
           )}
