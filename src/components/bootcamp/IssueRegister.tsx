@@ -2,7 +2,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Api } from '@/api/api';
+import { apiClient } from '@/api/apiClient';
 
 function IssueRegister() {
   const { CourseName } = useParams<{ CourseName: string }>();
@@ -11,20 +11,14 @@ function IssueRegister() {
   const [isLoading, setIsLoading] = useState(false);
 
   // TODO: 커스텀 훅으로 전역에서 username 가져오기
-  const username = '사용자명'; // 임시로 하드코딩, 나중에 커스텀 훅으로 교체
+  const username = 'test'; // 임시로 하드코딩, 나중에 커스텀 훅으로 교체
 
   const placeholder = `이슈사항을 입력해주세요
 작성 예시: 
 - 배경: 이슈가 발생한 배경
 - 상황: 이슈 상황`;
 
-  // API 인스턴스 생성 - 나중에 배포 URL로 쉽게 변경 가능
-  const api = new Api({
-    // baseUrl: import.meta.env.VITE_API_BASE_URL || '', // 환경변수로 관리
-    baseApiParams: {
-      credentials: 'include', // 세션 쿠키 포함
-    },
-  });
+  // 전역 API 클라이언트 사용
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,7 +36,7 @@ function IssueRegister() {
     setIsLoading(true);
 
     try {
-      const response = await api.issues.issuesCreate({
+      const response = await apiClient.issues.issuesCreate({
         content: content.trim(),
         training_course: CourseName,
         username: username,
