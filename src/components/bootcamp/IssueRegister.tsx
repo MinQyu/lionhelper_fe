@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { apiClient } from '@/api/apiClient';
+import { useAuthStore } from '@/store/authStore';
 
 function IssueRegister() {
   const { CourseName } = useParams<{ CourseName: string }>();
@@ -11,7 +12,9 @@ function IssueRegister() {
   const [isLoading, setIsLoading] = useState(false);
 
   // TODO: 커스텀 훅으로 전역에서 username 가져오기
-  const username = 'test'; // 임시로 하드코딩, 나중에 커스텀 훅으로 교체
+  const {
+    user: { username },
+  } = useAuthStore() as { user: { username: string } };
 
   const placeholder = `이슈사항을 입력해주세요
 작성 예시: 
