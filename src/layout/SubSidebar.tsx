@@ -24,8 +24,7 @@ function SubSidebar({
       try {
         const response = await apiClient.trainingCourses.trainingCoursesList();
         if (response.data.success && response.data.data) {
-          // 임시로 'test 과정' 추가
-          setCourseNames([...response.data.data, 'test 과정']);
+          setCourseNames(response.data.data);
         }
       } catch (error) {
         console.error('코스 목록 조회 오류:', error);
