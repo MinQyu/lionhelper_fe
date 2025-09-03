@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import CheckListItem from './CheckListItem';
 import { useCheckListStore } from '@/store/checkListStore';
 import { apiClient } from '@/api/apiClient';
+import { useAuthStore } from '@/store/authStore';
 
 interface TaskCheckList {
   task_id: number;
@@ -34,6 +35,9 @@ function DailyCheckList() {
     setReason,
     resetForm,
   } = useCheckListStore();
+  const {
+    user: { username },
+  } = useAuthStore() as { user: { username: string } };
 
   // URL 파라미터에서 training_course 가져오기
   const trainingCourse = CourseName as string;
@@ -86,7 +90,7 @@ function DailyCheckList() {
           training_course: trainingCourse,
           is_checked: isChecked,
           checked_date: checkedDate,
-          username: '더미 사용자', // 나중에 전역 상태에서 가져올 값
+          username: username,
           user_id: 1, // 나중에 전역 상태에서 가져올 값
         });
 
@@ -124,13 +128,15 @@ function DailyCheckList() {
         is_checked: selectedValues[item.id?.toString() || ''] === 'true',
       }));
 
-      const success = await createTask({
+      const taskSuccess = await createTask({
         training_course: trainingCourse,
-        username: '더미 사용자', // 나중에 전역 상태에서 가져올 값
+        username: username,
         updates: updates,
       });
 
-      if (success) {
+      if (taskSuccess) {
+        let uncheckedSuccess = true;
+
         // 미체크 항목들을 uncheckedDescriptionsCreate로 전송
         if (unchecked.length > 0) {
           const uncheckedPromises = unchecked
@@ -139,7 +145,7 @@ function DailyCheckList() {
               if (task) {
                 return apiClient.uncheckedDescriptions.uncheckedDescriptionsCreate(
                   {
-                    content: task.task_name || '', // task_name을 content로
+                    description: task.task_name || '', // task_name을 description로
                     action_plan: uncheckedItem.reason, // 사유를 action_plan으로
                     training_course: trainingCourse,
                   }
@@ -152,22 +158,28 @@ function DailyCheckList() {
           if (uncheckedPromises.length > 0) {
             try {
               await Promise.all(uncheckedPromises);
-              console.log('미체크 항목들이 성공적으로 저장되었습니다.');
+              console.log('미체크 항목들이 성공적으로 등록되었습니다.');
             } catch (error) {
-              console.error('미체크 항목 저장 중 오류:', error);
+              console.error('미체크 항목 등록 중 오류:', error);
+              uncheckedSuccess = false;
             }
           }
         }
 
-        alert('체크리스트가 성공적으로 저장되었습니다!');
+        if (uncheckedSuccess) {
+          alert('체크리스트와 미체크 항목 모두 성공적으로 등록되었습니다!');
+        } else {
+          alert('체크리스트는 저장되었지만, 미체크 항목 등록에 실패했습니다.');
+        }
+
         // 성공 후 폼 초기화
         resetForm();
       } else {
-        alert('체크리스트 저장에 실패했습니다.');
+        alert('체크리스트 등록에 실패했습니다.');
       }
     } catch (error) {
-      console.error('체크리스트 저장 중 오류가 발생했습니다:', error);
-      alert('체크리스트 저장 중 오류가 발생했습니다.');
+      console.error('체크리스트 등록 중 오류가 발생했습니다:', error);
+      alert('체크리스트 등록 중 오류가 발생했습니다.');
     }
   };
 
