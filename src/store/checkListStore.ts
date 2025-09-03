@@ -36,14 +36,14 @@ interface CheckListStore {
   setError: (error: string | null) => void;
   clearError: () => void;
 
-  // 체크리스트 상태 관리
+  // daily 체크리스트 상태 관리
   setSelectedValue: (itemId: number, value: string) => void;
   setReason: (itemId: number, reason: string) => void;
   clearSelectedValues: () => void;
   clearReasons: () => void;
   resetForm: () => void;
 
-  // periodic 체크리스트를 위한 별도 상태
+  // periodic 체크리스트 상태 관리
   periodicSelectedValues: Record<string, string>;
   periodicReasons: Record<string, string>;
   currentPeriodicPeriod: string | null;
