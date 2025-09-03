@@ -75,7 +75,7 @@ function IssueRegister() {
           placeholder={placeholder}
           required
           disabled={isLoading}
-          className="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex w-full min-w-0 rounded-md border bg-transparent p-3 text-sm xl:text-base shadow-xs transition-[color,box-shadow] outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 min-h-[120px] resize-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]"
+          className="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex w-full min-w-0 rounded-md border bg-transparent p-3 text-sm xl:text-base shadow-xs transition-[color,box-shadow] outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 min-h-[120px] xl:min-h-[200px] resize-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]"
           style={{ whiteSpace: 'pre-line' }}
         />
 
