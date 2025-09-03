@@ -987,6 +987,7 @@ export class Api<
               training_course?: string;
               /** @example "홍길동" */
               username?: string;
+              created_by?: string;
             }[];
             /** @example "데이터 분석 스쿨 4기" */
             training_course?: string;
