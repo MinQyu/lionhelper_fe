@@ -612,9 +612,9 @@ export class Api<
           data?: {
             items?: {
               /** @example "09:00" */
-              check_in_time?: string;
+              check_in?: string;
               /** @example "18:00" */
-              check_out_time?: string;
+              check_out?: string;
               /** @example true */
               daily_log?: boolean;
               /**
@@ -680,7 +680,7 @@ export class Api<
       }),
 
     /**
-     * @description 새로운 출퇴근 기록을 저장합니다. ### 사용 예시 ```javascript const response = await fetch('/attendance', { method: 'POST', headers: { 'Content-Type': 'application/json', }, credentials: 'include', body: JSON.stringify({ date: '2025-01-15', instructor: '1', instructor_name: '홍길동', training_course: '데이터 분석 스쿨 4기', check_in_time: '09:00', check_out_time: '18:00', daily_log: true }) }); const result = await response.json(); console.log(result); ```
+     * @description 새로운 출퇴근 기록을 저장합니다. ### 사용 예시 ```javascript const response = await fetch('/attendance', { method: 'POST', headers: { 'Content-Type': 'application/json', }, credentials: 'include', body: JSON.stringify({ date: '2025-01-15', instructor: '1', instructor_name: '홍길동', training_course: '데이터 분석 스쿨 4기', check_in: '09:00', check_out: '18:00', daily_log: true }) }); const result = await response.json(); console.log(result); ```
      *
      * @tags Attendance
      * @name AttendanceCreate
@@ -693,12 +693,12 @@ export class Api<
          * 출근 시간 (HH:MM 형식)
          * @example "09:00"
          */
-        check_in_time: string;
+        check_in: string;
         /**
          * 퇴근 시간 (HH:MM 형식)
          * @example "18:00"
          */
-        check_out_time: string;
+        check_out: string;
         /**
          * 일일 로그 작성 여부
          * @example true
@@ -732,9 +732,9 @@ export class Api<
         {
           data?: {
             /** @example "09:00" */
-            check_in_time?: string;
+            check_in?: string;
             /** @example "18:00" */
-            check_out_time?: string;
+            check_out?: string;
             /** @example true */
             daily_log?: boolean;
             /**
@@ -968,7 +968,7 @@ export class Api<
                 id?: number;
               }[];
               /** @example "시스템 로그인이 안 되는 문제가 있습니다." */
-              content?: string;
+              issue?: string;
               /**
                * @format date-time
                * @example "2025-01-15T10:30:00"
@@ -2638,7 +2638,7 @@ export class Api<
          * 미체크 항목 내용
          * @example "출석 체크 미완료"
          */
-        content: string;
+        description: string;
         /**
          * 훈련 과정명
          * @example "데이터 분석 스쿨 4기"
