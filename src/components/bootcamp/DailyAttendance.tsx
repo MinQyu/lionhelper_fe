@@ -76,8 +76,8 @@ function DailyAttendance() {
           instructor: instructorId,
           instructor_name: rec.name,
           training_course: CourseName,
-          check_in_time: rec.startTime,
-          check_out_time: rec.endTime,
+          check_in: rec.startTime,
+          check_out: rec.endTime,
           daily_log: true,
         });
       });
@@ -93,9 +93,7 @@ function DailyAttendance() {
       }
     } catch (error) {
       console.error('출퇴근 기록 등록 오류:', error);
-      alert(
-        '출퇴근 기록 등록 중 오류가 발생했습니다. 백엔드 서버가 실행 중인지 확인해주세요.'
-      );
+      alert('출퇴근 기록 등록 중 오류가 발생했습니다.');
     } finally {
       setIsLoading(false);
     }
