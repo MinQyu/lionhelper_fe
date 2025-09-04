@@ -1,4 +1,4 @@
-function UncheckedTab() {
+function UncheckedTaskTab() {
   return (
     <div className="p-4">
       <h2 className="text-xl font-semibold mb-4">미체크 항목</h2>
@@ -7,4 +7,4 @@ function UncheckedTab() {
   );
 }
 
-export default UncheckedTab;
+export default UncheckedTaskTab;
