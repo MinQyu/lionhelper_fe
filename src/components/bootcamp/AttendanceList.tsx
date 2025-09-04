@@ -178,7 +178,7 @@ function AttendanceList() {
   }
 
   return (
-    <Card className="p-6">
+    <Card>
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold">출퇴근 기록 조회</h3>
