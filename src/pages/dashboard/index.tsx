@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import Tab from '@/layout/Tab';
 import TaskStatusCard from '@/components/dashboard/TaskStatusCard';
@@ -33,6 +33,70 @@ function Dashboard() {
   const [isLoading, setIsLoading] = useState(false);
   const [isTabLoading, setIsTabLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const getTaskData = useCallback(
+    async (courseName: string) => {
+      const course = taskStatusData.find(c => c.training_course === courseName);
+      if (!course) return null;
+
+      const bootcampCourse = getCourseByName(courseName);
+      const startDate = bootcampCourse?.start_date
+        ? new Date(bootcampCourse.start_date)
+        : new Date();
+
+      const endDate = bootcampCourse?.end_date
+        ? new Date(bootcampCourse.end_date)
+        : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+
+      try {
+        // 미체크 항목 수 조회
+        const uncheckedResponse =
+          await apiClient.uncheckedDescriptions.uncheckedDescriptionsList();
+        const uncheckedCount =
+          uncheckedResponse.data.success && uncheckedResponse.data.data
+            ? uncheckedResponse.data.data.filter(
+                item => item.training_course === courseName
+              ).length
+            : 0;
+
+        // 이슈 수 조회
+        const issuesResponse = await apiClient.issues.issuesList();
+        const issuesCount =
+          issuesResponse.data.success && issuesResponse.data.data
+            ? issuesResponse.data.data
+                .filter(courseData => courseData.training_course === courseName)
+                .reduce(
+                  (total, courseData) =>
+                    total + (courseData.issues?.length || 0),
+                  0
+                )
+            : 0;
+
+        return {
+          training_course: courseName,
+          daily_task: course.daily_check_rate === '100%',
+          unchecked_task: uncheckedCount,
+          issue: issuesCount,
+          check_rate: course.overall_check_rate as string,
+          start_date: startDate,
+          end_date: endDate,
+        };
+      } catch (error) {
+        console.error('데이터 조회 중 오류:', error);
+        // 에러 발생 시 기본값 반환
+        return {
+          training_course: courseName,
+          daily_task: course.daily_check_rate === '100%',
+          unchecked_task: 0,
+          issue: 0,
+          check_rate: course.overall_check_rate as string,
+          start_date: startDate,
+          end_date: endDate,
+        };
+      }
+    },
+    [taskStatusData, getCourseByName]
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -82,7 +146,7 @@ function Dashboard() {
 
   // activeCourseName이 변경될 때마다 taskData 로드
   useEffect(() => {
-    if (activeCourseName) {
+    if (activeCourseName && taskStatusData.length > 0) {
       const loadTaskData = async () => {
         setIsTabLoading(true);
         try {
@@ -96,7 +160,7 @@ function Dashboard() {
       };
       loadTaskData();
     }
-  }, [activeCourseName]);
+  }, [activeCourseName, taskStatusData, getTaskData]);
 
   const currentCourse = taskStatusData.find(
     course => course.training_course === activeCourseName
@@ -171,66 +235,6 @@ function Dashboard() {
 
   const handleTabChange = (value: string) => {
     setActiveCourseName(value);
-  };
-
-  const getTaskData = async (courseName: string) => {
-    const course = taskStatusData.find(c => c.training_course === courseName);
-    if (!course) return null;
-
-    const bootcampCourse = getCourseByName(courseName);
-    const startDate = bootcampCourse?.start_date
-      ? new Date(bootcampCourse.start_date)
-      : new Date();
-
-    const endDate = bootcampCourse?.end_date
-      ? new Date(bootcampCourse.end_date)
-      : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-
-    try {
-      // 미체크 항목 수 조회
-      const uncheckedResponse =
-        await apiClient.uncheckedDescriptions.uncheckedDescriptionsList();
-      const uncheckedCount =
-        uncheckedResponse.data.success && uncheckedResponse.data.data
-          ? uncheckedResponse.data.data.filter(
-              item => item.training_course === courseName
-            ).length
-          : 0;
-
-      // 이슈 수 조회
-      const issuesResponse = await apiClient.issues.issuesList();
-      const issuesCount =
-        issuesResponse.data.success && issuesResponse.data.data
-          ? issuesResponse.data.data
-              .filter(courseData => courseData.training_course === courseName)
-              .reduce(
-                (total, courseData) => total + (courseData.issues?.length || 0),
-                0
-              )
-          : 0;
-
-      return {
-        training_course: courseName,
-        daily_task: course.daily_check_rate === '100%',
-        unchecked_task: uncheckedCount,
-        issue: issuesCount,
-        check_rate: course.overall_check_rate as string,
-        start_date: startDate,
-        end_date: endDate,
-      };
-    } catch (error) {
-      console.error('데이터 조회 중 오류:', error);
-      // 에러 발생 시 기본값 반환
-      return {
-        training_course: courseName,
-        daily_task: course.daily_check_rate === '100%',
-        unchecked_task: 0,
-        issue: 0,
-        check_rate: course.overall_check_rate as string,
-        start_date: startDate,
-        end_date: endDate,
-      };
-    }
   };
 
   return (
