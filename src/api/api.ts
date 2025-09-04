@@ -968,7 +968,7 @@ export class Api<
                 id?: number;
               }[];
               /** @example "시스템 로그인이 안 되는 문제가 있습니다." */
-              issue?: string;
+              content?: string;
               /**
                * @format date-time
                * @example "2025-01-15T10:30:00"
@@ -1028,7 +1028,7 @@ export class Api<
          * 이슈 내용
          * @example "시스템 로그인이 안 되는 문제가 있습니다."
          */
-        content: string;
+        issue: string;
         /**
          * 이슈 발생 날짜 (선택사항)
          * @example "2025-01-15"
@@ -1182,7 +1182,7 @@ export class Api<
          * 작성자명
          * @example "관리자"
          */
-        created_by: string;
+        username: string;
         /**
          * 이슈 ID
          * @example 1

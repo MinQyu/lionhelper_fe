@@ -40,7 +40,7 @@ function IssueRegister() {
 
     try {
       const response = await apiClient.issues.issuesCreate({
-        content: content.trim(),
+        issue: content.trim(),
         training_course: CourseName,
         username: username,
         date: date || undefined,
@@ -48,17 +48,13 @@ function IssueRegister() {
 
       if (response.data.success) {
         alert('이슈가 성공적으로 생성되었습니다!');
-        // 폼 초기화
         setContent('');
         setDate('');
       }
     } catch (error: unknown) {
       console.error('이슈 생성 오류:', error);
 
-      // 간단한 에러 메시지 표시
-      alert(
-        '이슈 생성 중 오류가 발생했습니다. 백엔드 서버가 실행 중인지 확인해주세요.'
-      );
+      alert('이슈 생성 중 오류가 발생했습니다.');
     } finally {
       setIsLoading(false);
     }
