@@ -40,7 +40,7 @@ function CheckListItem({
             {isHovered && (
               <div className="absolute left-6 top-0 z-50 p-3 bg-popover border border-border rounded-md shadow-lg min-w-max max-w-xs">
                 <p className="text-sm xl:text-base text-center whitespace-normal">
-                  {item.guide}
+                  {item.guide ? item.guide : '업무 가이드 없음'}
                 </p>
               </div>
             )}
