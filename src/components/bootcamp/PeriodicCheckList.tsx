@@ -12,6 +12,7 @@ import {
 import CheckListItem from './CheckListItem';
 import { useCheckListStore } from '@/store/checkListStore';
 import { apiClient } from '@/api/apiClient';
+import { useAuthStore } from '@/store/authStore';
 
 interface TaskCheckList {
   task_id: number;
@@ -19,7 +20,6 @@ interface TaskCheckList {
   is_checked: boolean;
   checked_date: Date;
   username: string;
-  user_id: number;
 }
 
 interface UncheckedTask {
@@ -27,7 +27,6 @@ interface UncheckedTask {
   reason: string;
 }
 
-// 사용 가능한 period 옵션들
 const PERIOD_OPTIONS = [
   { value: 'weekly', label: '주간' },
   { value: '2weeks', label: '개강2주' },
@@ -51,6 +50,9 @@ function PeriodicCheckList() {
     setCurrentPeriodicPeriod,
     resetPeriodicForm,
   } = useCheckListStore();
+  const {
+    user: { username },
+  } = useAuthStore() as { user: { username: string } };
 
   // URL 파라미터에서 training_course 가져오기
   const trainingCourse = CourseName as string;
@@ -109,8 +111,7 @@ function PeriodicCheckList() {
           training_course: trainingCourse,
           is_checked: isChecked,
           checked_date: checkedDate,
-          username: '더미 사용자', // 나중에 전역 상태에서 가져올 값
-          user_id: 1, // 나중에 전역 상태에서 가져올 값
+          username: username,
         });
 
         // 미체크 항목인 경우 사유와 함께 별도 객체로 관리
@@ -155,7 +156,7 @@ function PeriodicCheckList() {
 
       const taskSuccess = await createTask({
         training_course: trainingCourse,
-        username: '더미 사용자', // 나중에 전역 상태에서 가져올 값
+        username: username,
         updates: updates,
       });
 
@@ -214,7 +215,6 @@ function PeriodicCheckList() {
     value => value === 'false'
   ).length;
 
-  // 로딩 중일 때 표시
   if (isLoading) {
     return (
       <Card>
@@ -228,7 +228,6 @@ function PeriodicCheckList() {
     );
   }
 
-  // 에러가 있을 때 표시
   if (error) {
     return (
       <Card>
@@ -270,7 +269,7 @@ function PeriodicCheckList() {
           <div className="text-center">
             <h3 className="text-lg font-semibold mb-2">기간을 선택해주세요</h3>
             <p className="text-muted-foreground">
-              위의 드롭다운에서 체크리스트를 볼 기간을 선택해주세요.
+              위의 드롭다운에서 기간을 선택해주세요.
             </p>
           </div>
         </div>
