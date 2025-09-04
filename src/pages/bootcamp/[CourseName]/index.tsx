@@ -5,6 +5,7 @@ import DailyTaskTab from './tabs/DailyTaskTab';
 import PeriodicTaskTab from './tabs/PeriodicTaskTab';
 import AttendanceTab from './tabs/AttendanceTab';
 import IssuesTab from './tabs/IssuesTab';
+import UncheckedTaskTab from './tabs/UncheckedTaskTab';
 import { useSearchParams } from 'react-router-dom';
 
 function BootcampDetail() {
@@ -24,6 +25,11 @@ function BootcampDetail() {
       id: 'periodic-task',
     },
     {
+      label: '미체크 항목',
+      value: 'unchecked-task',
+      id: 'unchecked-task',
+    },
+    {
       label: '이슈관리',
       value: 'issues',
       id: 'issues',
@@ -41,6 +47,8 @@ function BootcampDetail() {
         return <DailyTaskTab />;
       case 'periodic-task':
         return <PeriodicTaskTab />;
+      case 'unchecked-task':
+        return <UncheckedTaskTab />;
       case 'issues':
         return <IssuesTab />;
       case 'attendance':
