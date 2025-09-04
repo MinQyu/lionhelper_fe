@@ -179,7 +179,7 @@ function DailyAttendance() {
 
       <div className="flex justify-end">
         <Button
-          className="w-20 font-semibold"
+          className="w-16 xl:w-20 font-semibold"
           onClick={handleSubmit}
           disabled={submitted || isLoading}
         >
