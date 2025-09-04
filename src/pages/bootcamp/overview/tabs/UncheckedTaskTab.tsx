@@ -1,8 +1,16 @@
+import { useState } from 'react';
+import UncheckedTaskList from '@/components/bootcamp/UncheckedTaskList';
+
 function UncheckedTaskTab() {
+  const [selectedCourse, setSelectedCourse] = useState<string>('all');
+
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-semibold mb-4">미체크 항목</h2>
-      <p>미체크 항목</p>
+    <div>
+      <UncheckedTaskList
+        showCourseFilter={true}
+        selectedCourse={selectedCourse}
+        onCourseChange={setSelectedCourse}
+      />
     </div>
   );
 }

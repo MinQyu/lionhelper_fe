@@ -1,5 +1,14 @@
+import { useParams } from 'react-router-dom';
+import UncheckedTaskList from '@/components/bootcamp/UncheckedTaskList';
+
 function UncheckedTaskTab() {
-  return <div>UncheckedTaskTab</div>;
+  const { CourseName } = useParams<{ CourseName: string }>();
+
+  return (
+    <div>
+      <UncheckedTaskList courseFilter={CourseName} />
+    </div>
+  );
 }
 
 export default UncheckedTaskTab;
