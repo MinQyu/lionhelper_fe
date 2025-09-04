@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { apiClient } from '@/api/apiClient';
 import { Card } from '@/components/ui/card';
-import Issue from '@/components/bootcamp/Issue';
+import IssueItem from '@/components/bootcamp/IssueItem';
 
 export type IssuesResponse = NonNullable<
   Awaited<ReturnType<typeof apiClient.issues.issuesList>>['data']
@@ -79,7 +79,7 @@ function IssuesTab() {
               {courseData.issues && courseData.issues.length > 0 ? (
                 <div className="space-y-3">
                   {courseData.issues.map(issue => (
-                    <Issue
+                    <IssueItem
                       key={issue.id}
                       id={issue.id}
                       content={issue.content || ''}

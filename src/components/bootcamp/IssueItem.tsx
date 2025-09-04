@@ -19,7 +19,7 @@ interface IssueProps {
   onCommentAdded?: () => void;
 }
 
-function Issue({
+function IssueItem({
   id,
   content,
   created_by,
@@ -100,20 +100,8 @@ function Issue({
 
   return (
     <Card variant="outlined">
-      <div className="flex items-start justify-between mb-2">
-        <div className="flex-1">
-          <div className="text-sm xl:text-base text-gray-600 mb-1">
-            <span className="font-medium">작성자:</span> {created_by}
-          </div>
-          <div className="text-sm xl:text-base text-gray-600 mb-2">
-            <span className="font-medium">날짜:</span>{' '}
-            {created_at ? new Date(created_at).toLocaleString('ko-KR') : ''}
-          </div>
-          <div className="text-sm xl:text-base text-gray-900">
-            {formatContent(content || '')}
-          </div>
-        </div>
-        <div className="flex gap-2 ml-4">
+      <div className="relative mb-2">
+        <div className="absolute top-0 right-0 flex gap-2">
           <Button
             variant="default"
             onClick={handleResolve}
@@ -127,6 +115,16 @@ function Issue({
           >
             댓글 {comments?.length || 0}
           </Button>
+        </div>
+        <div className="text-sm xl:text-base text-gray-600 text-semibold mb-1 border-l-2 border-primary pl-2">
+          {created_by}
+        </div>
+        <div className="text-sm xl:text-base text-gray-600 mb-2 border-l-2 border-primary pl-2">
+          {' '}
+          {created_at ? new Date(created_at).toLocaleString('ko-KR') : ''}
+        </div>
+        <div className="text-sm xl:text-base text-gray-900">
+          {formatContent(content || '')}
         </div>
       </div>
 
@@ -192,4 +190,4 @@ function Issue({
   );
 }
 
-export default Issue;
+export default IssueItem;

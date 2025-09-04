@@ -86,7 +86,10 @@ function TaskStatusCard({
           </Link>
         </div>
         <div className="space-y-2">
-          <Card variant="outlined" className="flex justify-between px-3 py-2">
+          <Card
+            variant="outlined"
+            className="flex justify-between px-3 py-2 xl:px-3 xl:py-2"
+          >
             <span className="text-sm flex items-center xl:text-base">
               오늘의 업무
             </span>
@@ -97,7 +100,10 @@ function TaskStatusCard({
               {daily_task ? '완료' : '미완료'}
             </Badge>
           </Card>
-          <Card variant="outlined" className="flex justify-between px-3 py-2">
+          <Card
+            variant="outlined"
+            className="flex justify-between px-3 py-2 xl:px-3 xl:py-2"
+          >
             <span className="text-sm flex items-center xl:text-base">
               미체크 항목
             </span>
@@ -108,7 +114,10 @@ function TaskStatusCard({
               {unchecked_task}개
             </Badge>
           </Card>
-          <Card variant="outlined" className="flex justify-between px-3 py-2">
+          <Card
+            variant="outlined"
+            className="flex justify-between px-3 py-2 xl:px-3 xl:py-2"
+          >
             <span className="text-sm flex items-center xl:text-base">
               이슈사항
             </span>
@@ -119,7 +128,10 @@ function TaskStatusCard({
               {issue}개
             </Badge>
           </Card>
-          <Card variant="outlined" className="flex flex-col gap-2 px-3 py-2">
+          <Card
+            variant="outlined"
+            className="flex flex-col gap-2 px-3 py-2 xl:px-3 xl:py-2"
+          >
             <div className="flex justify-between">
               <span className="text-sm flex items-center xl:text-base">
                 누적 체크율
@@ -139,7 +151,11 @@ function TaskStatusCard({
           {periodicTasks.length > 0 && (
             <div className="space-y-2">
               {periodicTasks.map(task => (
-                <Card key={task.id} variant="outlined" className="px-3 py-2">
+                <Card
+                  key={task.id}
+                  variant="outlined"
+                  className="px-3 py-2 xl:px-3 xl:py-2"
+                >
                   <div className="flex items-center justify-between text-primary">
                     <Link
                       to={task.url}
