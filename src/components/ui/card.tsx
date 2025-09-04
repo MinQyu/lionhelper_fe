@@ -9,7 +9,7 @@ function Card({
 }: React.HTMLAttributes<HTMLDivElement> & {
   variant?: 'default' | 'bordered' | 'elevated' | 'outlined';
 }) {
-  const baseClasses = 'rounded-lg border-input px-5 py-4';
+  const baseClasses = 'rounded-lg border-input px-5 py-4 xl:px-6 xl:py-5';
 
   const cardClasses =
     variant !== 'outlined' ? 'bg-card text-card-foreground' : 'bg-transparent';
