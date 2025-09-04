@@ -2,7 +2,7 @@ import { useSearchParams } from 'react-router-dom';
 import Tab from '@/layout/Tab';
 import BootcampIndicator from '@/components/bootcamp/BootcampIndicator.tsx';
 import TaskStatusTab from './tabs/TaskStatusTab.tsx';
-import UncheckedTab from './tabs/UncheckedTab.tsx';
+import UncheckedTaskTab from './tabs/UncheckedTaskTab.tsx';
 import IssuesTab from './tabs/IssuesTab.tsx';
 
 function BootcampOverview() {
@@ -32,7 +32,7 @@ function BootcampOverview() {
       case 'task-status':
         return <TaskStatusTab />;
       case 'unchecked-description':
-        return <UncheckedTab />;
+        return <UncheckedTaskTab />;
       case 'issues':
         return <IssuesTab />;
     }

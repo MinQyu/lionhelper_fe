@@ -10,6 +10,7 @@ import { useParams } from 'react-router-dom';
 import { useBootcampStore } from '@/store/bootcampStore';
 import { apiClient } from '@/api/apiClient';
 import { useEffect, useState, useMemo, useCallback } from 'react';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
 
 // API 타입에서 attendance 추출
 export type AttendanceRecord = NonNullable<
@@ -153,10 +154,10 @@ function AttendanceList() {
   if (isLoading) {
     return (
       <Card className="p-6">
-        <div className="flex items-center justify-center h-32">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-          <span className="ml-2">출퇴근 기록을 불러오는 중...</span>
-        </div>
+        <LoadingSpinner
+          className="h-32"
+          message="출퇴근 기록을 불러오는 중..."
+        />
       </Card>
     );
   }

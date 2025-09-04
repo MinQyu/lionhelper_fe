@@ -5,6 +5,9 @@ import TaskStatusCard from '@/components/dashboard/TaskStatusCard';
 import { useAuthStore } from '@/store/authStore';
 import { useBootcampStore } from '@/store/bootcampStore';
 import { apiClient } from '@/api/apiClient';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
+import { ErrorState } from '@/components/ui/error-state';
+import { EmptyState } from '@/components/ui/empty-state';
 
 interface TaskStatusData {
   training_course?: string;
@@ -169,12 +172,7 @@ function Dashboard() {
   if (isLoading) {
     return (
       <div className="space-y-6 pt-16">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-muted-foreground">담당 과정을 불러오는 중...</p>
-          </div>
-        </div>
+        <LoadingSpinner className="h-64" message="담당 과정을 불러오는 중..." />
       </div>
     );
   }
@@ -182,14 +180,7 @@ function Dashboard() {
   if (error) {
     return (
       <div className="space-y-6 pt-16">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center">
-            <h3 className="text-lg font-semibold mb-2 text-destructive">
-              오류가 발생했습니다
-            </h3>
-            <p className="text-muted-foreground">{error}</p>
-          </div>
-        </div>
+        <ErrorState className="h-64" message={error} />
       </div>
     );
   }
@@ -197,14 +188,11 @@ function Dashboard() {
   if (!user) {
     return (
       <div className="space-y-6 pt-16">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center">
-            <h3 className="text-lg font-semibold mb-2">로그인이 필요합니다</h3>
-            <p className="text-muted-foreground">
-              대시보드를 보려면 로그인해주세요.
-            </p>
-          </div>
-        </div>
+        <EmptyState
+          className="h-64"
+          title="로그인이 필요합니다"
+          message="대시보드를 보려면 로그인해주세요."
+        />
       </div>
     );
   }
@@ -212,16 +200,11 @@ function Dashboard() {
   if (taskStatusData.length === 0) {
     return (
       <div className="space-y-6 pt-16">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center">
-            <h3 className="text-lg font-semibold mb-2">담당 과정이 없습니다</h3>
-            <p className="text-muted-foreground">
-              현재 담당하고 있는 과정이 없습니다.
-              <br />
-              관리자에게 문의하시기 바랍니다.
-            </p>
-          </div>
-        </div>
+        <EmptyState
+          className="h-64"
+          title="담당 과정이 없습니다"
+          message="현재 담당하고 있는 과정이 없습니다. 관리자에게 문의하시기 바랍니다."
+        />
       </div>
     );
   }
@@ -247,24 +230,16 @@ function Dashboard() {
         onTabChange={handleTabChange}
       >
         {isTabLoading ? (
-          <div className="flex items-center justify-center h-64">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-              <p className="text-muted-foreground">
-                과정 데이터를 불러오는 중...
-              </p>
-            </div>
-          </div>
+          <LoadingSpinner
+            className="h-64"
+            message="과정 데이터를 불러오는 중..."
+          />
         ) : currentTaskData && currentCourse ? (
           <div className="space-y-6">
             <TaskStatusCard {...currentTaskData} />
           </div>
         ) : (
-          <div className="flex items-center justify-center h-64">
-            <div className="text-center">
-              <p className="text-muted-foreground">과정을 선택해주세요</p>
-            </div>
-          </div>
+          <EmptyState className="h-64" title="과정을 선택해주세요" />
         )}
       </Tab>
     </div>

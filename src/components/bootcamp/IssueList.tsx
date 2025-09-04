@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { apiClient } from '@/api/apiClient';
 import { Card } from '@/components/ui/card';
 import IssueItem from '@/components/bootcamp/IssueItem';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
 
 export type IssuesResponse = NonNullable<
   Awaited<ReturnType<typeof apiClient.issues.issuesList>>['data']
@@ -59,12 +60,7 @@ function IssueList({ courseName, showHeader = true }: IssueListProps) {
   if (loading) {
     return (
       <div className="space-y-6 pt-16">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-muted-foreground">이슈를 불러오는 중...</p>
-          </div>
-        </div>
+        <LoadingSpinner className="h-64" message="이슈를 불러오는 중..." />
       </div>
     );
   }

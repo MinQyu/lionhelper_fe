@@ -9,6 +9,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import IssueList from '@/components/bootcamp/IssueList';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
+import { ErrorState } from '@/components/ui/error-state';
 
 export type IssuesResponse = NonNullable<
   Awaited<ReturnType<typeof apiClient.issues.issuesList>>['data']
@@ -48,12 +50,7 @@ function IssuesTab() {
   if (loading) {
     return (
       <div className="space-y-6 pt-16">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-muted-foreground">이슈를 불러오는 중...</p>
-          </div>
-        </div>
+        <LoadingSpinner className="h-64" message="이슈를 불러오는 중..." />
       </div>
     );
   }
@@ -62,9 +59,7 @@ function IssuesTab() {
     return (
       <div className="p-4">
         <h2 className="text-xl font-semibold mb-4">이슈 관리</h2>
-        <div className="bg-red-50 border border-red-200 rounded-md p-4">
-          <div className="text-red-800">{error}</div>
-        </div>
+        <ErrorState className="h-32" message={error} />
       </div>
     );
   }

@@ -10,6 +10,9 @@ import {
 import { Link } from 'react-router-dom';
 import { apiClient } from '@/api/apiClient';
 import { useMemo, useState, useEffect } from 'react';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
+import { ErrorState } from '@/components/ui/error-state';
+import { EmptyState } from '@/components/ui/empty-state';
 
 export type OverAllTaskStatus = NonNullable<
   NonNullable<
@@ -81,38 +84,21 @@ function TaskStatusTab() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">태스크 상태를 불러오는 중...</p>
-        </div>
-      </div>
+      <LoadingSpinner className="h-64" message="태스크 상태를 불러오는 중..." />
     );
   }
 
   if (error) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <h3 className="text-lg font-semibold mb-2 text-destructive">
-            오류가 발생했습니다
-          </h3>
-          <p className="text-muted-foreground">{error}</p>
-        </div>
-      </div>
-    );
+    return <ErrorState className="h-64" message={error} />;
   }
 
   if (taskStatusData.length === 0) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <h3 className="text-lg font-semibold mb-2">태스크 상태가 없습니다</h3>
-          <p className="text-muted-foreground">
-            등록된 태스크 상태가 없습니다.
-          </p>
-        </div>
-      </div>
+      <EmptyState
+        className="h-64"
+        title="태스크 상태가 없습니다"
+        message="등록된 태스크 상태가 없습니다."
+      />
     );
   }
 
