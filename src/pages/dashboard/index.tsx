@@ -54,13 +54,7 @@ function Dashboard() {
               );
             }
           );
-
-          // test 계정인 경우 모든 과정 표시
-          if (user?.username === 'test') {
-            setTaskStatusData(response.data.data);
-          } else {
-            setTaskStatusData(filteredData);
-          }
+          setTaskStatusData(filteredData);
         } else {
           setError(
             response.data.message || '태스크 상태를 불러올 수 없습니다.'
