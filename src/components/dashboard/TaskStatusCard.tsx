@@ -47,7 +47,7 @@ function TaskStatusCard({
       periodic_task.push({
         id: 1,
         description: '주간 체크리스트 작성일입니다',
-        url: `/bootcamp/${encodeURIComponent(training_course)}/?tab=periodic-task`,
+        url: `/bootcamp/${encodeURIComponent(training_course)}/?tab=periodic-task&period=weekly`,
       });
     }
 
@@ -56,7 +56,7 @@ function TaskStatusCard({
       periodic_task.push({
         id: 2,
         description: '개강 2주차 체크리스트 작성일입니다',
-        url: `/bootcamp/${encodeURIComponent(training_course)}/?tab=periodic-task`,
+        url: `/bootcamp/${encodeURIComponent(training_course)}/?tab=periodic-task&period=2weeks`,
       });
     }
 
@@ -65,7 +65,7 @@ function TaskStatusCard({
       periodic_task.push({
         id: 3,
         description: '수료 체크리스트 작성 기간입니다',
-        url: `/bootcamp/${encodeURIComponent(training_course)}/?tab=periodic-task`,
+        url: `/bootcamp/${encodeURIComponent(training_course)}/?tab=periodic-task&period=completion`,
       });
     }
 
@@ -143,7 +143,7 @@ function TaskStatusCard({
                   <div className="flex items-center justify-between text-primary">
                     <Link
                       to={task.url}
-                      className="text-sm hover:underline cursor-pointer flex-1"
+                      className="text-sm xl:text-base hover:underline cursor-pointer flex-1"
                     >
                       {task.description}
                     </Link>

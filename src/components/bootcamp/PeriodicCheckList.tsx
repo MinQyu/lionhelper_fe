@@ -1,7 +1,7 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import {
   Select,
   SelectContent,
@@ -36,6 +36,7 @@ const PERIOD_OPTIONS = [
 
 function PeriodicCheckList() {
   const { CourseName } = useParams<{ CourseName: string }>();
+  const [searchParams, setSearchParams] = useSearchParams();
   const {
     tasks,
     isLoading,
@@ -57,6 +58,9 @@ function PeriodicCheckList() {
   // URL 파라미터에서 training_course 가져오기
   const trainingCourse = CourseName as string;
 
+  // URL 파라미터에서 기간 가져오기
+  const periodFromUrl = searchParams.get('period');
+
   // 선택된 period에 따른 체크리스트만 필터링하고 id가 있는 항목만 포함
   const periodicTasks = currentPeriodicPeriod
     ? tasks.filter(
@@ -68,6 +72,13 @@ function PeriodicCheckList() {
   useEffect(() => {
     fetchTasks();
   }, [fetchTasks]);
+
+  // URL 파라미터와 상태 동기화
+  useEffect(() => {
+    if (periodFromUrl && periodFromUrl !== currentPeriodicPeriod) {
+      setCurrentPeriodicPeriod(periodFromUrl);
+    }
+  }, [periodFromUrl, currentPeriodicPeriod, setCurrentPeriodicPeriod]);
 
   const groupedData = periodicTasks.reduce(
     (acc, item) => {
@@ -94,6 +105,10 @@ function PeriodicCheckList() {
 
   const handlePeriodChange = (period: string) => {
     setCurrentPeriodicPeriod(period);
+    // URL 파라미터 업데이트
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set('period', period);
+    setSearchParams(newSearchParams);
   };
 
   // 체크리스트 데이터를 TaskCheckList 형태로 변환
