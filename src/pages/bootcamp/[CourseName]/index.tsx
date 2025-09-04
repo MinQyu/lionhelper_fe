@@ -30,7 +30,7 @@ function BootcampDetail() {
       id: 'unchecked-task',
     },
     {
-      label: '이슈관리',
+      label: '이슈 관리',
       value: 'issues',
       id: 'issues',
     },
