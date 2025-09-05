@@ -12,6 +12,7 @@ import {
 import { Card } from '@/components/ui/card';
 import { DatePicker } from '@/components/ui/date-picker';
 import { apiClient } from '@/api/apiClient';
+import { useBootcampStore } from '@/store/bootcampStore';
 import { Save } from 'lucide-react';
 
 // 부서 목록 (고정값)
@@ -45,6 +46,7 @@ interface FormData {
 
 function BootcampRegistration() {
   const navigate = useNavigate();
+  const { addCourse } = useBootcampStore();
   const [formData, setFormData] = useState<FormData>({
     courseName: '',
     generation: '',
@@ -94,15 +96,23 @@ function BootcampRegistration() {
     try {
       const trainingCourse = `${formData.courseName} ${formData.generation}기`;
 
+      const formatDateToString = (date: Date): string => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      };
+
       const response = await apiClient.trainingInfo.trainingInfoCreate({
         training_course: trainingCourse,
         dept: formData.dept,
         manager_name: formData.managerName,
-        start_date: formData.startDate!.toISOString().split('T')[0],
-        end_date: formData.endDate!.toISOString().split('T')[0],
+        start_date: formatDateToString(formData.startDate!),
+        end_date: formatDateToString(formData.endDate!),
       });
 
-      if (response.data.success) {
+      if (response.data.success && response.data.data) {
+        addCourse(response.data.data);
         alert('훈련과정이 성공적으로 등록되었습니다!');
         navigate('/bootcamp');
       } else {
@@ -161,7 +171,7 @@ function BootcampRegistration() {
             <Input
               id="generation"
               type="number"
-              placeholder="기수를 입력하세요"
+              placeholder="기수를 입력하세요(숫자만 입력)"
               value={formData.generation}
               onChange={e => handleInputChange('generation', e.target.value)}
               min="1"
