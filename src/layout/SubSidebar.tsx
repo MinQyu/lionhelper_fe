@@ -1,7 +1,8 @@
-import { Link, useParams } from 'react-router-dom';
-import { BookOpen } from 'lucide-react';
+import { Link, useParams, useNavigate } from 'react-router-dom';
+import { BookOpen, Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { apiClient } from '@/api/apiClient';
+import { Button } from '@/components/ui/button';
 
 interface SubSidebarProps {
   isVisible: boolean;
@@ -15,6 +16,7 @@ function SubSidebar({
   onMouseLeave,
 }: SubSidebarProps) {
   const { CourseName } = useParams<{ CourseName: string }>();
+  const navigate = useNavigate();
   const [courseNames, setCourseNames] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -74,13 +76,22 @@ function SubSidebar({
       onMouseLeave={onMouseLeave}
     >
       <div className="p-4 h-full xl:p-5 flex flex-col">
-        <div className="mb-6 pt-2 pl-2.5 flex-shrink-0">
-          <h2 className="text-lg xl:text-xl font-bold text-foreground">
-            부트캠프 과정 목록
-          </h2>
-          <p className="text-sm xl:text-base text-muted-foreground mt-1">
-            과정을 선택하세요
-          </p>
+        <div className="flex items-center justify-between">
+          <div className="mb-6 pt-4 pl-2.5 flex-shrink-0">
+            <h2 className="text-lg xl:text-xl font-bold text-foreground">
+              부트캠프 과정 목록
+            </h2>
+            <p className="text-sm xl:text-base text-muted-foreground mt-1">
+              과정을 선택하세요
+            </p>
+          </div>
+          <Button
+            variant="secondary"
+            size="icon"
+            onClick={() => navigate('/bootcamp/registration')}
+          >
+            <Plus className="w-5 h-5" />
+          </Button>
         </div>
 
         <nav className="flex-1 overflow-y-auto min-h-0">

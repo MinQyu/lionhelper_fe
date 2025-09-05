@@ -11,6 +11,7 @@ import Login from '@/pages/login';
 import PrivateRoute from '@/components/PrivateRoute';
 import { useEffect } from 'react';
 import { useAuthStore } from '@/store/authStore';
+import BootcampRegistration from './pages/bootcamp/registration';
 
 function AppContent() {
   const { checkAuthStatus, initialized } = useAuthStore();
@@ -42,6 +43,10 @@ function AppContent() {
           <Route path="/bootcamp" element={<BootcampIndex />} />
           <Route path="/bootcamp/overview" element={<BootcampOverview />} />
           <Route path="/bootcamp/:CourseName" element={<BootcampDetail />} />
+          <Route
+            path="/bootcamp/registration"
+            element={<BootcampRegistration />}
+          />
           <Route path="/notice" element={<Notice />} />
           <Route path="/admin" element={<Admin />} />
         </Route>
