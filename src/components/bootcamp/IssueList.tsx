@@ -80,7 +80,7 @@ function IssueList({ courseName, showHeader = true }: IssueListProps) {
 
   const content = (
     <>
-      {showHeader && <h3 className="font-semibold">이슈 목록</h3>}
+      {showHeader && <h3 className="font-semibold xl:text-lg">이슈 목록</h3>}
       {courseIssues.length > 0 ? (
         <div className="space-y-3">
           {courseIssues.map(issue => (

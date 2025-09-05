@@ -42,7 +42,6 @@ function TaskStatusTab() {
         const response = await apiClient.admin.taskStatusCombinedList();
 
         if (response.data.success && response.data.data) {
-          // API 응답을 TaskStatusTabProps로 파싱
           const parsedData: TaskStatusTabProps[] = response.data.data.map(
             item => ({
               ...item,
@@ -106,7 +105,7 @@ function TaskStatusTab() {
     <div className="space-y-4">
       <Card className="p-4">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold">전체 업무 현황</h3>
+          <h3 className="xl:text-lg font-semibold">전체 업무 현황</h3>
           <Select value={selectedDept} onValueChange={setSelectedDept}>
             <SelectTrigger className="w-48">
               <SelectValue placeholder="부서 선택" />

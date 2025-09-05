@@ -77,7 +77,7 @@ function TaskStatusCard({
     <Card>
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h4 className="font-semibold">업무 현황</h4>
+          <h3 className="font-semibold xl:text-lg">업무 현황</h3>
           <Link
             to={`/bootcamp/${training_course}`}
             className="hover:underline cursor-pointer text-sm xl:text-base"

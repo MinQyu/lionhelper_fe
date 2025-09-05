@@ -62,7 +62,7 @@ function IssueRegister() {
 
   return (
     <Card className="flex flex-col gap-4">
-      <h3 className="font-bold">이슈 등록</h3>
+      <h3 className="font-semibold xl:text-lg">이슈 등록</h3>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <textarea

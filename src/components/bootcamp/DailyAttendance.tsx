@@ -102,7 +102,7 @@ function DailyAttendance() {
   return (
     <Card className="flex flex-col gap-4">
       <div className="flex flex-row gap-2 items-center xl:gap-3">
-        <h3 className="font-bold">출퇴근 기록</h3>
+        <h3 className="font-semibold xl:text-lg">출퇴근 기록</h3>
         {!submitted && (
           <Button
             className="w-6 h-6 p-1 xl:w-7 xl:h-7 xl:p-2"

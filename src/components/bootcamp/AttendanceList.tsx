@@ -12,7 +12,6 @@ import { apiClient } from '@/api/apiClient';
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 
-// API 타입에서 attendance 추출
 export type AttendanceRecord = NonNullable<
   NonNullable<
     NonNullable<
@@ -34,17 +33,14 @@ function AttendanceList() {
     ? getCourseByName(decodedCourseName)
     : null;
 
-  // 과정 기간에 따른 월 옵션 생성
   const monthOptions = useMemo(() => {
     if (!currentCourse?.start_date) return [];
 
     const startDate = new Date(currentCourse.start_date);
     const currentDate = new Date();
     const options: { year: number; month: number; label: string }[] = [];
-
-    // 시작일부터 현재까지의 모든 월을 생성
     const startYear = startDate.getFullYear();
-    const startMonth = startDate.getMonth() + 1; // getMonth()는 0부터 시작
+    const startMonth = startDate.getMonth() + 1;
     const currentYear = currentDate.getFullYear();
     const currentMonth = currentDate.getMonth() + 1;
 
@@ -64,7 +60,6 @@ function AttendanceList() {
     return options;
   }, [currentCourse?.start_date]);
 
-  // 출퇴근 기록 조회
   const fetchAttendanceData = useCallback(async () => {
     if (!currentCourse?.training_course || !selectedYearMonth) return;
 
@@ -94,21 +89,19 @@ function AttendanceList() {
     }
   }, [currentCourse?.training_course, selectedYearMonth]);
 
-  // 과정 정보 로드
   useEffect(() => {
     if (courses.length === 0) {
       fetchCourses();
     }
   }, [courses.length, fetchCourses]);
 
-  // 출퇴근 기록 조회
   useEffect(() => {
     if (currentCourse?.training_course && selectedYearMonth) {
       fetchAttendanceData();
     }
   }, [currentCourse?.training_course, selectedYearMonth, fetchAttendanceData]);
 
-  // 과정이 로드되면 가장 최근 월을 기본값으로 설정
+  // 최근 월을 기본값으로 설정
   useEffect(() => {
     if (monthOptions.length > 0 && !selectedYearMonth) {
       const latestOption = monthOptions[monthOptions.length - 1];
@@ -116,12 +109,10 @@ function AttendanceList() {
     }
   }, [monthOptions, selectedYearMonth]);
 
-  // 월 변경 핸들러
   const handleMonthChange = (yearMonth: string) => {
     setSelectedYearMonth(yearMonth);
   };
 
-  // 날짜 포맷팅
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('ko-KR', {
@@ -132,13 +123,11 @@ function AttendanceList() {
     });
   };
 
-  // 시간 포맷팅
   const formatTime = (timeString: string | undefined) => {
     if (!timeString) return '-';
     return timeString;
   };
 
-  // 직급 포맷팅
   const formatInstructorRole = (instructor: string | undefined) => {
     if (!instructor) return '-';
     switch (instructor) {
@@ -182,7 +171,7 @@ function AttendanceList() {
     <Card>
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold">출퇴근 기록 조회</h3>
+          <h3 className="xl:text-lg font-semibold mb-2">출퇴근 기록 조회</h3>
           <div className="flex gap-2">
             <Select value={selectedYearMonth} onValueChange={handleMonthChange}>
               <SelectTrigger className="w-32">

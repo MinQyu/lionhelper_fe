@@ -255,7 +255,7 @@ function PeriodicCheckList() {
   return (
     <Card>
       <div className="flex items-center justify-between pb-4">
-        <h3 className="font-bold">기간별 체크리스트</h3>
+        <h3 className="font-semibold xl:text-lg mb-2">기간별 체크리스트</h3>
         <Select
           value={currentPeriodicPeriod || ''}
           onValueChange={handlePeriodChange}

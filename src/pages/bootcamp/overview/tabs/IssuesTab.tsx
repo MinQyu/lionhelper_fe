@@ -68,7 +68,7 @@ function IssuesTab() {
     <div className="space-y-4">
       <Card className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold">이슈 목록</h3>
+          <h3 className="font-semibold xl:text-lg">이슈 목록</h3>
           <div className="flex items-center gap-2">
             <Select value={selectedCourse} onValueChange={setSelectedCourse}>
               <SelectTrigger className="w-48">
