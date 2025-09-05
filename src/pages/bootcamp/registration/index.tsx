@@ -15,14 +15,12 @@ import { apiClient } from '@/api/apiClient';
 import { useBootcampStore } from '@/store/bootcampStore';
 import { Save } from 'lucide-react';
 
-// 부서 목록 (고정값)
 const DEPARTMENTS = [
   { value: 'Pilot', label: 'Pilot' },
   { value: 'TechSol', label: 'TechSol' },
   { value: 'Dev', label: 'Dev' },
 ];
 
-// 과정명 목록 (고정값)
 const COURSE_NAMES = [
   { value: '데이터 분석', label: '데이터 분석' },
   { value: '클라우드 엔지니어링', label: '클라우드 엔지니어링' },

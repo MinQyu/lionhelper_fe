@@ -106,10 +106,8 @@ function Dashboard() {
       setIsLoading(true);
       setError(null);
       try {
-        // bootcampstore 데이터 로드
         await fetchCourses();
 
-        // taskStatusCombinedList API 호출
         const response = await apiClient.admin.taskStatusCombinedList();
         if (response.data.success && response.data.data) {
           const filteredData = response.data.data.filter(

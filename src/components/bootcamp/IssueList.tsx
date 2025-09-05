@@ -37,16 +37,13 @@ function IssueList({ courseName, showHeader = true }: IssueListProps) {
   }, []);
 
   const handleIssueResolve = () => {
-    // 이슈가 해결되면 목록을 새로고침
     fetchIssues();
   };
 
   const handleCommentAdded = () => {
-    // 댓글이 추가되면 목록을 새로고침
     fetchIssues();
   };
 
-  // 특정 과정의 이슈만 필터링
   const getCourseIssues = () => {
     if (!issuesData?.data) return [];
 

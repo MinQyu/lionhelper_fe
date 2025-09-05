@@ -11,7 +11,6 @@ function IssueRegister() {
   const [date, setDate] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // TODO: 커스텀 훅으로 전역에서 username 가져오기
   const {
     user: { username },
   } = useAuthStore() as { user: { username: string } };
@@ -20,8 +19,6 @@ function IssueRegister() {
 작성 예시: 
 - 배경: 이슈가 발생한 배경
 - 상황: 이슈 상황`;
-
-  // 전역 API 클라이언트 사용
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

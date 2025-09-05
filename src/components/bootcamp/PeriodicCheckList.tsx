@@ -58,25 +58,20 @@ function PeriodicCheckList() {
     user: { username },
   } = useAuthStore() as { user: { username: string } };
 
-  // URL 파라미터에서 training_course 가져오기
   const trainingCourse = CourseName as string;
 
-  // URL 파라미터에서 기간 가져오기
   const periodFromUrl = searchParams.get('period');
 
-  // 선택된 period에 따른 체크리스트만 필터링하고 id가 있는 항목만 포함
   const periodicTasks = currentPeriodicPeriod
     ? tasks.filter(
         task => task.task_period === currentPeriodicPeriod && task.id
       )
     : [];
 
-  // 컴포넌트 마운트 시 체크리스트 데이터 로드
   useEffect(() => {
     fetchTasks();
   }, [fetchTasks]);
 
-  // URL 파라미터와 상태 동기화
   useEffect(() => {
     if (periodFromUrl && periodFromUrl !== currentPeriodicPeriod) {
       setCurrentPeriodicPeriod(periodFromUrl);
@@ -108,13 +103,11 @@ function PeriodicCheckList() {
 
   const handlePeriodChange = (period: string) => {
     setCurrentPeriodicPeriod(period);
-    // URL 파라미터 업데이트
     const newSearchParams = new URLSearchParams(searchParams);
     newSearchParams.set('period', period);
     setSearchParams(newSearchParams);
   };
 
-  // 체크리스트 데이터를 TaskCheckList 형태로 변환
   const prepareTaskCheckList = () => {
     const checkList: TaskCheckList[] = [];
     const unchecked: UncheckedTask[] = [];
@@ -218,7 +211,6 @@ function PeriodicCheckList() {
           alert('체크리스트는 저장되었지만, 미완료 사유 등록에 실패했습니다.');
         }
 
-        // 성공 후 폼 초기화
         resetPeriodicForm();
       } else {
         alert('체크리스트 등록에 실패했습니다.');

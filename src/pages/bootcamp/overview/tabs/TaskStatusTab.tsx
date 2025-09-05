@@ -14,21 +14,14 @@ import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { ErrorState } from '@/components/ui/error-state';
 import { EmptyState } from '@/components/ui/empty-state';
 
-export type OverAllTaskStatus = NonNullable<
+export type TaskStatusData = NonNullable<
   NonNullable<
     Awaited<ReturnType<typeof apiClient.admin.taskStatusCombinedList>>['data']
   >['data']
 >[number];
 
-interface TaskStatusTabProps extends OverAllTaskStatus {
-  unchecked_task: number;
-  issue_task: number;
-}
-
 function TaskStatusTab() {
-  const [taskStatusData, setTaskStatusData] = useState<TaskStatusTabProps[]>(
-    []
-  );
+  const [taskStatusData, setTaskStatusData] = useState<TaskStatusData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedDept, setSelectedDept] = useState<string>('all');
@@ -42,15 +35,7 @@ function TaskStatusTab() {
         const response = await apiClient.admin.taskStatusCombinedList();
 
         if (response.data.success && response.data.data) {
-          const parsedData: TaskStatusTabProps[] = response.data.data.map(
-            item => ({
-              ...item,
-              unchecked_task: Math.floor(Math.random() * 10), // 임시 데이터, 나중에 실제 API로 교체
-              issue_task: Math.floor(Math.random() * 5), // 임시 데이터, 나중에 실제 API로 교체
-            })
-          );
-
-          setTaskStatusData(parsedData);
+          setTaskStatusData(response.data.data);
         } else {
           setError(
             response.data.message || '태스크 상태를 불러올 수 없습니다.'
@@ -134,8 +119,6 @@ function TaskStatusTab() {
                 <th className="px-4 py-3 text-center font-medium whitespace-nowrap">
                   오늘의 업무
                 </th>
-                {/* <th className="px-4 py-3 text-center font-medium">미체크</th> */}
-                {/* <th className="px-4 py-3 text-center font-medium">이슈</th> */}
                 <th className="px-4 py-3 text-center font-medium whitespace-nowrap">
                   전일 체크율
                 </th>
@@ -169,24 +152,6 @@ function TaskStatusTab() {
                       {item.daily_check_rate === '100%' ? '완료' : '미완료'}
                     </Badge>
                   </td>
-                  {/* <td className="px-4 py-3 text-center">
-                    <Badge
-                      variant={
-                        item.unchecked_task > 0 ? 'destructive' : 'success'
-                      }
-                      className="w-12 justify-center"
-                    >
-                      {item.unchecked_task}
-                    </Badge>
-                  </td> */}
-                  {/* <td className="px-4 py-3 text-center">
-                    <Badge
-                      variant={item.issue_task > 0 ? 'destructive' : 'success'}
-                      className="w-12 justify-center"
-                    >
-                      {item.issue_task}
-                    </Badge>
-                  </td> */}
                   <td className="px-4 py-3 text-center">
                     <div className="flex items-center justify-center">
                       <span className="font-medium">

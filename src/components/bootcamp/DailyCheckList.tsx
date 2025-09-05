@@ -42,15 +42,12 @@ function DailyCheckList() {
     user: { username },
   } = useAuthStore() as { user: { username: string } };
 
-  // URL 파라미터에서 training_course 가져오기
   const trainingCourse = CourseName as string;
 
-  // daily period 체크리스트만 필터링하고 id가 있는 항목만 포함
   const dailyTasks = tasks.filter(
     task => task.task_period === 'daily' && task.id
   );
 
-  // 컴포넌트 마운트 시 체크리스트 데이터 로드
   useEffect(() => {
     fetchTasks();
   }, [fetchTasks]);
@@ -125,7 +122,6 @@ function DailyCheckList() {
     console.log('미체크 항목:', unchecked);
 
     try {
-      // 체크된 항목들을 createTask로 전송
       const updates = dailyTasks.map(item => ({
         task_name: item.task_name || '',
         is_checked: selectedValues[item.id?.toString() || ''] === 'true',
@@ -140,7 +136,6 @@ function DailyCheckList() {
       if (taskSuccess) {
         let uncheckedSuccess = true;
 
-        // 미체크 항목들을 uncheckedDescriptionsCreate로 전송
         if (unchecked.length > 0) {
           const uncheckedPromises = unchecked
             .map(uncheckedItem => {
@@ -175,7 +170,6 @@ function DailyCheckList() {
           alert('체크리스트는 저장되었지만, 미체크 항목 등록에 실패했습니다.');
         }
 
-        // 성공 후 폼 초기화
         resetForm();
       } else {
         alert('체크리스트 등록에 실패했습니다.');
@@ -190,7 +184,6 @@ function DailyCheckList() {
     value => value === 'false'
   ).length;
 
-  // 로딩 중일 때 표시
   if (isLoading) {
     return (
       <Card>
@@ -202,7 +195,6 @@ function DailyCheckList() {
     );
   }
 
-  // 에러가 있을 때 표시
   if (error) {
     return (
       <Card>
@@ -211,7 +203,6 @@ function DailyCheckList() {
     );
   }
 
-  // 데이터가 없을 때 표시
   if (dailyTasks.length === 0) {
     return (
       <Card>

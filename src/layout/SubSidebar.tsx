@@ -39,7 +39,6 @@ function SubSidebar({
   }, []);
 
   const isActiveCourse = (courseName: string) => {
-    // URL 디코딩된 CourseName과 비교
     const decodedCourseName = CourseName ? decodeURIComponent(CourseName) : '';
     return decodedCourseName === courseName;
   };

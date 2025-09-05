@@ -36,8 +36,8 @@ function AppContent() {
       <Route path="/uiguide" element={<UIGuide />} />
       <Route path="/" element={<Login />} />
 
-      {/* 보호된 라우트들 */}
       <Route element={<Layout />}>
+        {/* 로그인이 필요한 라우트 */}
         <Route element={<PrivateRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/bootcamp" element={<BootcampIndex />} />
