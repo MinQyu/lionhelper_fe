@@ -42,10 +42,19 @@ function TaskStatusCard({
       return diffDays;
     };
 
+    // 개강 한 달전 모집 체크리스트
+    if (getDiffDays(today, start)) {
+      periodic_task.push({
+        id: 1,
+        description: '모집 체크리스트 작성기간입니다',
+        url: `/bootcamp/${encodeURIComponent(training_course)}/?tab=periodic-task&period=recruit`,
+      });
+    }
+
     // 금요일마다 주간 체크리스트
     if (today.getDay() === 5) {
       periodic_task.push({
-        id: 1,
+        id: 2,
         description: '주간 체크리스트 작성일입니다',
         url: `/bootcamp/${encodeURIComponent(training_course)}/?tab=periodic-task&period=weekly`,
       });
@@ -54,7 +63,7 @@ function TaskStatusCard({
     // 개강 2주차 체크리스트
     if (getDiffDays(start, today) === 14) {
       periodic_task.push({
-        id: 2,
+        id: 3,
         description: '개강 2주차 체크리스트 작성일입니다',
         url: `/bootcamp/${encodeURIComponent(training_course)}/?tab=periodic-task&period=2weeks`,
       });
@@ -63,8 +72,8 @@ function TaskStatusCard({
     // 수료후 1주일간 수료 체크리스트
     if (getDiffDays(end, today) >= 0 && getDiffDays(end, today) <= 7) {
       periodic_task.push({
-        id: 3,
-        description: '수료 체크리스트 작성 기간입니다',
+        id: 4,
+        description: '수료 체크리스트 작성기간입니다',
         url: `/bootcamp/${encodeURIComponent(training_course)}/?tab=periodic-task&period=completion`,
       });
     }
