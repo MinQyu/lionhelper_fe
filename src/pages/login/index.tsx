@@ -1,32 +1,34 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuthStore } from '@/store/authStore';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
 
 function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login, isLoggedIn } = useAuthStore();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // 이미 로그인된 사용자는 대시보드로 리다이렉트
+  // 이전 페이지 정보 가져오기 (PrivateRoute에서 전달된 state)
+  const from = location.state?.from?.pathname || '/dashboard';
+
+  // 이미 로그인된 사용자는 이전 페이지 또는 대시보드로 리다이렉트
   useEffect(() => {
     if (isLoggedIn) {
-      navigate('/dashboard');
+      navigate(from, { replace: true });
     }
-  }, [isLoggedIn, navigate]);
+  }, [isLoggedIn, navigate, from]);
 
   if (isLoggedIn) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-gray-600">리다이렉트 중...</p>
-        </div>
+        <LoadingSpinner size="lg" message="리다이렉트 중..." />
       </div>
     );
   }
@@ -45,7 +47,11 @@ function Login() {
     try {
       const result = await login(username.trim(), password.trim());
 
-      if (result.success) navigate('/dashboard');
+      if (result.success) {
+        navigate(from, { replace: true });
+      } else {
+        setError(result.error || '로그인에 실패했습니다.');
+      }
     } catch (error) {
       console.error('로그인 오류:', error);
       setError(

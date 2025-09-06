@@ -1,11 +1,12 @@
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 
 const PrivateRoute = () => {
   const { isLoggedIn, loading, initialized } = useAuthStore();
+  const location = useLocation();
 
-  if (!initialized || loading) {
+  if (loading && !initialized) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <LoadingSpinner size="lg" message="인증 확인 중..." />
@@ -14,7 +15,7 @@ const PrivateRoute = () => {
   }
 
   if (!isLoggedIn) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/" state={{ from: location }} replace />;
   }
 
   return <Outlet />;

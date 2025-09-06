@@ -9,35 +9,35 @@ import Notice from '@/pages/notice';
 import Admin from '@/pages/admin';
 import Login from '@/pages/login';
 import PrivateRoute from '@/components/PrivateRoute';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import { useEffect } from 'react';
 import { useAuthStore } from '@/store/authStore';
 import BootcampRegistration from './pages/bootcamp/registration';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
 
 function AppContent() {
-  const { checkAuthStatus, initialized } = useAuthStore();
+  const { checkAuthStatus, initialized, loading } = useAuthStore();
 
   useEffect(() => {
     checkAuthStatus();
   }, [checkAuthStatus]);
 
-  if (!initialized) {
+  if (!initialized && loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-gray-600">로딩 중...</p>
-        </div>
+        <LoadingSpinner size="lg" message="앱을 초기화하는 중..." />
       </div>
     );
   }
 
   return (
     <Routes>
+      {/* 공개 라우트 */}
       <Route path="/uiguide" element={<UIGuide />} />
       <Route path="/" element={<Login />} />
 
+      {/* 보호된 라우트 */}
       <Route element={<Layout />}>
-        {/* 로그인이 필요한 라우트 */}
         <Route element={<PrivateRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/bootcamp" element={<BootcampIndex />} />
@@ -57,9 +57,11 @@ function AppContent() {
 
 function App() {
   return (
-    <BrowserRouter>
-      <AppContent />
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <AppContent />
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }
 

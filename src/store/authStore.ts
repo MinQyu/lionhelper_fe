@@ -35,20 +35,12 @@ export const useAuthStore = create<AuthState>()(
       },
 
       checkAuthStatus: async () => {
-        const { initialized, loading, user: savedUser } = get();
+        const { initialized, loading } = get();
+
         if (initialized || loading) return;
 
         try {
           set({ loading: true });
-
-          if (savedUser) {
-            set({
-              isLoggedIn: true,
-              user: savedUser,
-              loading: true,
-              initialized: false,
-            });
-          }
 
           const response = await apiClient.me.getMe();
 
