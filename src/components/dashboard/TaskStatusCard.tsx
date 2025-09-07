@@ -35,6 +35,12 @@ function TaskStatusCard({
     const today = new Date();
     const start = new Date(start_date);
     const end = new Date(end_date);
+    const daysUntilStart = Math.ceil(
+      (start.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+    );
+    const daysSinceStart = Math.ceil(
+      (today.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
+    );
 
     const getDiffDays = (start_date: Date, end_date: Date) => {
       const diffTime = Math.abs(end_date.getTime() - start_date.getTime());
@@ -42,8 +48,8 @@ function TaskStatusCard({
       return diffDays;
     };
 
-    // 개강 한 달전 모집 체크리스트
-    if (getDiffDays(today, start)) {
+    // 개강 한 달전부터 개강일까지 모집 체크리스트
+    if (daysUntilStart >= 0 && daysUntilStart <= 30) {
       periodic_task.push({
         id: 1,
         description: '모집 체크리스트 작성기간입니다',
@@ -60,8 +66,8 @@ function TaskStatusCard({
       });
     }
 
-    // 개강 2주차 체크리스트
-    if (getDiffDays(start, today) === 14) {
+    // 개강 2주차 체크리스트 (개강 후 2주가 된 후)
+    if (daysSinceStart === 14) {
       periodic_task.push({
         id: 3,
         description: '개강 2주차 체크리스트 작성일입니다',
